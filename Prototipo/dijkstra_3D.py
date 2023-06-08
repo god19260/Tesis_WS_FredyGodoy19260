@@ -28,7 +28,7 @@ elif tipoMapa == 2:
                     [1,0,0,0,0,1,0,0,1,1,0],
                     [0,0,1,0,0,0,0,0,0,1,0],
                     [0,0,1,1,1,0,0,0,0,0,0],
-                    [0,0,1,1,0,0,0,0,0,0,0],
+                    [0,0,1,1,0,0,0,0,0,0,1],
                     [0,0,0,0,0,1,0,1,0,1,0]])
     # Obtener las dimensiones del mapa
     filas, columnas = mapa.shape
@@ -86,12 +86,12 @@ elif tipoMapa == 4:
 mapa_flip = np.flip(mapa,axis=0)
 
 # Definir punto de inicio y final
-inicio = [columnas-1,0]
+inicio = [0,0]
+final = [0, filas-1]
+
 while mapa_flip[inicio[1],inicio[0]] == 1:
     inicio[0] = inicio[0]+1
     inicio[1] = inicio[1]+1
-final = [0, filas-1]
-
 
 inicio = (inicio[1],inicio[0])
 final = (final[1],final[0])
@@ -147,19 +147,34 @@ def encontrar_ruta_optima(inicio, final):
 (ruta_optima,flag) = encontrar_ruta_optima(inicio, final)
 print(ruta_optima)
 
-# Graficar el mapa con la ruta óptima
-fig, ax = plt.subplots()
-ax.set_xlim(0, columnas)
-ax.set_ylim(0, filas)
-ax.set_aspect('equal')
-ax.grid(True)
 
-# Graficar obstáculos
+
+# Crear una figura 
+fig = plt.figure()
+
+## -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+## -+-+-+-+-+-+-+-+  Crear subfigura 1 -+-+-+-+-+-+-+-+
+ax1 = fig.add_subplot(121)
+
+# Configurar límites de los ejes
+ax1.set_xlim(0, columnas)
+ax1.set_ylim(0, filas)
+
+# Configurar aspecto de los ejes
+ax1.set_aspect('equal')
+ax1.grid(True)
+
+# Iterar sobre el mapa y graficar obstáculos
 for fila in range(filas):
     for columna in range(columnas):
         if mapa_flip[fila, columna] == 1:
+            # Dibujar obstáculo
             rect = plt.Rectangle((columna, fila), 1, 1, facecolor='black')
-            ax.add_patch(rect)
+            ax1.add_patch(rect)
+
+# Configurar los ejes
+ax1.set_xlabel('X')
+ax1.set_ylabel('Y')
 
 # Graficar ruta óptima
 try:
@@ -172,5 +187,47 @@ try:
         plt.plot(x, y, '-o', color='red')
 except:
     print("Error al graficar ruta")
-# Mostrar la solución gráficamente
+
+
+## -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+## -+-+-+-+-+-+-+-+  Crear subfigura 2 -+-+-+-+-+-+-+-+
+
+ax2 = fig.add_subplot(122, projection='3d')
+
+
+# Configurar límites de los ejes
+ax2.set_xlim(0, columnas)
+ax2.set_ylim(0, filas)
+ax2.set_zlim(0, 2)
+
+# Configurar aspecto de los ejes
+ax2.set_box_aspect([1, 1, 0.5])
+ax2.grid(True)
+
+# Iterar sobre el mapa y graficar obstáculos
+for fila in range(filas):
+    for columna in range(columnas):
+        if mapa_flip[fila, columna] == 1:
+            # Dibujar obstáculo como una caja
+            x = columna
+            y = fila
+            z = 0
+            dx = 1
+            dy = 1
+            dz = 0.5
+            ax2.bar3d(x, y, z, dx, dy, dz, color='black')
+
+# Graficar ruta óptima
+try:
+    x = [posicion[1] + 0.5 for posicion in ruta_optima]
+    y = [posicion[0] + 0.5 for posicion in ruta_optima]
+    plt.plot(inicio[1]+0.5,inicio[0]+0.5,'-o',color='blue')
+    if flag == True:
+        plt.plot(x, y, '-o', color='green')
+    else:
+        plt.plot(x, y, '-o', color='red')
+except:
+    print("Error al graficar ruta")
+
+# Mostrar la gráfica
 plt.show()
