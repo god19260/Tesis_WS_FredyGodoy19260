@@ -1,139 +1,152 @@
-import random
-import sys
-import math
+import numpy as np
 import matplotlib.pyplot as plt
+import heapq
 
-# Elige un paso para una hormiga, teniendo en cuenta los valores
-# las feromonas y descartando los nodos ya visitados.
-def eligeNodo(valors, ferom, visitados):
-    #Se calcula la tabla de pesos de cada ciudad
-    listaValores  = []
-    disponibles = []
-    actual      = visitados[-1]
+# Mapa a usar
+# 1: Mapa aleatorio
+# 2 en adelante: Mapas guardados
+tipoMapa = 2
 
-    # Influencia de cada valor (alfa: feromonas; beta: valor)
-    alfa = 1.0
-    beta = 0.5
+if tipoMapa ==1:
+    # Se define un mapa aleatorio
+    filas = 20
+    columnas = 20
+    mapa = np.zeros((filas, columnas))
+    
+    # Generar obstáculos al azar
+    for i in range(150):  # Número de obstáculos que deseas generar
+        fila = np.random.randint(0, filas)  # Fila aleatoria
+        columna = np.random.randint(0, columnas)  # Columna aleatoria
+        mapa[fila, columna] = 1  # Establecer el elemento como un obstáculo (1)
+    print(mapa)
 
-    # El parámetro beta (peso de los valores) es 0.5 y alfa=1.0
-    for i in range(len(valors)):
-        if i not in visitados:
-            fer  = math.pow((1.0 + ferom[actual][i]), alfa)
-            peso = math.pow(1.0/valors[actual][i], beta) * fer
-            disponibles.append(i)
-            listaValores.append(peso)
+elif tipoMapa == 2:
+    # Mapa definido 1
+    mapa = np.array([[1,0,0,0,0,0,0,1,0,0,0],
+                    [1,0,0,0,1,0,0,0,0,1,1],
+                    [1,0,0,0,0,1,0,0,1,1,0],
+                    [0,0,1,0,0,0,0,0,0,1,0],
+                    [0,0,1,1,1,0,0,0,0,0,0],
+                    [0,0,1,1,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,1,0,1,0,1,0]])
+    # Obtener las dimensiones del mapa
+    filas, columnas = mapa.shape
 
-    # Se elige aleatoriamente una de los nodos disponibles,
-    # teniendo en cuenta su peso relativo.
-    valor     = random.random() * sum(listaValores)
-    acumulado = 0.0
-    i         = -1
-    while valor > acumulado:
-        i         += 1
-        acumulado += listaValores[i]
-
-    return disponibles[i]
-
-# Genera una "hormiga", que eligirá un camino (nodos que visita) teniendo en cuenta
-# los valores y los rastros de feromonas. Devuelve una tupla
-# con el camino (nodos visitados) y su longCamino (Suma de valores).
-def eligeCamino(matriz, feromonas):
-    # El nodo inicial siempre es el 0
-    camino     = [0]
-    longCamino = 0
-
-    # Elegir cada paso según los valores y las feromonas
-    while len(camino) < len(matriz):
-        nodo      = eligeNodo(matriz, feromonas, camino)
-        longCamino += matriz[camino[-1]][nodo]
-        camino.append(nodo)
-
-    # Para terminar hay que volver al nodo de origen (0)
-    longCamino += matriz[camino[-1]][0]
-    camino.append(0)
-
-    return (camino, longCamino)
-
-# Actualiza la matriz de feromonas siguiendo el camino recibido
-def rastroFeromonas(feromonas, camino, dosis):
-    for i in range(len(camino) - 1):
-        feromonas[camino[i]][camino[i+1]] += dosis
-
-# Evapora todas las feromonas multiplicándolas por una constante
-# = 0.9 (en otras palabras, el coeficiente de evaporación es 0.1)
-def evaporaFeromonas(feromonas):
-    for lista in feromonas:
-        for i in range(len(lista)):
-            lista[i] *= 0.9
-
-# Resuelve el problema del viajante de comercio mediante el
-# algoritmo de la colonia de hormigas. Recibe una matriz de
-# distancias y devuelve una tupla con el mejor camino que ha
-# obtenido (lista de índices) y su longitud.
-def hormigas(matriz, iteraciones, distMedia):
-    # Primero se crea una matriz de feromonas vacía
-    n = len(matriz)
-    feromonas = [[0 for i in range(n)] for j in range(n)]
-
-    # El mejor camino y su longitud (inicialmente "infinita")
-    mejorCamino     = []
-    longMejorCamino = sys.maxsize
-
-    # En cada iteración se genera una hormiga, que elige un camino,
-    # y si es mejor que el mejor que teníamos, deja su rastro de
-    # feromonas (mayor cuanto más corto sea el camino)
-    for iter in range(iteraciones):
-        (camino, longCamino) = eligeCamino(matriz, feromonas)
-
-        if longCamino <= longMejorCamino:
-            mejorCamino     = camino
-            longMejorCamino = longCamino
-
-        rastroFeromonas(feromonas, camino, distMedia/longCamino)
-        # En cualquier caso, las feromonas se van evaporando
-        evaporaFeromonas(feromonas)
-
-    # Se devuelve el mejor camino que se haya encontrado
-    return (mejorCamino, longMejorCamino)
+    
+elif tipoMapa ==3:
+    # Mapa definido 2
+    mapa = np.array([[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+                    [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0,],
+                    [0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1,],
+                    [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0,],
+                    [0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0,],
+                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0,],
+                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,],
+                    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0,],
+                    [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,],
+                    [0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0,],
+                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,],
+                    [0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0,],
+                    [0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1,],
+                    [0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+                    [0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0,],
+                    [0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0,],
+                    [1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0,],
+                    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0,],
+                    [0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0,],
+                    [0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0,]])
+    # Obtener las dimensiones del mapa
+    filas, columnas = mapa.shape
 
 
-# Hemos encontrado un método que nos genera una matriz con nodos xdistantes
+mapa_flip = np.flip(mapa,axis=0)
 
-# Genera una matriz de valores de n x n, asignando valores aleatorios y poniendo un valor tope
-# Los valores de un nodo A a un nodo B son los mismos que de un nodo B a A, siendo A y B dos nodos cualesquiera
-# Le asignamos valores aleatorios
-def matrizDistancias(n, distanciaMaxima):
-    matriz = [[0 for i in range(n)] for j in range(n)]
-
-    for i in range(n):
-        for j in range(i):
-            matriz[i][j] = i + 1
-            matriz[j][i] = matriz[i][j]
-
-    return matriz
+# Definir punto de inicio y final
+inicio = [columnas-1,0]
+while mapa_flip[inicio[1],inicio[0]] == 1:
+    inicio[0] = inicio[0]+1
+    inicio[1] = inicio[1]+1
+final = [0, filas-1]
 
 
-# Ejemplo de uso
-# Generación de una matriz de prueba
-numCiudades      = 2
-distanciaMaxima  = 1
-ciudades         = matrizDistancias(numCiudades, distanciaMaxima)
-print(ciudades)
+inicio = (inicio[1],inicio[0])
+final = (final[1],final[0])
 
-# Obtención del mejor camino, las iteraciones son la cantidad de hormigas que empleamos para resolverlo
-iteraciones = 1000
-distMedia   = numCiudades * distanciaMaxima / 2
-(camino, longCamino) = hormigas(ciudades, iteraciones, distMedia)
-print("Camino: ", camino)
-print("Longitud del camino: ", longCamino)
+# Definir los movimientos permitidos (arriba, abajo, izquierda, derecha) y (diagonales)
+movimientos = [(-1, 0), (1, 0), (0, -1), (0, 1)
+               ,(1,1), (-1,1), (-1,-1), (1,-1)]
 
-# Graficar el camino
-x = [ciudades[i][0] for i in camino]
-y = [ciudades[i][1] for i in camino]
+# Función para obtener los vecinos válidos de una posición en el mapa
+def obtener_vecinos(posicion):
+    fila, columna = posicion
+    vecinos = []
 
-plt.plot(x, y, 'ro-')
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.title('Camino óptimo')
-plt.grid(True)
+    for movimiento in movimientos:
+        nueva_fila = fila + movimiento[0]
+        nueva_columna = columna + movimiento[1]
+
+        if nueva_fila >= 0 and nueva_fila < filas and nueva_columna >= 0 and nueva_columna < columnas and mapa_flip[nueva_fila, nueva_columna] == 0:
+            vecinos.append((nueva_fila, nueva_columna))
+
+    return vecinos
+
+# Función para calcular la distancia entre dos posiciones
+def calcular_distancia(posicion1, posicion2):
+    fila1, columna1 = posicion1
+    fila2, columna2 = posicion2
+    return np.sqrt((fila2 - fila1) ** 2 + (columna2 - columna1) ** 2)
+
+# Función para encontrar la ruta más corta utilizando el algoritmo de Dijkstra
+def encontrar_ruta_optima(inicio, final):
+    distancia = np.full((filas, columnas), np.inf)
+    visitado = np.zeros((filas, columnas), dtype=bool)
+    distancia[inicio] = 0
+    heap = [(0, inicio, [])]
+
+    while heap:
+        _, posicion_actual, ruta_actual = heapq.heappop(heap)
+
+        flag = True
+        if posicion_actual == final:
+            return ruta_actual,flag
+
+        for vecino in obtener_vecinos(posicion_actual):
+            nueva_distancia = distancia[posicion_actual] + calcular_distancia(posicion_actual, vecino)
+
+            if nueva_distancia < distancia[vecino]:
+                distancia[vecino] = nueva_distancia
+                heapq.heappush(heap, (nueva_distancia, vecino, ruta_actual + [vecino]))
+    flag = False
+    return (ruta_actual,flag)
+
+# Encontrar la ruta óptima
+(ruta_optima,flag) = encontrar_ruta_optima(inicio, final)
+#print(ruta_optima)
+
+# Graficar el mapa con la ruta óptima
+fig, ax = plt.subplots()
+ax.set_xlim(0, columnas)
+ax.set_ylim(0, filas)
+ax.set_aspect('equal')
+ax.grid(True)
+
+# Graficar obstáculos
+for fila in range(filas):
+    for columna in range(columnas):
+        if mapa_flip[fila, columna] == 1:
+            rect = plt.Rectangle((columna, fila), 1, 1, facecolor='black')
+            ax.add_patch(rect)
+
+# Graficar ruta óptima
+try:
+    x = [posicion[1] + 0.5 for posicion in ruta_optima]
+    y = [posicion[0] + 0.5 for posicion in ruta_optima]
+    plt.plot(inicio[1]+0.5,inicio[0]+0.5,'-o',color='blue')
+    if flag == True:
+        plt.plot(x, y, '-o', color='green')
+    else:
+        plt.plot(x, y, '-o', color='red')
+except:
+    print("Error al graficar ruta")
+# Mostrar la solución gráficamente
 plt.show()

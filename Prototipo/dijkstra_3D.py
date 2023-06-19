@@ -6,7 +6,7 @@ import heapq
 # 1: Mapa aleatorio
 # 2 en adelante: Mapas guardados
 # 4 : Mapa en webots
-tipoMapa = 4
+tipoMapa = 1
 
 if tipoMapa ==1:
     # Se define un mapa aleatorio
@@ -23,7 +23,7 @@ if tipoMapa ==1:
 
 elif tipoMapa == 2:
     # Mapa definido 1
-    mapa = np.array([[0,0,0,0,0,0,0,1,0,0,0],
+    mapa = np.array([[0,1,0,0,0,0,0,1,0,0,0],
                     [1,0,0,0,1,0,0,0,0,1,1],
                     [1,0,0,0,0,1,0,0,1,1,0],
                     [0,0,1,0,0,0,0,0,0,1,0],
@@ -60,7 +60,7 @@ elif tipoMapa ==3:
     filas, columnas = mapa.shape
 
 elif tipoMapa == 4:
-    mapa = np.array([[0,0,0,0,0,0,0,1,0,1,1,0,0,0,0,0,0,1,0,1],
+    mapa = np.array([[1,0,0,0,0,0,0,1,0,1,1,0,0,0,0,0,0,1,0,1],
                      [1,0,0,0,1,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0],
                      [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,1],
                      [0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1],
@@ -87,11 +87,11 @@ mapa_flip = np.flip(mapa,axis=0)
 
 # Definir punto de inicio y final
 inicio = [0,0]
-final = [0, filas-1]
-
 while mapa_flip[inicio[1],inicio[0]] == 1:
     inicio[0] = inicio[0]+1
     inicio[1] = inicio[1]+1
+final = [10,10]
+
 
 inicio = (inicio[1],inicio[0])
 final = (final[1],final[0])

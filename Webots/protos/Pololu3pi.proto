@@ -1,50 +1,8 @@
 #VRML_SIM R2023a utf8
 
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackground.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/Parquetry.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/BrushedAluminium.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/apartment_structure/protos/Wall.proto"
-
-WorldInfo {
-}
-Viewpoint {
-  orientation 0.23626007533041435 0.06007358778686677 -0.9698310888269568 2.6607014493620635
-  position 1.65404286054339 0.6973018212484294 0.8832236950739536
-}
-TexturedBackground {
-  texture "dawn_cloudy_empty"
-}
-TexturedBackgroundLight {
-}
-RectangleArena {
-  translation 0 -0.07 0
-  floorSize 4.7 3.8
-  floorAppearance Parquetry {
-  }
-  wallAppearance BrushedAluminium {
-    colorOverride 0.419608 0.941176 1
-    IBLStrength 100
-  }
-}
-Wall {
-  translation -0.59 -0.33 0
-  name "wall(1)"
-  size 0.05 1 0.1
-}
-Wall {
-  translation 0.23 0.4 0
-  rotation 0 0 1 1.5708
-  name "wall(2)"
-  size 0.05 1 0.1
-}
-Wall {
-  translation -0.069996 -0.81 0
-  rotation 0 0 1 1.5708
-  name "wall(3)"
-  size 0.05 1 0.1
-}
+PROTO Pololu3pi[
+]
+{
 Robot {
   children [
     DEF Body Transform {
@@ -209,4 +167,5 @@ Robot {
   }
   controller "my_controller_EpuckPruebas"
   selfCollision TRUE
+}
 }
