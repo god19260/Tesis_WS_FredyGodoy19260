@@ -1,4 +1,4 @@
 
 
-def velocidad(velocidad):
-    print("Velocidad Actual: ",velocidad)  
+def Distancia(distancia):
+    print("Distancia Actual: ",distancia)  
