@@ -5,13 +5,12 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/Parquetry.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/BrushedAluminium.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/apartment_structure/protos/Wall.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.23714422242960484 0.8676179899007476 -0.4370373455081895 0.2838865174712147
-  position -2.973212635891938 -0.22932277950920174 0.7076299501507426
+  orientation 0.27691668316258894 -0.5395377300031016 -0.7951202352407657 5.205841862235232
+  position -2.416073699494693 -2.4343668969489767 2.4156489896294984
 }
 TexturedBackground {
   texture "dawn_cloudy_empty"
@@ -19,7 +18,6 @@ TexturedBackground {
 TexturedBackgroundLight {
 }
 RectangleArena {
-  translation 0 -0.07 0
   floorSize 2 2
   floorAppearance Parquetry {
   }
@@ -29,8 +27,8 @@ RectangleArena {
   }
 }
 Robot {
-  translation -0.87097 0.236 -0.00216847
-  rotation -2.9278007048024957e-07 1.1376966179554005e-06 0.9999999999993098 3.140000000000582
+  translation 0 0 -0.00211166
+  rotation 0 1 0 0
   children [
     DEF Body Transform {
       translation 0 0 0.0255
@@ -84,7 +82,6 @@ Robot {
       ]
     }
     DEF BaseSensores Solid {
-      rotation 0 1 0 0
       children [
         DistanceSensor {
           translation 0 0 0.085
@@ -99,6 +96,7 @@ Robot {
         }
         Compass {
           translation 0 0 0.085
+          rotation 0 0 -1 1.57
         }
         DistanceSensor {
           translation 0 0 0.085
@@ -150,7 +148,7 @@ Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position 3.017146918327004e-11
+        position -1.658228206124882
         anchor 0.07 0 0.037
       }
       device [
@@ -162,8 +160,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 0.06999999999204387 6.0423046012442324e-06 0.03699837430758331
-        rotation -0.6772855768173807 0.28861477482534736 -0.6767464511821704 2.579209825387982
+        translation 0.06999999999204387 -2.1470998805531707e-06 0.036994122731686535
+        rotation -0.6735877657962148 -0.30541952653088345 -0.6730515838948116 3.734880507254859
         children [
           DEF wheel_1 Shape {
             appearance PBRAppearance {
@@ -185,7 +183,7 @@ Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -4.505788580953822e-14
+        position 1.658227714125455
         anchor -0.07 0 0.037
       }
       device [
@@ -197,8 +195,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation -0.07000000000794648 6.032480573023396e-06 0.03699837695068742
-        rotation -0.06172608821258354 0.9961856470762015 -0.06167695350243767 1.5738216414478476
+        translation -0.07000000000794648 1.0900932827539156e-06 0.03700615116310682
+        rotation 0.5705555266660621 0.5911436640597229 0.5701013589116042 2.073130761686338
         children [
           DEF wheel_2 Shape {
             appearance PBRAppearance {
@@ -221,20 +219,20 @@ Robot {
     }
     BallJoint {
       jointParameters BallJointParameters {
-        position -1.2034225801771632e-05
+        position -9.66444292887708
         anchor 0 0.06 0.012
       }
       jointParameters2 JointParameters {
-        position -1.8721814290299658e-11
+        position -5.814214764753457
         axis 1 0 0
       }
       jointParameters3 JointParameters {
-        position -2.6722403026567343e-05
+        position -37.65881260666297
         axis 0 1 0
       }
       endPoint Solid {
-        translation -2.3616923023386935e-08 0.0600001120342258 0.011999999999570547
-        rotation 0.9995008603012691 -0.024779160308252387 -0.019596516819092875 2.0582301643006273
+        translation 2.958596978810832e-08 0.05999989233134907 0.012000025329011123
+        rotation -0.9153531240780021 -0.19696466063137025 0.3511888106176091 1.3995881794885532
         children [
           DEF CasterBall_1 Shape {
             appearance PBRAppearance {
@@ -255,20 +253,20 @@ Robot {
     }
     BallJoint {
       jointParameters BallJointParameters {
-        position -1.2034225824064642e-05
+        position 9.47486077190405
         anchor 0 -0.06 0.012
       }
       jointParameters2 JointParameters {
-        position -1.8721878880415455e-11
+        position -5.5605153374035
         axis 1 0 0
       }
       jointParameters3 JointParameters {
-        position -2.672239292779851e-05
+        position 38.09758265700539
         axis 0 1 0
       }
       endPoint Solid {
-        translation -3.378589999999996e-08 -0.06 0.012
-        rotation -0.9982057110403133 0.05517861215389327 0.02325250969836288 3.8466799058508747
+        translation -2.335527923008544e-08 -0.060000019912612945 0.011999985875347216
+        rotation -0.46478889996403594 -0.651345475260848 0.5997669133317053 1.0423869755460635
         children [
           DEF CasterBall_2 Shape {
             appearance PBRAppearance {
@@ -294,277 +292,4 @@ Robot {
   }
   controller "my_controller_Pololu3pi"
   selfCollision TRUE
-}
-Robot {
-  translation -0.0615265 -0.115136 0.0178315
-  rotation -2.9278007048024957e-07 1.1376966179554005e-06 0.9999999999993098 3.140000000000582
-  children [
-    DEF Body Transform {
-      translation 0 0 0.0255
-      children [
-        Shape {
-          appearance PBRAppearance {
-            roughness 1
-            metalness 0
-          }
-          geometry Cylinder {
-            height 0.019
-            radius 0.075
-          }
-        }
-      ]
-    }
-    Transform {
-      translation 0 0 0.016
-      scale 0.001 0.001 0.001
-      children [
-        Shape {
-          appearance PBRAppearance {
-            roughness 1
-            metalness 0
-          }
-          geometry Mesh {
-            url [
-              "../Modelos_3D/Pololu/BumperV2.stl"
-            ]
-          }
-        }
-      ]
-    }
-    Transform {
-      translation 0 0 0.0165
-      rotation 0 0 1 3.141
-      scale 0.001 0.001 0.001
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0.454902 0.462745 0.419608
-            roughness 1
-            metalness 0
-          }
-          geometry Mesh {
-            url [
-              "../Modelos_3D/Pololu/BaseSensorDistancia.stl"
-            ]
-          }
-        }
-      ]
-    }
-    DEF BaseSensores Solid {
-      rotation 0 1 0 0
-      children [
-        DistanceSensor {
-          translation 0 0 0.085
-          rotation 0 0 -1 1.5699996938995748
-          name "ds_0"
-          lookupTable [
-            0 0 0
-            1 100 0
-          ]
-          type "laser"
-          aperture 0.05
-        }
-        Compass {
-          translation 0 0 0.085
-        }
-        DistanceSensor {
-          translation 0 0 0.085
-          rotation 0 0 1 -2.618185307179586
-          name "ds_1"
-          lookupTable [
-            0 0 0
-            1 100 0
-          ]
-        }
-        DistanceSensor {
-          translation 0 0 0.085
-          rotation 0 0 1 2.61
-          name "ds_2"
-          lookupTable [
-            0 0 0
-            1 100 0
-          ]
-        }
-        DistanceSensor {
-          translation 0 0 0.085
-          rotation 0 0 1 1.57
-          name "ds_3"
-          lookupTable [
-            0 0 0
-            1 100 0
-          ]
-        }
-        DistanceSensor {
-          translation 0 0 0.085
-          rotation 0 0 1 0.52
-          name "ds_4"
-          lookupTable [
-            0 0 0
-            1 100 0
-          ]
-        }
-        DistanceSensor {
-          translation 0 0 0.085
-          rotation 0 0 -1 0.523
-          name "ds_5"
-          lookupTable [
-            0 0 0
-            1 100 0
-          ]
-        }
-      ]
-      name "solid(4)"
-    }
-    HingeJoint {
-      jointParameters HingeJointParameters {
-        position 3.017146918327004e-11
-        anchor 0.07 0 0.037
-      }
-      device [
-        PositionSensor {
-          name "PositionSensor_1"
-        }
-        RotationalMotor {
-          name "motor_1"
-        }
-      ]
-      endPoint Solid {
-        translation 0.06999999999204387 6.042304601342331e-06 0.03699837430758367
-        rotation -0.6772855768126635 0.28861477484746945 -0.676746451177457 2.5792098253471125
-        children [
-          DEF wheel_1 Shape {
-            appearance PBRAppearance {
-              baseColor 0 0 0
-              roughness 1
-              metalness 0
-            }
-            geometry Cylinder {
-              height 0.01
-              radius 0.035
-            }
-          }
-        ]
-        contactMaterial "rubber"
-        boundingObject USE wheel_1
-        physics Physics {
-        }
-      }
-    }
-    HingeJoint {
-      jointParameters HingeJointParameters {
-        position -4.505788580953822e-14
-        anchor -0.07 0 0.037
-      }
-      device [
-        PositionSensor {
-          name "PositionSensor_2"
-        }
-        RotationalMotor {
-          name "motor_2"
-        }
-      ]
-      endPoint Solid {
-        translation -0.07000000000794648 6.032480573023396e-06 0.03699837695068742
-        rotation -0.06172608821258354 0.9961856470762015 -0.06167695350243767 1.5738216414478476
-        children [
-          DEF wheel_2 Shape {
-            appearance PBRAppearance {
-              baseColor 0 0 0
-              roughness 1
-              metalness 0
-            }
-            geometry Cylinder {
-              height 0.01
-              radius 0.035
-            }
-          }
-        ]
-        name "solid(1)"
-        contactMaterial "rubber"
-        boundingObject USE wheel_2
-        physics Physics {
-        }
-      }
-    }
-    BallJoint {
-      jointParameters BallJointParameters {
-        position -1.2034225801771632e-05
-        anchor 0 0.06 0.012
-      }
-      jointParameters2 JointParameters {
-        position -1.8721814290299658e-11
-        axis 1 0 0
-      }
-      jointParameters3 JointParameters {
-        position -2.6722403026567343e-05
-        axis 0 1 0
-      }
-      endPoint Solid {
-        translation -2.3616923023386935e-08 0.0600001120342258 0.011999999999570547
-        rotation 0.9995008603012691 -0.024779160308252387 -0.019596516819092875 2.0582301643006273
-        children [
-          DEF CasterBall_1 Shape {
-            appearance PBRAppearance {
-              baseColor 0.333333 0.333333 0.498039
-              roughness 1
-              metalness 0
-            }
-            geometry Sphere {
-              radius 0.01
-            }
-          }
-        ]
-        name "solid(2)"
-        boundingObject USE CasterBall_1
-        physics Physics {
-        }
-      }
-    }
-    BallJoint {
-      jointParameters BallJointParameters {
-        position -1.2034225824064642e-05
-        anchor 0 -0.06 0.012
-      }
-      jointParameters2 JointParameters {
-        position -1.8721878880415455e-11
-        axis 1 0 0
-      }
-      jointParameters3 JointParameters {
-        position -2.672239292779851e-05
-        axis 0 1 0
-      }
-      endPoint Solid {
-        translation -3.378589999999996e-08 -0.06 0.012
-        rotation -0.9982057110403133 0.05517861215389327 0.02325250969836288 3.8466799058508747
-        children [
-          DEF CasterBall_2 Shape {
-            appearance PBRAppearance {
-              baseColor 0.333333 0.333333 0.498039
-              roughness 1
-              metalness 0
-            }
-            geometry Sphere {
-              radius 0.01
-            }
-          }
-        ]
-        name "solid(3)"
-        boundingObject USE CasterBall_2
-        physics Physics {
-        }
-      }
-    }
-  ]
-  name "robot(1)"
-  contactMaterial "plastic"
-  boundingObject USE Body
-  physics Physics {
-  }
-  controller "my_controller_Pololu3pi"
-  selfCollision TRUE
-}
-Wall {
-  translation 1.98349e-06 -0.54 0
-  rotation 0 0 1 1.5708
-  size 0.02 1 0.1
 }
