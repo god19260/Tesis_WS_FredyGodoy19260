@@ -49,16 +49,22 @@ class Slave(Robot):
         while True:
             #ds0_valor = self.distanceSensors[0].getValue()
             self.DatosSensores()
-            self.ControlOrientacion(2,2)
+            self.RotControl(270)
             
-            """
-            if self.ds0_value > 40:
+            while self.ds0_value > 40:
+                self.DatosSensores()
+            
                 self.left_motor.setVelocity(10)
                 self.right_motor.setVelocity(10)
-            else:
-                self.left_motor.setVelocity(0)
-                self.right_motor.setVelocity(0)
-            """
+            
+                # Perform a simulation step, quit the loop when
+                # Webots is about to quit.
+                if self.step(self.timestep) == -1:
+                    break
+
+            self.left_motor.setVelocity(0)
+            self.right_motor.setVelocity(0)
+        
             
             # Perform a simulation step, quit the loop when
             # Webots is about to quit.
@@ -78,9 +84,8 @@ class Slave(Robot):
         radian = np.arctan2(self.compass_values[0],self.compass_values[1])
         self.rotz_g = radian*180/np.pi
         self.rotz = radian
-        print(self.rotz_g)
 
-    def ControlOrientacion(self,xg,yg):
+    def RotControl(self,rotz):
         # PID orientación
         kpO = 1*10
         kiO = 0.001 
@@ -93,12 +98,18 @@ class Slave(Robot):
             self.DatosSensores()
             x = 0.5
             y = 0.5
-            e = [xg-x, yg-y]
+            #e = [xg-x, yg-y]
             #thetag = np.arctan2(e[1],e[0])
-            thetag = 270/180*np.pi
+            thetag = rotz/180*np.pi
             eO = thetag-self.rotz
-            eO = abs(np.arctan2(np.sin(eO),np.cos(eO)))
-            print("eO: ",eO)
+            eO = np.arctan2(np.sin(eO),np.cos(eO))
+            if eO >0:
+                flag_dGiro = True  # bandera dirección del giro, 
+                                   # True = sentido horario
+                                   # False = sentido antihorario
+            else:
+                flag_dGiro = False
+            eO = abs(eO)
             # Control de velocidad angular
             eO_D = eO - eO_1
             EO = EO + eO
@@ -106,8 +117,12 @@ class Slave(Robot):
             eO_1 = eO
             
             if eO >=0.01:
-                giroder = (w*self.distanceCenter)/self.wheelRadius
-                giroiz = -(w*self.distanceCenter)/self.wheelRadius
+                if flag_dGiro == True:
+                    giroder = (w*self.distanceCenter)/self.wheelRadius
+                    giroiz = -(w*self.distanceCenter)/self.wheelRadius
+                else: 
+                    giroder = -(w*self.distanceCenter)/self.wheelRadius
+                    giroiz = (w*self.distanceCenter)/self.wheelRadius
 
                 if giroder >= 10:
                     giroder = 10
