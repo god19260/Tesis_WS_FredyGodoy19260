@@ -1,4 +1,7 @@
+import numpy as np
 
 
-def Distancia(distancia):
-    print("Distancia Actual: ",distancia)  
+def bearing(compassValues):
+    radian = np.arctan2(compassValues[0],compassValues[1])
+    deg = radian*180/3.14
+    return deg
