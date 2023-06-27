@@ -5,12 +5,14 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/Parquetry.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/BrushedAluminium.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/apartment_structure/protos/Wall.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.27691668316258894 -0.5395377300031016 -0.7951202352407657 5.205841862235232
-  position -2.416073699494693 -2.4343668969489767 2.4156489896294984
+  orientation 0.5770314596122846 -0.5696969466674561 -0.5852179795388162 4.2107310837319645
+  position 0.07765066406971638 -0.20882281249258935 6.660180501602723
+  follow "rectangle arena"
 }
 TexturedBackground {
   texture "dawn_cloudy_empty"
@@ -27,8 +29,8 @@ RectangleArena {
   }
 }
 Robot {
-  translation 0 0 -0.00211166
-  rotation 0 1 0 0
+  translation -0.5100127375473883 -0.15225603507848737 -0.0021118634411798586
+  rotation -0.45008252048604885 0.8111264174548725 0.37349653232627145 7.902372070876123e-05
   children [
     DEF Body Transform {
       translation 0 0 0.0255
@@ -148,7 +150,7 @@ Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position -1.658228206124882
+        position 2.821771768394136
         anchor 0.07 0 0.037
       }
       device [
@@ -160,8 +162,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 0.06999999999204387 -2.1470998805531707e-06 0.036994122731686535
-        rotation -0.6735877657962148 -0.30541952653088345 -0.6730515838948116 3.734880507254859
+        translation 0.06999999999204387 -5.224797861166778e-06 0.03700344293596154
+        rotation 0.23430065208408293 0.9435537984687065 0.23411414700579125 1.6280705574147172
         children [
           DEF wheel_1 Shape {
             appearance PBRAppearance {
@@ -183,7 +185,7 @@ Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position 1.658227714125455
+        position 6.138227681106741
         anchor -0.07 0 0.037
       }
       device [
@@ -195,8 +197,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation -0.07000000000794648 1.0900932827539156e-06 0.03700615116310682
-        rotation 0.5705555266660621 0.5911436640597229 0.5701013589116042 2.073130761686338
+        translation -0.07000000000794648 5.734761817725246e-06 0.036997522578391596
+        rotation 0.13282868588848953 -0.9822123792757191 0.13272295281023438 4.695238426234023
         children [
           DEF wheel_2 Shape {
             appearance PBRAppearance {
@@ -219,20 +221,20 @@ Robot {
     }
     BallJoint {
       jointParameters BallJointParameters {
-        position -9.66444292887708
+        position -9.663640267290317
         anchor 0 0.06 0.012
       }
       jointParameters2 JointParameters {
-        position -5.814214764753457
+        position -5.814155942384379
         axis 1 0 0
       }
       jointParameters3 JointParameters {
-        position -37.65881260666297
+        position -37.658863612858696
         axis 0 1 0
       }
       endPoint Solid {
-        translation 2.958596978810832e-08 0.05999989233134907 0.012000025329011123
-        rotation -0.9153531240780021 -0.19696466063137025 0.3511888106176091 1.3995881794885532
+        translation 2.9592432381178696e-08 0.05999989231300767 0.01200002524334433
+        rotation -0.9152605900277662 -0.19717123377467297 0.35131404314914383 1.398879427193493
         children [
           DEF CasterBall_1 Shape {
             appearance PBRAppearance {
@@ -253,20 +255,20 @@ Robot {
     }
     BallJoint {
       jointParameters BallJointParameters {
-        position 9.47486077190405
+        position 9.4756659028517
         anchor 0 -0.06 0.012
       }
       jointParameters2 JointParameters {
-        position -5.5605153374035
+        position -5.560557180007866
         axis 1 0 0
       }
       jointParameters3 JointParameters {
-        position 38.09758265700539
+        position 38.09758909493188
         axis 0 1 0
       }
       endPoint Solid {
-        translation -2.335527923008544e-08 -0.060000019912612945 0.011999985875347216
-        rotation -0.46478889996403594 -0.651345475260848 0.5997669133317053 1.0423869755460635
+        translation -2.335607763948316e-08 -0.06000001990019235 0.011999985859171884
+        rotation -0.46425999985613053 -0.6518074742444282 0.5996746359924563 1.0419875530556353
         children [
           DEF CasterBall_2 Shape {
             appearance PBRAppearance {
@@ -292,4 +294,36 @@ Robot {
   }
   controller "my_controller_Pololu3pi"
   selfCollision TRUE
+}
+Wall {
+  translation -0.5 0.45 0
+  size 1 0.01 0.1
+}
+Wall {
+  translation 0.12 0.22 0
+  name "wall(4)"
+  size 1 0.01 0.1
+}
+Wall {
+  translation 0.15 0.73 0
+  name "wall(5)"
+  size 1 0.01 0.1
+}
+Wall {
+  translation -0.66 -0.060001 0
+  rotation 0 0 1 1.5708
+  name "wall(1)"
+  size 1 0.01 0.1
+}
+Wall {
+  translation -0.39 -0.280001 0
+  rotation 0 0 1 1.5708
+  name "wall(2)"
+  size 1 0.01 0.1
+}
+Wall {
+  translation 0.65 0.239999 0
+  rotation 0 0 1 1.5708
+  name "wall(3)"
+  size 1 0.01 0.1
 }

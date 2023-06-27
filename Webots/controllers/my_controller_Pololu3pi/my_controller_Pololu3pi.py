@@ -46,30 +46,42 @@ class Slave(Robot):
 
 
     def run(self):
-        while True:
-            #ds0_valor = self.distanceSensors[0].getValue()
-            self.DatosSensores()
-            self.RotControl(270)
-            
-            while self.ds0_value > 40:
-                self.DatosSensores()
-            
-                self.left_motor.setVelocity(10)
-                self.right_motor.setVelocity(10)
-            
-                # Perform a simulation step, quit the loop when
-                # Webots is about to quit.
-                if self.step(self.timestep) == -1:
-                    break
+        fGeneral = False
+        angulo = 270
+        dMin = 15 # Distancia minima del objeto en cm
 
-            self.left_motor.setVelocity(0)
-            self.right_motor.setVelocity(0)
-        
+        while self.step(self.timestep) != -1:
+            if fGeneral:
+                self.DatosSensores()
+                self.RotControl(angulo)
+                # Avanzar hacia adelante o frenar si hay obstaculo adelante               
+                while self.ds0_value > dMin:
+                    self.DatosSensores()
+                    
+                    self.left_motor.setVelocity(10)
+                    self.right_motor.setVelocity(10)
+                
+                    # Perform a simulation step, quit the loop when
+                    # Webots is about to quit.
+                    if self.step(self.timestep) == -1:
+                        break
+
+                self.left_motor.setVelocity(0)
+                self.right_motor.setVelocity(0)
+                
+                # Desición de giro
+                if self.ds0_value < dMin and self.ds4_value < self.ds2_value and self.ds5_value < self.ds1_value:
+                    angulo = angulo-90
+                elif self.ds0_value < dMin and self.ds1_value < self.ds5_value and self.ds2_value < self.ds4_value:
+                    angulo = angulo+90
+                elif self.ds0_value < dMin and self.ds1_value > dMin and self.ds2_value > dMin and self.ds4_value > dMin and self.ds5_value > dMin:
+                    angulo = angulo+90
+                
+
+            fGeneral = True  # Bandera general del proceso
             
-            # Perform a simulation step, quit the loop when
-            # Webots is about to quit.
-            if self.step(self.timestep) == -1:
-                break
+           
+        
     def DatosSensores(self):
         # Actualizar sensores de distancia
         self.ds0_value = self.distanceSensors[0].getValue()
