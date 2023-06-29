@@ -10,8 +10,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.5770314596122846 -0.5696969466674561 -0.5852179795388162 4.2107310837319645
-  position 0.07765066406971638 -0.20882281249258935 6.660180501602723
+  orientation 0.5851724618639864 -0.5758462090414319 -0.5709416199653454 4.186367440675949
+  position -0.028006220508423774 0.029720200224170726 6.099695271896008
   follow "rectangle arena"
 }
 TexturedBackground {
@@ -29,8 +29,8 @@ RectangleArena {
   }
 }
 Robot {
-  translation -0.5100127375473883 -0.15225603507848737 -0.0021118634411798586
-  rotation -0.45008252048604885 0.8111264174548725 0.37349653232627145 7.902372070876123e-05
+  translation -0.6211909075759106 -0.3388334107896153 -0.0021127702810858837
+  rotation -0.00015240974432383504 -0.0010489664955574084 -0.9999994382201226 0.008909482615185822
   children [
     DEF Body Transform {
       translation 0 0 0.0255
@@ -94,7 +94,7 @@ Robot {
             1 100 0
           ]
           type "laser"
-          aperture 0.05
+          aperture 0.1
         }
         Compass {
           translation 0 0 0.085
@@ -102,7 +102,7 @@ Robot {
         }
         DistanceSensor {
           translation 0 0 0.085
-          rotation 0 0 1 -2.618185307179586
+          rotation 0 0 1 -2.353185307179586
           name "ds_1"
           lookupTable [
             0 0 0
@@ -111,7 +111,7 @@ Robot {
         }
         DistanceSensor {
           translation 0 0 0.085
-          rotation 0 0 1 2.61
+          rotation 0 0 1 3.14
           name "ds_2"
           lookupTable [
             0 0 0
@@ -129,7 +129,6 @@ Robot {
         }
         DistanceSensor {
           translation 0 0 0.085
-          rotation 0 0 1 0.52
           name "ds_4"
           lookupTable [
             0 0 0
@@ -138,7 +137,7 @@ Robot {
         }
         DistanceSensor {
           translation 0 0 0.085
-          rotation 0 0 -1 0.523
+          rotation 0 0 1 -0.7831853071795862
           name "ds_5"
           lookupTable [
             0 0 0
@@ -150,7 +149,7 @@ Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position 2.821771768394136
+        position 122.84124873320663
         anchor 0.07 0 0.037
       }
       device [
@@ -162,8 +161,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 0.06999999999204387 -5.224797861166778e-06 0.03700344293596154
-        rotation 0.23430065208408293 0.9435537984687065 0.23411414700579125 1.6280705574147172
+        translation 0.06999999999204387 -6.247264853956934e-06 0.03699964786001401
+        rotation -0.4709671286544881 -0.7461453693881194 -0.4705922348144023 4.424415256590024
         children [
           DEF wheel_1 Shape {
             appearance PBRAppearance {
@@ -185,7 +184,7 @@ Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position 6.138227681106741
+        position 179.23876991820774
         anchor -0.07 0 0.037
       }
       device [
@@ -197,8 +196,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation -0.07000000000794648 5.734761817725246e-06 0.036997522578391596
-        rotation 0.13282868588848953 -0.9822123792757191 0.13272295281023438 4.695238426234023
+        translation -0.07000000000794648 -6.2189349868988954e-06 0.03700059157295426
+        rotation 0.7073014811780948 -0.015663995474606014 0.7067384622114781 3.1729430336351316
         children [
           DEF wheel_2 Shape {
             appearance PBRAppearance {
@@ -221,20 +220,20 @@ Robot {
     }
     BallJoint {
       jointParameters BallJointParameters {
-        position -9.663640267290317
+        position -8.63021309416183
         anchor 0 0.06 0.012
       }
       jointParameters2 JointParameters {
-        position -5.814155942384379
+        position -11.08250831864482
         axis 1 0 0
       }
       jointParameters3 JointParameters {
-        position -37.658863612858696
+        position -46.564548563530316
         axis 0 1 0
       }
       endPoint Solid {
-        translation 2.9592432381178696e-08 0.05999989231300767 0.01200002524334433
-        rotation -0.9152605900277662 -0.19717123377467297 0.35131404314914383 1.398879427193493
+        translation 1.1334910868795399e-07 0.05999999821282377 0.01200001606898769
+        rotation -0.6557636606892912 0.27297485221838297 0.7038883088784273 2.9251196457371815
         children [
           DEF CasterBall_1 Shape {
             appearance PBRAppearance {
@@ -255,20 +254,20 @@ Robot {
     }
     BallJoint {
       jointParameters BallJointParameters {
-        position 9.4756659028517
+        position 11.137499168263107
         anchor 0 -0.06 0.012
       }
       jointParameters2 JointParameters {
-        position -5.560557180007866
+        position -2.085711927665663
         axis 1 0 0
       }
       jointParameters3 JointParameters {
-        position 38.09758909493188
+        position 45.59233521307966
         axis 0 1 0
       }
       endPoint Solid {
-        translation -2.335607763948316e-08 -0.06000001990019235 0.011999985859171884
-        rotation -0.46425999985613053 -0.6518074742444282 0.5996746359924563 1.0419875530556353
+        translation -6.531905823452563e-10 -0.059999966416294605 0.01200000363250776
+        rotation -0.4969062806228106 0.5534646613066342 -0.6684018379405741 1.7410826508297927
         children [
           DEF CasterBall_2 Shape {
             appearance PBRAppearance {
@@ -296,34 +295,22 @@ Robot {
   selfCollision TRUE
 }
 Wall {
-  translation -0.5 0.45 0
-  size 1 0.01 0.1
+  translation 0.05 -0.05 0
+  size 1 0.05 0.1
 }
 Wall {
-  translation 0.12 0.22 0
+  translation 0.51 -0.54 0
   name "wall(4)"
-  size 1 0.01 0.1
+  size 1 0.05 0.1
 }
 Wall {
-  translation 0.15 0.73 0
+  translation 0.49 0.42 0
   name "wall(5)"
-  size 1 0.01 0.1
+  size 1 0.05 0.1
 }
 Wall {
-  translation -0.66 -0.060001 0
+  translation 6.74634e-14 -0.059999 0
   rotation 0 0 1 1.5708
   name "wall(1)"
-  size 1 0.01 0.1
-}
-Wall {
-  translation -0.39 -0.280001 0
-  rotation 0 0 1 1.5708
-  name "wall(2)"
-  size 1 0.01 0.1
-}
-Wall {
-  translation 0.65 0.239999 0
-  rotation 0 0 1 1.5708
-  name "wall(3)"
-  size 1 0.01 0.1
+  size 1 0.05 0.1
 }

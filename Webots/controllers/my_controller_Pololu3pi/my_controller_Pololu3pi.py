@@ -47,17 +47,26 @@ class Slave(Robot):
 
     def run(self):
         fGeneral = False
-        angulo = 270
-        dMin = 15 # Distancia minima del objeto en cm
+        self.angulo = 270
+        self.dMin = 15 # Distancia minima del objeto en cm
 
         while self.step(self.timestep) != -1:
             if fGeneral:
                 self.DatosSensores()
-                self.RotControl(angulo)
+                
+                # Desición de Giro
+                self.DesicionGiro()
+                self.RotControl(self.angulo)
+                
+
                 # Avanzar hacia adelante o frenar si hay obstaculo adelante               
-                while self.ds0_value > dMin:
+                while (self.ds0_value > self.ds1_value or self.ds0_value > self.ds2_value) and (self.ds0_value > self.ds4_value or self.ds0_value > self.ds5_value) and self.ds5_value > 18 and self.ds1_value > 18:
                     self.DatosSensores()
-                    
+
+                    # Freno de emergencia
+                    if self.ds0_value < self.dMin:
+                        break
+
                     self.left_motor.setVelocity(10)
                     self.right_motor.setVelocity(10)
                 
@@ -68,15 +77,18 @@ class Slave(Robot):
 
                 self.left_motor.setVelocity(0)
                 self.right_motor.setVelocity(0)
-                
+                """
                 # Desición de giro
                 if self.ds0_value < dMin and self.ds4_value < self.ds2_value and self.ds5_value < self.ds1_value:
                     angulo = angulo-90
+                    print("1")
                 elif self.ds0_value < dMin and self.ds1_value < self.ds5_value and self.ds2_value < self.ds4_value:
                     angulo = angulo+90
+                    print("2")
                 elif self.ds0_value < dMin and self.ds1_value > dMin and self.ds2_value > dMin and self.ds4_value > dMin and self.ds5_value > dMin:
                     angulo = angulo+90
-                
+                    print("3")
+                """
 
             fGeneral = True  # Bandera general del proceso
             
@@ -155,6 +167,28 @@ class Slave(Robot):
             
             if self.step(self.timestep) == -1:
                 break
-        
+    def DesicionGiro(self):
+        # Función para determinar la siguiente acción de giro
+        if self.ds1_value > self.ds0_value and self.ds1_value > self.ds5_value and self.ds1_value > self.dMin:
+            self.angulo = self.angulo - 45
+            print("giro 1")
+        elif self.ds5_value > self.ds0_value and self.ds5_value > self.ds1_value and self.ds5_value > self.dMin:
+            self.angulo = self.angulo + 45
+            print("giro 2")
+        elif self.ds3_value > self.ds0_value and self.ds3_value > self.ds1_value and self.ds3_value > self.ds2_value and self.ds3_value > self.ds4_value and self.ds3_value > self.ds5_value:
+            self.angulo = self.angulo + 90
+            print("giro 3")
+        elif self.ds5_value < self.dMin:
+            self.angulo = self.angulo - 45
+            print("giro 4")
+        elif self.ds1_value < self.dMin:
+            self.angulo = self.angulo + 45
+            print("giro 5")
+        elif self.ds5_value <= 18:
+            self.angulo = self.angulo - 45
+            print("giro 6")
+        elif self.ds1_value <= 18:
+            self.angulo = self.angulo + 45
+            print("giro 7")
 controller = Slave()
 controller.run()
