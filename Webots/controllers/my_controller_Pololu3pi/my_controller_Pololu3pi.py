@@ -59,10 +59,13 @@ class Slave(Robot):
                 self.RotControl(self.angulo)
                 
 
-                # Avanzar hacia adelante o frenar si hay obstaculo adelante               
-                while (self.ds0_value > self.ds1_value or self.ds0_value > self.ds2_value) and (self.ds0_value > self.ds4_value or self.ds0_value > self.ds5_value) and self.ds5_value > 18 and self.ds1_value > 18:
+                # Avanzar hacia adelante hasta determinar un cambio de trayectoria               
+                while (self.ds0_value > self.ds1_value or self.ds0_value > self.ds2_value) and (self.ds0_value > self.ds4_value or self.ds0_value > self.ds5_value):
                     self.DatosSensores()
 
+                    # Otras condiciones para cambiar de giro 
+                    if self.ds5_value < 18 or self.ds1_value < 18:
+                        break
                     # Freno de emergencia
                     if self.ds0_value < self.dMin:
                         break
@@ -169,26 +172,49 @@ class Slave(Robot):
                 break
     def DesicionGiro(self):
         # Función para determinar la siguiente acción de giro
-        if self.ds1_value > self.ds0_value and self.ds1_value > self.ds5_value and self.ds1_value > self.dMin:
+        if self.ds1_value > self.ds0_value and self.ds1_value > self.ds5_value and self.ds2_value > self.dMin +10:
             self.angulo = self.angulo - 45
             print("giro 1")
-        elif self.ds5_value > self.ds0_value and self.ds5_value > self.ds1_value and self.ds5_value > self.dMin:
+        elif self.ds5_value > self.ds0_value and self.ds5_value > self.ds1_value and self.ds4_value > self.dMin +10:
             self.angulo = self.angulo + 45
             print("giro 2")
         elif self.ds3_value > self.ds0_value and self.ds3_value > self.ds1_value and self.ds3_value > self.ds2_value and self.ds3_value > self.ds4_value and self.ds3_value > self.ds5_value:
-            self.angulo = self.angulo + 90
+            self.angulo = self.angulo + 180
             print("giro 3")
-        elif self.ds5_value < self.dMin:
-            self.angulo = self.angulo - 45
+        elif self.ds1_value <= self.dMin+3:
             print("giro 4")
-        elif self.ds1_value < self.dMin:
             self.angulo = self.angulo + 45
+            self.RotControl(self.angulo)
+            self.DatosSensores()
+            if self.ds5_value < 30:
+                while self.ds0_value > self.dMin:
+                    self.DatosSensores()
+                    self.left_motor.setVelocity(10)
+                    self.right_motor.setVelocity(10)
+                    print("while de giro 4")
+                    # Perform a simulation step, quit the loop when
+                    # Webots is about to quit.
+                    if self.step(self.timestep) == -1:
+                        break
+
+        elif self.ds5_value <= self.dMin+3:
             print("giro 5")
-        elif self.ds5_value <= 18:
             self.angulo = self.angulo - 45
-            print("giro 6")
-        elif self.ds1_value <= 18:
-            self.angulo = self.angulo + 45
-            print("giro 7")
+            self.RotControl(self.angulo)
+            self.DatosSensores()
+            if self.ds5_value < 30:
+                while self.ds0_value > self.dMin:
+                    self.DatosSensores()
+                    self.left_motor.setVelocity(10)
+                    self.right_motor.setVelocity(10)
+                    print("while de giro 5")
+                    # Perform a simulation step, quit the loop when
+                    # Webots is about to quit.
+                    if self.step(self.timestep) == -1:
+                        break
+
+
+
+            
 controller = Slave()
 controller.run()

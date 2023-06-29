@@ -10,8 +10,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.5851724618639864 -0.5758462090414319 -0.5709416199653454 4.186367440675949
-  position -0.028006220508423774 0.029720200224170726 6.099695271896008
+  orientation 0.5818446512178415 -0.5724495101896617 -0.5777182359358277 4.196415114425813
+  position -0.11075947758320516 -0.031282993110769555 6.006470244473196
   follow "rectangle arena"
 }
 TexturedBackground {
@@ -161,7 +161,7 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 0.06999999999204387 -6.247264853956934e-06 0.03699964786001401
+        translation 0.06999999999204387 -6.247264853957664e-06 0.03699964786001401
         rotation -0.4709671286544881 -0.7461453693881194 -0.4705922348144023 4.424415256590024
         children [
           DEF wheel_1 Shape {
@@ -196,8 +196,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation -0.07000000000794648 -6.2189349868988954e-06 0.03700059157295426
-        rotation 0.7073014811780948 -0.015663995474606014 0.7067384622114781 3.1729430336351316
+        translation -0.07000000000794648 -6.218934986896569e-06 0.03700059157295426
+        rotation 0.7073014811780948 -0.015663995474606 0.7067384622114781 3.1729430336351316
         children [
           DEF wheel_2 Shape {
             appearance PBRAppearance {
@@ -295,22 +295,22 @@ Robot {
   selfCollision TRUE
 }
 Wall {
-  translation 0.05 -0.05 0
-  size 1 0.05 0.1
+  translation 0 -0.05 0
+  size 1 0.08 0.1
 }
 Wall {
-  translation 0.51 -0.54 0
+  translation 0.01 -0.54 0
   name "wall(4)"
-  size 1 0.05 0.1
+  size 1 0.08 0.1
 }
 Wall {
-  translation 0.49 0.42 0
+  translation 0 0.42 0
   name "wall(5)"
-  size 1 0.05 0.1
+  size 1 0.08 0.1
 }
 Wall {
-  translation 6.74634e-14 -0.059999 0
+  translation -1.13869e-06 0.250001 0
   rotation 0 0 1 1.5708
   name "wall(1)"
-  size 1 0.05 0.1
+  size 1.5 0.05 0.1
 }
