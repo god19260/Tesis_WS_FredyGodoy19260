@@ -10,8 +10,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.5818446512178415 -0.5724495101896617 -0.5777182359358277 4.196415114425813
-  position -0.11075947758320516 -0.031282993110769555 6.006470244473196
+  orientation 0.5823267110636193 -0.5758486693795848 -0.5738413644515264 4.194987890500508
+  position -0.12518564044164956 -0.08188983430724542 8.602164296531708
   follow "rectangle arena"
 }
 TexturedBackground {
@@ -20,7 +20,7 @@ TexturedBackground {
 TexturedBackgroundLight {
 }
 RectangleArena {
-  floorSize 2 2
+  floorSize 3.8 4.8
   floorAppearance Parquetry {
   }
   wallAppearance BrushedAluminium {
@@ -29,7 +29,7 @@ RectangleArena {
   }
 }
 Robot {
-  translation -0.6211909075759106 -0.3388334107896153 -0.0021127702810858837
+  translation -0.604364 1.55111 -0.00211534
   rotation -0.00015240974432383504 -0.0010489664955574084 -0.9999994382201226 0.008909482615185822
   children [
     DEF Body Transform {
@@ -161,7 +161,7 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 0.06999999999204387 -6.247264853957664e-06 0.03699964786001401
+        translation 0.06999999999204387 -6.247264853957855e-06 0.03699964786001401
         rotation -0.4709671286544881 -0.7461453693881194 -0.4705922348144023 4.424415256590024
         children [
           DEF wheel_1 Shape {
@@ -196,7 +196,7 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation -0.07000000000794648 -6.218934986896569e-06 0.03700059157295426
+        translation -0.07000000000794648 -6.218934986892763e-06 0.03700059157295426
         rotation 0.7073014811780948 -0.015663995474606 0.7067384622114781 3.1729430336351316
         children [
           DEF wheel_2 Shape {
@@ -295,22 +295,22 @@ Robot {
   selfCollision TRUE
 }
 Wall {
-  translation 0 -0.05 0
-  size 1 0.08 0.1
+  translation -0.47 1.3 0
+  size 1.5 0.08 0.1
 }
 Wall {
-  translation 0.01 -0.54 0
-  name "wall(4)"
-  size 1 0.08 0.1
-}
-Wall {
-  translation 0 0.42 0
-  name "wall(5)"
-  size 1 0.08 0.1
-}
-Wall {
-  translation -1.13869e-06 0.250001 0
-  rotation 0 0 1 1.5708
+  translation 0.25 0.25 0
   name "wall(1)"
-  size 1.5 0.05 0.1
+  size 1.5 0.08 0.1
+}
+Wall {
+  translation -0.48 -0.59 0
+  name "wall(3)"
+  size 1.5 0.08 0.1
+}
+Wall {
+  translation -0.080002 0.4 0
+  rotation 0 0 1 1.5708
+  name "wall(2)"
+  size 4 0.05 0.1
 }
