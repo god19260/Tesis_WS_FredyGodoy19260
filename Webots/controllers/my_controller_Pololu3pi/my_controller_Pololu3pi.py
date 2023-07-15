@@ -1,7 +1,8 @@
 
 from controller import Robot
 import numpy as np
-
+import matplotlib.pyplot as plt
+import keyboard
 class Slave(Robot):
     # get the time step of the current world.
     timestep = 5
@@ -17,15 +18,20 @@ class Slave(Robot):
     distAnterior_Left = 0
 
     # Trayectoria de la exploración separada en coordenadas
-    T_Exploracion_x = []
-    T_Exploracion_y = []
+    T_Exploracion_x = [0]
+    T_Exploracion_y = [0]
 
+    Distancias_lineaRecta = []
+    Angulos = []
+    
+    showMap = False
     # Definiciones previas
     distanceSensors = []
 
     def __init__(self):
         super(Slave, self).__init__()
-
+        self.keyboard.enable(Slave.timestep)
+        self.keyboard = self.getKeyboard()
         # Habilitar Motores
         self.left_motor = self.getDevice('motor_1')
         self.right_motor = self.getDevice('motor_2')
@@ -68,7 +74,8 @@ class Slave(Robot):
                 self.DistanciaLineaRecta_Inicio()
                 self.Explorar()
                 self.DistanciaLineaRecta_Fin()
-                self.TrayectoriaExploracion(self)
+                self.TrayectoriaExploracion()
+                
             fGeneral = True  # Bandera general del proceso
             
            
@@ -192,6 +199,11 @@ class Slave(Robot):
     
     def Explorar(self):
         while (self.ds0_value >= self.ds1_value or self.ds2_value < self.dMin+3) and (self.ds0_value >= self.ds5_value or self.ds4_value < self.dMin+3) or self.avanzar:
+            
+            print(self.keyboard.getKey())
+              
+                
+
             # Actualizar los valores de los sensores
             self.DatosSensores()  
 
@@ -225,11 +237,25 @@ class Slave(Robot):
         self.d_lineaRecta_Left = self.distActual_Left-self.distAnterior_Left
         
         self.promedio_distancia_trayecto = (self.d_lineaRecta_Left+self.d_lineaRecta_Right)/2
-        print(self.d_lineaRecta_Left,"  ",self.d_lineaRecta_Right, "  ",self.promedio_distancia_trayecto)
+        self.Distancias_lineaRecta.append(self.promedio_distancia_trayecto)
+        self.Angulos.append(self.angulo)
+        #print(self.d_lineaRecta_Left,"  ",self.d_lineaRecta_Right, "  ",self.promedio_distancia_trayecto)
     
     def TrayectoriaExploracion(self):
-        self.T_Exploracion_x.append(np.cos(self.angulo)*self.promedio_distancia_trayecto) # Trayectoria exploración coordenada en x
-        self.T_Exploracion_y.append(np.sin(self.angulo)*self.promedio_distancia_trayecto) # Trayectoria exploración coordenada en y
-
+        self.T_Exploracion_x.append(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+np.cos(self.angulo*np.pi/180)*self.promedio_distancia_trayecto) # Trayectoria exploración coordenada en x
+        self.T_Exploracion_y.append(self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+np.sin(self.angulo*np.pi/180)*self.promedio_distancia_trayecto) # Trayectoria exploración coordenada en y
+        #print(np.sin(self.angulo*np.pi/180), "  ", self.angulo )
+        
+        if self.showMap == True:
+            print(self.Distancias_lineaRecta)
+            print(self.Angulos)
+            
+            plt.plot(self.T_Exploracion_x, self.T_Exploracion_y, 'ro-')
+            plt.xlabel('X')
+            plt.ylabel('Y')
+            plt.title('Trayecto Exploración')
+            plt.grid(True)
+            plt.show()
+            
 controller = Slave()
 controller.run()
