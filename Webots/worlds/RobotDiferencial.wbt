@@ -1,35 +1,33 @@
 #VRML_SIM R2023a utf8
 
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackground.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/Parquetry.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/BrushedAluminium.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/apartment_structure/protos/Wall.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/Parquetry.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.5844377729286134 -0.5787467463970196 -0.5687571477433108 4.188485761701635
-  position -0.34262039674395056 0.12388728817052409 7.735983217391954
+  orientation -0.574718718552856 0.5676535571411562 0.5894640223202392 2.065724936049814
+  position -0.3476389986027889 -1.225859239259474 13.848362156934325
   follow "rectangle arena"
-}
-TexturedBackground {
-  texture "dawn_cloudy_empty"
 }
 TexturedBackgroundLight {
 }
 RectangleArena {
   floorSize 3.8 4.8
   floorAppearance Parquetry {
+    type "chequered"
+    colorOverride 0.392157 0.545098 0.784314
+    IBLStrength 2
   }
   wallAppearance BrushedAluminium {
-    colorOverride 0.419608 0.941176 1
-    IBLStrength 100
+    IBLStrength 0
   }
 }
 Robot {
-  translation -1.2849 -1.87295 -0.00211685
+  translation -1.76886 -2.29885 -0.00212062
   rotation -0.00015240974432383504 -0.0010489664955574084 -0.9999994382201226 0.008909482615185822
   children [
     DEF Body Transform {
@@ -161,7 +159,7 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 0.06999999999204387 -6.247264853957855e-06 0.03699964786001401
+        translation 0.06999999999204387 -6.247264853957978e-06 0.03699964786001401
         rotation -0.4709671286544881 -0.7461453693881194 -0.4705922348144023 4.424415256590024
         children [
           DEF wheel_1 Shape {
@@ -196,8 +194,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation -0.07000000000794648 -6.218934986892658e-06 0.03700059157295426
-        rotation 0.7073014811780948 -0.015663995474606 0.7067384622114781 3.1729430336351316
+        translation -0.07000000000794648 -6.218934986890633e-06 0.03700059157295426
+        rotation 0.7073014811780947 -0.015663995474605823 0.706738462211478 3.1729430336351316
         children [
           DEF wheel_2 Shape {
             appearance PBRAppearance {
@@ -233,7 +231,7 @@ Robot {
       }
       endPoint Solid {
         translation 1.1334910868795399e-07 0.05999999821282377 0.01200001606898769
-        rotation -0.6557636606892912 0.27297485221838297 0.7038883088784273 2.9251196457371815
+        rotation -0.6557636606892912 0.2729748522183828 0.7038883088784275 2.925119645737182
         children [
           DEF CasterBall_1 Shape {
             appearance PBRAppearance {
@@ -295,33 +293,55 @@ Robot {
   selfCollision TRUE
 }
 Wall {
-  translation -0.81 1.53 0
-  size 1.5 0.08 0.1
+  translation -1.15 -0.44 0
+  size 1 0.08 0.1
 }
 Wall {
-  translation 0.83 0.52 0
-  name "wall(1)"
-  size 1.5 0.08 0.1
+  translation -0.9 -0.07 0
+  name "wall(8)"
+  size 2 0.08 0.1
 }
 Wall {
-  translation 0.62 -1.56 0
-  name "wall(5)"
-  size 1.5 0.08 0.1
-}
-Wall {
-  translation -0.61 -0.59 0
-  name "wall(3)"
-  size 1.5 0.08 0.1
-}
-Wall {
-  translation -0.810002 -0.42 0
-  rotation 0 0 1 1.5708
+  translation 1.86 -0.37 0
   name "wall(2)"
-  size 4 0.05 0.1
+  size 2 0.08 0.1
 }
 Wall {
-  translation 0.719998 0.4 0
+  translation -0.64 1.04 0
+  name "wall(7)"
+  size 1 0.08 0.1
+}
+Wall {
+  translation -0.69 -1.39999 0
+  rotation 0 0 1 1.5708
+  name "wall(9)"
+  size 2 0.08 0.1
+}
+Wall {
+  translation 0.9 -1.39999 0
+  rotation 0 0 1 1.5708
+  name "wall(10)"
+  size 2 0.08 0.1
+}
+Wall {
+  translation -0.0999969 -0.51999 0
+  rotation 0 0 1 1.5708
+  name "wall(1)"
+  size 2 0.08 0.1
+}
+Wall {
+  translation -1.61 -1.39999 0
   rotation 0 0 1 1.5708
   name "wall(4)"
-  size 4 0.05 0.1
+  size 2 0.08 0.1
+}
+Solid {
+  translation 1.69 2.03 0.001
+  children [
+    Shape {
+      geometry Plane {
+        size 0.4 0.4
+      }
+    }
+  ]
 }

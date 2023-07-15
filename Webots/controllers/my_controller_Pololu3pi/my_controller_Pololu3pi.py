@@ -12,6 +12,14 @@ class Slave(Robot):
     distanceCenter = 0.075 #m
     rev = maxSpeed/(2*3.14*wheelRadius)*60
     
+    # Variables para determinar la distancia en linea recta de un trayecto en especifico
+    distAnterior_Right = 0
+    distAnterior_Left = 0
+
+    # Trayectoria de la exploración separada en coordenadas
+    T_Exploracion_x = []
+    T_Exploracion_y = []
+
     # Definiciones previas
     distanceSensors = []
 
@@ -50,50 +58,17 @@ class Slave(Robot):
         self.angulo = 270
         self.dMin = 15 # Distancia minima del objeto en cm
         self.rangoSenDis = 50 # Distancia máxima de sensado
-
+        self.avanzar = False
         while self.step(self.timestep) != -1:
             if fGeneral:
-                self.DatosSensores()
+                self.DatosSensores()            
+                self.DecisionGiro()
+                self.RotControl(self.angulo)                  
                 
-                # Desición de Giro
-                self.DesicionGiro()
-                self.RotControl(self.angulo)
-                
-
-                # Avanzar hacia adelante hasta determinar un cambio de trayectoria               
-                while (self.ds0_value >= self.ds1_value or self.ds1_value > self.dMin) and (self.ds0_value >= self.ds5_value or self.ds5_value > self.dMin):
-                    self.DatosSensores()
-
-                    # Otras condiciones para cambiar de giro 
-                    if self.ds5_value < 18 or self.ds1_value < 18:
-                        break
-                    # Freno de emergencia
-                    if self.ds0_value < self.dMin:
-                        break
-                    
-                    self.left_motor.setVelocity(10)
-                    self.right_motor.setVelocity(10)
-                
-                    # Perform a simulation step, quit the loop when
-                    # Webots is about to quit.
-                    if self.step(self.timestep) == -1:
-                        break
-                
-                self.left_motor.setVelocity(0)
-                self.right_motor.setVelocity(0)
-                """
-                # Desición de giro
-                if self.ds0_value < dMin and self.ds4_value < self.ds2_value and self.ds5_value < self.ds1_value:
-                    angulo = angulo-90
-                    print("1")
-                elif self.ds0_value < dMin and self.ds1_value < self.ds5_value and self.ds2_value < self.ds4_value:
-                    angulo = angulo+90
-                    print("2")
-                elif self.ds0_value < dMin and self.ds1_value > dMin and self.ds2_value > dMin and self.ds4_value > dMin and self.ds5_value > dMin:
-                    angulo = angulo+90
-                    print("3")
-                """
-
+                self.DistanciaLineaRecta_Inicio()
+                self.Explorar()
+                self.DistanciaLineaRecta_Fin()
+                self.TrayectoriaExploracion(self)
             fGeneral = True  # Bandera general del proceso
             
            
@@ -113,7 +88,17 @@ class Slave(Robot):
         self.rotz_g = radian*180/np.pi
         self.rotz = radian
 
+        # Actualizar valores de sensores de posición de las ruedas
+        self.PS_Right_value = self.PositionSensor_right.getValue()  # PS_Right_value --> position sensor right value
+        self.PS_Left_value = self.PositionSensor_left.getValue()  # PS_Left_value --> position sensor leftt value 
+        self.revsRight = self.PS_Right_value/(2*np.pi)
+        self.revsLeft = self.PS_Left_value/(2*np.pi)
+        self.DRW_Right = self.revsRight*2*np.pi*self.wheelRadius# Distancia recorrida por la llanta derecha
+        self.DRW_Left = self.revsLeft*2*np.pi*self.wheelRadius# Distancia recorrida por la llanta izquierda
+
+
     def RotControl(self,rotz):
+        print("Función: Rot Control")
         # PID orientación
         kpO = 1*10
         kiO = 0.001 
@@ -171,59 +156,80 @@ class Slave(Robot):
             
             if self.step(self.timestep) == -1:
                 break
-    def DesicionGiro(self):
-        
+    
+    def DecisionGiro(self):
+        #print("Función: Decisión giro")
         # Función para determinar la siguiente acción de giro
-        if self.ds1_value >= self.ds0_value and self.ds1_value >= self.ds5_value and self.ds2_value > self.dMin +10:
-            self.angulo = self.angulo - 45
-            print("giro 1")
-        elif self.ds5_value >= self.ds0_value and self.ds5_value >= self.ds1_value and self.ds4_value >= self.dMin +10:
+        if self.ds1_value >= self.ds5_value and self.ds1_value >= self.dMin+3 and self.ds2_value >= self.dMin+3:
+            self.angulo = self.angulo -45
+            #print("giro 1")
+        elif self.ds5_value >= self.ds1_value and self.ds5_value >= self.dMin+3 and self.ds4_value>= self.dMin+3:
             self.angulo = self.angulo + 45
-            print("giro 2")
-        
-        elif self.ds1_value <= self.dMin+3:
-            print("giro 3")
-            self.angulo = self.angulo + 45
-            self.RotControl(self.angulo)
-            self.DatosSensores()
-            if self.ds5_value < 30:
-                while self.ds0_value > self.dMin and self.ds0_value > self.ds1_value and self.ds0_value > self.ds5_value :
-                    self.DatosSensores()
-                    self.left_motor.setVelocity(10)
-                    self.right_motor.setVelocity(10)
-                    print("while de giro 3")
-                    # Perform a simulation step, quit the loop when
-                    # Webots is about to quit.
-                    if self.step(self.timestep) == -1:
-                        break
-
-        elif self.ds5_value <= self.dMin+3:
-            print("giro 4")
-            self.angulo = self.angulo - 45
-            self.RotControl(self.angulo)
-            self.DatosSensores()
-            if self.ds5_value < 30:
-                while self.ds0_value > self.dMin and self.ds0_value > self.ds1_value and self.ds0_value > self.ds5_value:
-                    self.DatosSensores()
-                    self.left_motor.setVelocity(10)
-                    self.right_motor.setVelocity(10)
-                    print("while de giro 4")
-                    # Perform a simulation step, quit the loop when
-                    # Webots is about to quit.
-                    if self.step(self.timestep) == -1:
-                        break
+            #print("giro 2")   
+            
+        elif self.ds1_value > self.ds0_value and self.ds1_value > self.ds2_value and self.ds1_value > self.ds3_value and self.ds1_value > self.ds4_value and self.ds1_value > self.ds5_value:
+            self.angulo = self.angulo-45
+            #print("giro 3")
+        elif self.ds5_value > self.ds0_value and self.ds5_value > self.ds1_value and self.ds5_value > self.ds2_value and self.ds5_value > self.ds3_value and self.ds5_value > self.ds4_value:
+            self.angulo = self.angulo+45
+            #print("giro 4")
 
         elif self.ds3_value > self.ds0_value and self.ds3_value > self.ds1_value and self.ds3_value > self.ds2_value and self.ds3_value > self.ds4_value and self.ds3_value > self.ds5_value:
-            self.angulo = self.angulo + 180
-            print("giro 5")
+            self.angulo = self.angulo +180
+            #print("giro 5") 
         
-        elif self.ds4_value > self.ds0_value and self.ds4_value > self.ds1_value and self.ds4_value > self.ds2_value and self.ds4_value > self.ds5_value:
-            self.angulo = self.angulo + 90
-            print("giro 6")
+        elif self.ds1_value <= self.dMin+3 and self.ds5_value >= self.dMin+20:
+            self.angulo = self.angulo +45
+            #print("giro 6") 
+        elif self.ds5_value <= self.dMin+3 and self.ds1_value >= self.dMin+20:
+            self.angulo = self.angulo -45
+            #print("giro 7") 
+        
+        else:
+            # avanzar hasta proxima condición de giro
+            self.avanzar = True
+            #print("++++ No se cambio el giro")
+    
+    def Explorar(self):
+        while (self.ds0_value >= self.ds1_value or self.ds2_value < self.dMin+3) and (self.ds0_value >= self.ds5_value or self.ds4_value < self.dMin+3) or self.avanzar:
+            # Actualizar los valores de los sensores
+            self.DatosSensores()  
 
-        elif self.ds2_value > self.ds0_value and self.ds2_value > self.ds1_value and self.ds2_value > self.ds4_value and self.ds2_value > self.ds5_value:
-            self.angulo = self.angulo - 90
-            print("giro 7")
+            self.left_motor.setVelocity(10)
+            self.right_motor.setVelocity(10)
             
+            # Condiciones especiales para cambiar la rotación
+            if self.ds0_value <= self.dMin+3 or self.ds1_value <= self.dMin or self.ds5_value <= self.dMin:
+                print("---- Freno de emergencia ----")
+                self.avanzar = False
+                break                   
+            
+            if self.step(self.timestep) == -1:
+                break
+
+        self.left_motor.setVelocity(0)
+        self.right_motor.setVelocity(0)
+
+    def DistanciaLineaRecta_Inicio(self):
+        # Guardar distancia actual para iniciar el proceso de medición
+        self.distAnterior_Right = self.DRW_Right
+        self.distAnterior_Left = self.DRW_Left
+    def DistanciaLineaRecta_Fin(self):
+        # llanta derecha
+        self.distActual_Right = self.DRW_Right
+        self.d_lineaRecta_Right = self.distActual_Right-self.distAnterior_Right
+        
+
+        # llanta izquierda
+        self.distActual_Left = self.DRW_Left
+        self.d_lineaRecta_Left = self.distActual_Left-self.distAnterior_Left
+        
+        self.promedio_distancia_trayecto = (self.d_lineaRecta_Left+self.d_lineaRecta_Right)/2
+        print(self.d_lineaRecta_Left,"  ",self.d_lineaRecta_Right, "  ",self.promedio_distancia_trayecto)
+    
+    def TrayectoriaExploracion(self):
+        self.T_Exploracion_x.append(np.cos(self.angulo)*self.promedio_distancia_trayecto) # Trayectoria exploración coordenada en x
+        self.T_Exploracion_y.append(np.sin(self.angulo)*self.promedio_distancia_trayecto) # Trayectoria exploración coordenada en y
+
 controller = Slave()
 controller.run()
