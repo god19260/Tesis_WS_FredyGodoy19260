@@ -30,8 +30,6 @@ class Slave(Robot):
 
     def __init__(self):
         super(Slave, self).__init__()
-        self.keyboard.enable(Slave.timestep)
-        self.keyboard = self.getKeyboard()
         # Habilitar Motores
         self.left_motor = self.getDevice('motor_1')
         self.right_motor = self.getDevice('motor_2')
@@ -200,8 +198,9 @@ class Slave(Robot):
     def Explorar(self):
         while (self.ds0_value >= self.ds1_value or self.ds2_value < self.dMin+3) and (self.ds0_value >= self.ds5_value or self.ds4_value < self.dMin+3) or self.avanzar:
             
-            print(self.keyboard.getKey())
-              
+            # Mostrar el trayecto explorado
+            if keyboard.is_pressed("m"):
+                self.showMap = True
                 
 
             # Actualizar los valores de los sensores
@@ -256,6 +255,7 @@ class Slave(Robot):
             plt.title('Trayecto Exploración')
             plt.grid(True)
             plt.show()
+            self.showMap = False
             
 controller = Slave()
 controller.run()
