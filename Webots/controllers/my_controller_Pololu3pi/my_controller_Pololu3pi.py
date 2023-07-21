@@ -1,8 +1,10 @@
 
 from controller import Robot
 import numpy as np
+import math
 import matplotlib.pyplot as plt
 import keyboard
+
 class Slave(Robot):
     # get the time step of the current world.
     timestep = 5
@@ -27,6 +29,7 @@ class Slave(Robot):
     showMap = False
     # Definiciones previas
     distanceSensors = []
+
 
     def __init__(self):
         super(Slave, self).__init__()
@@ -68,7 +71,7 @@ class Slave(Robot):
                 self.DatosSensores()            
                 self.DecisionGiro()
                 self.RotControl(self.angulo)                  
-                
+     
                 self.DistanciaLineaRecta_Inicio()
                 self.Explorar()
                 self.DistanciaLineaRecta_Fin()
@@ -95,15 +98,17 @@ class Slave(Robot):
 
         # Actualizar valores de sensores de posición de las ruedas
         self.PS_Right_value = self.PositionSensor_right.getValue()  # PS_Right_value --> position sensor right value
-        self.PS_Left_value = self.PositionSensor_left.getValue()  # PS_Left_value --> position sensor leftt value 
+        self.PS_Left_value = self.PositionSensor_left.getValue()    # PS_Left_value --> position sensor left value 
+        
         self.revsRight = self.PS_Right_value/(2*np.pi)
         self.revsLeft = self.PS_Left_value/(2*np.pi)
-        self.DRW_Right = self.revsRight*2*np.pi*self.wheelRadius# Distancia recorrida por la llanta derecha
-        self.DRW_Left = self.revsLeft*2*np.pi*self.wheelRadius# Distancia recorrida por la llanta izquierda
+        
+        self.DRW_Right = self.revsRight*2*np.pi*self.wheelRadius    # Distancia recorrida por la llanta derecha
+        self.DRW_Left = self.revsLeft*2*np.pi*self.wheelRadius      # Distancia recorrida por la llanta izquierda
 
 
     def RotControl(self,rotz):
-        print("Función: Rot Control")
+        #print("Función: Rot Control")
         # PID orientación
         kpO = 1*10
         kiO = 0.001 
@@ -112,7 +117,7 @@ class Slave(Robot):
         eO_1 = 0
         eO = 1.0
         
-        while eO > 0.01:
+        while eO > 0.005:
             self.DatosSensores()
             x = 0.5
             y = 0.5
@@ -134,7 +139,7 @@ class Slave(Robot):
             w = kpO*eO + kiO*EO + kdO*eO_D
             eO_1 = eO
             
-            if eO >=0.01:
+            if eO >=0.005:
                 if flag_dGiro == True:
                     giroder = (w*self.distanceCenter)/self.wheelRadius
                     giroiz = -(w*self.distanceCenter)/self.wheelRadius
@@ -142,15 +147,15 @@ class Slave(Robot):
                     giroder = -(w*self.distanceCenter)/self.wheelRadius
                     giroiz = (w*self.distanceCenter)/self.wheelRadius
 
-                if giroder >= 10:
-                    giroder = 10
-                if giroder <= -10:
-                    giroder = -10
+                if giroder >= 5:
+                    giroder = 5
+                if giroder <= -5:
+                    giroder = -5
 
-                if giroiz >= 10:
-                    giroiz = 10
-                if giroiz <= -10:
-                    giroiz = -10
+                if giroiz >= 5:
+                    giroiz = 5
+                if giroiz <= -5:
+                    giroiz = -5
 
                 self.right_motor.setVelocity(giroder)
                 self.left_motor.setVelocity(giroiz)
@@ -193,26 +198,28 @@ class Slave(Robot):
         else:
             # avanzar hasta proxima condición de giro
             self.avanzar = True
-            #print("++++ No se cambio el giro")
+            print("++++ No se cambio el giro")
     
     def Explorar(self):
         while (self.ds0_value >= self.ds1_value or self.ds2_value < self.dMin+3) and (self.ds0_value >= self.ds5_value or self.ds4_value < self.dMin+3) or self.avanzar:
-            
+            self.left_motor.setVelocity(5)
+            self.right_motor.setVelocity(5)
+
             # Mostrar el trayecto explorado
             if keyboard.is_pressed("m"):
                 self.showMap = True
+            if keyboard.is_pressed("o"):
+                self.showMap_Odo = True
                 
-
             # Actualizar los valores de los sensores
             self.DatosSensores()  
-
-            self.left_motor.setVelocity(10)
-            self.right_motor.setVelocity(10)
             
             # Condiciones especiales para cambiar la rotación
             if self.ds0_value <= self.dMin+3 or self.ds1_value <= self.dMin or self.ds5_value <= self.dMin:
                 print("---- Freno de emergencia ----")
-                self.avanzar = False
+                #self.avanzar = False
+                self.left_motor.setVelocity(0)
+                self.right_motor.setVelocity(0)
                 break                   
             
             if self.step(self.timestep) == -1:
@@ -225,12 +232,12 @@ class Slave(Robot):
         # Guardar distancia actual para iniciar el proceso de medición
         self.distAnterior_Right = self.DRW_Right
         self.distAnterior_Left = self.DRW_Left
+
     def DistanciaLineaRecta_Fin(self):
         # llanta derecha
         self.distActual_Right = self.DRW_Right
         self.d_lineaRecta_Right = self.distActual_Right-self.distAnterior_Right
         
-
         # llanta izquierda
         self.distActual_Left = self.DRW_Left
         self.d_lineaRecta_Left = self.distActual_Left-self.distAnterior_Left
@@ -241,7 +248,7 @@ class Slave(Robot):
         #print(self.d_lineaRecta_Left,"  ",self.d_lineaRecta_Right, "  ",self.promedio_distancia_trayecto)
     
     def TrayectoriaExploracion(self):
-        self.T_Exploracion_x.append(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+np.cos(self.angulo*np.pi/180)*self.promedio_distancia_trayecto) # Trayectoria exploración coordenada en x
+        self.T_Exploracion_x.append(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+np.cos(self.angulo*np.pi/180)*self.promedio_distancia_trayecto-0.001) # Trayectoria exploración coordenada en x
         self.T_Exploracion_y.append(self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+np.sin(self.angulo*np.pi/180)*self.promedio_distancia_trayecto) # Trayectoria exploración coordenada en y
         #print(np.sin(self.angulo*np.pi/180), "  ", self.angulo )
         
@@ -253,9 +260,13 @@ class Slave(Robot):
             plt.xlabel('X')
             plt.ylabel('Y')
             plt.title('Trayecto Exploración')
+            plt.xlim(0,4)
+            plt.ylim(0,5)
             plt.grid(True)
             plt.show()
             self.showMap = False
-            
+
+
+
 controller = Slave()
 controller.run()

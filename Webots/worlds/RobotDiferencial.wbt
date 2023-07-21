@@ -9,8 +9,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.574718718552856 0.5676535571411562 0.5894640223202392 2.065724936049814
-  position -0.3476389986027889 -1.225859239259474 13.848362156934325
+  orientation -0.5781521070548703 0.5718937881103282 0.5819601672183697 2.075676160535494
+  position -0.05874803553927563 -0.22038777411979282 16.41780208592415
   follow "rectangle arena"
 }
 TexturedBackgroundLight {
@@ -159,7 +159,7 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 0.06999999999204387 -6.247264853957978e-06 0.03699964786001401
+        translation 0.06999999999204387 -6.247264853957862e-06 0.03699964786001401
         rotation -0.4709671286544881 -0.7461453693881194 -0.4705922348144023 4.424415256590024
         children [
           DEF wheel_1 Shape {
@@ -194,8 +194,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation -0.07000000000794648 -6.218934986890633e-06 0.03700059157295426
-        rotation 0.7073014811780947 -0.015663995474605823 0.706738462211478 3.1729430336351316
+        translation -0.07000000893515845 -8.443261055508052e-06 0.03699918388677047
+        rotation 0.1380301367490215 0.9808722052041431 0.13724940221002044 1.590218459204493
         children [
           DEF wheel_2 Shape {
             appearance PBRAppearance {
@@ -293,44 +293,44 @@ Robot {
   selfCollision TRUE
 }
 Wall {
-  translation -1.15 -0.44 0
+  translation -1.1 -0.44 0
   size 1 0.08 0.1
 }
 Wall {
-  translation -0.9 -0.07 0
+  translation -0.9 1.06 0
   name "wall(8)"
   size 2 0.08 0.1
 }
 Wall {
-  translation 1.86 -0.37 0
+  translation -0.59 0.67 0
   name "wall(2)"
   size 2 0.08 0.1
 }
 Wall {
-  translation -0.64 1.04 0
+  translation -1.03 -2.35 0
   name "wall(7)"
   size 1 0.08 0.1
 }
 Wall {
-  translation -0.69 -1.39999 0
+  translation 0.0699933 2.03001 0
   rotation 0 0 1 1.5708
   name "wall(9)"
   size 2 0.08 0.1
 }
 Wall {
-  translation 0.9 -1.39999 0
+  translation 0.45 1.42001 0
   rotation 0 0 1 1.5708
   name "wall(10)"
   size 2 0.08 0.1
 }
 Wall {
-  translation -0.0999969 -0.51999 0
+  translation -1.56 -0.28999 0
   rotation 0 0 1 1.5708
   name "wall(1)"
   size 2 0.08 0.1
 }
 Wall {
-  translation -1.61 -1.39999 0
+  translation -1.57 -1.39999 0
   rotation 0 0 1 1.5708
   name "wall(4)"
   size 2 0.08 0.1
