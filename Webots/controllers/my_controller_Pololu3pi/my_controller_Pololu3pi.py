@@ -9,6 +9,10 @@ class Slave(Robot):
     # get the time step of the current world.
     timestep = 5
 
+    # Especificaciones del mundo
+    size_x = 3.8 #mt
+    size_y = 4.8 #mt
+
     # Caracteristicas del robot
     maxSpeed = 0.035 #mt/s
     wheelRadius = 0.035 #radio en m 
@@ -29,6 +33,18 @@ class Slave(Robot):
     showMap = False
     # Definiciones previas
     distanceSensors = []
+    nodos_GPS_x = []
+    nodos_GPS_y = []
+    error_GPS_revs = []
+    delta_GPS_revs_x = 0
+    delta_GPS_revs_y = 0
+
+    #*-*-*-*-*-*-*-*-* Valores iniciales *-*-*-*-*-*-*-*-*-*
+    f_ValoresIniciales = True # Bandera valores iniciales 
+    # sensores de posición de los motores
+    PS_Right_StartValue = 0
+    PS_Left_StartValue = 0
+    #*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 
     def __init__(self):
@@ -59,6 +75,9 @@ class Slave(Robot):
         self.compass = self.getDevice('compass')
         self.compass.enable(self.timestep)
 
+        # Habilitar GPS
+        self.GPS = self.getDevice('gps')
+        self.GPS.enable(self.timestep)
 
     def run(self):
         fGeneral = False
@@ -66,6 +85,7 @@ class Slave(Robot):
         self.dMin = 15 # Distancia minima del objeto en cm
         self.rangoSenDis = 50 # Distancia máxima de sensado
         self.avanzar = False
+        fValoresIniciales = True
         while self.step(self.timestep) != -1:
             if fGeneral:
                 self.DatosSensores()            
@@ -76,12 +96,25 @@ class Slave(Robot):
                 self.Explorar()
                 self.DistanciaLineaRecta_Fin()
                 self.TrayectoriaExploracion()
-                
+            
             fGeneral = True  # Bandera general del proceso
             
            
         
     def DatosSensores(self):
+        if  self.f_ValoresIniciales:
+            # Sensores de posición de los motores
+            self.PS_Right_StartValue =  self.PositionSensor_right.getValue()  # PS_Right_value --> position sensor right value
+            self.PS_Left_StartValue =  self.PositionSensor_left.getValue()  # PS_Right_value --> position sensor right value
+            
+            # GPS: valores iniciales para trayectoria de exploración con datos de GPS
+            self.GPS_values = self.GPS.getValues()
+            self.nodos_GPS_x.append(self.GPS_values[0]+self.size_x/2)
+            self.nodos_GPS_y.append(self.GPS_values[1]+self.size_y/2)
+           
+
+            self.f_ValoresIniciales = False
+
         # Actualizar sensores de distancia
         self.ds0_value = self.distanceSensors[0].getValue()
         self.ds1_value = self.distanceSensors[1].getValue()
@@ -97,15 +130,17 @@ class Slave(Robot):
         self.rotz = radian
 
         # Actualizar valores de sensores de posición de las ruedas
-        self.PS_Right_value = self.PositionSensor_right.getValue()  # PS_Right_value --> position sensor right value
-        self.PS_Left_value = self.PositionSensor_left.getValue()    # PS_Left_value --> position sensor left value 
+        self.PS_Right_value = round(self.PositionSensor_right.getValue() - self.PS_Right_StartValue, 4)  # PS_Right_value --> position sensor right value
+        self.PS_Left_value = round(self.PositionSensor_left.getValue() - self.PS_Left_StartValue,4)    # PS_Left_value --> position sensor left value 
         
         self.revsRight = self.PS_Right_value/(2*np.pi)
         self.revsLeft = self.PS_Left_value/(2*np.pi)
         
-        self.DRW_Right = self.revsRight*2*np.pi*self.wheelRadius    # Distancia recorrida por la llanta derecha
-        self.DRW_Left = self.revsLeft*2*np.pi*self.wheelRadius      # Distancia recorrida por la llanta izquierda
+        self.DRW_Right = round(self.revsRight*2*np.pi*self.wheelRadius,4)    # Distancia recorrida por la llanta derecha
+        self.DRW_Left = round(self.revsLeft*2*np.pi*self.wheelRadius,4)      # Distancia recorrida por la llanta izquierda
 
+        # Actualizar valores de GPS
+        self.GPS_values = self.GPS.getValues()
 
     def RotControl(self,rotz):
         #print("Función: Rot Control")
@@ -170,41 +205,46 @@ class Slave(Robot):
     def DecisionGiro(self):
         #print("Función: Decisión giro")
         # Función para determinar la siguiente acción de giro
-        if self.ds1_value >= self.ds5_value and self.ds1_value >= self.dMin+3 and self.ds2_value >= self.dMin+3:
-            self.angulo = self.angulo -45
-            #print("giro 1")
-        elif self.ds5_value >= self.ds1_value and self.ds5_value >= self.dMin+3 and self.ds4_value>= self.dMin+3:
-            self.angulo = self.angulo + 45
-            #print("giro 2")   
-            
-        elif self.ds1_value > self.ds0_value and self.ds1_value > self.ds2_value and self.ds1_value > self.ds3_value and self.ds1_value > self.ds4_value and self.ds1_value > self.ds5_value:
-            self.angulo = self.angulo-45
-            #print("giro 3")
-        elif self.ds5_value > self.ds0_value and self.ds5_value > self.ds1_value and self.ds5_value > self.ds2_value and self.ds5_value > self.ds3_value and self.ds5_value > self.ds4_value:
-            self.angulo = self.angulo+45
-            #print("giro 4")
+        if self.ds1_value >= self.ds0_value and self.ds1_value >= self.ds5_value:
+            if self.ds2_value >= self.ds4_value and self.ds2_value >= self.ds0_value and self.ds1_value >= self.dMin and self.ds2_value >= self.dMin:
+                self.angulo = self.angulo -45
+                print("giro 1")
+                return
 
-        elif self.ds3_value > self.ds0_value and self.ds3_value > self.ds1_value and self.ds3_value > self.ds2_value and self.ds3_value > self.ds4_value and self.ds3_value > self.ds5_value:
+        elif self.ds5_value >= self.ds0_value and self.ds5_value >= self.ds1_value:
+            if self.ds4_value >= self.ds2_value and self.ds4_value >= self.ds0_value and self.ds5_value >= self.dMin and self.ds4_value>= self.dMin:
+                self.angulo = self.angulo + 45
+                print("giro 2")   
+                return
+            
+        if self.ds1_value >= self.ds0_value and self.ds2_value >= self.dMin+1:
+            self.angulo = self.angulo-45
+            print("giro 3")
+            return
+        
+        if self.ds5_value > self.ds0_value and self.ds4_value > self.dMin+1:
+            self.angulo = self.angulo+45
+            print("giro 4")
+            return
+        
+        """
+        if self.ds3_value > self.ds0_value and self.ds3_value > self.ds1_value and self.ds3_value > self.ds2_value and self.ds3_value > self.ds4_value and self.ds3_value > self.ds5_value:
             self.angulo = self.angulo +180
-            #print("giro 5") 
-        
-        elif self.ds1_value <= self.dMin+3 and self.ds5_value >= self.dMin+20:
-            self.angulo = self.angulo +45
-            #print("giro 6") 
-        elif self.ds5_value <= self.dMin+3 and self.ds1_value >= self.dMin+20:
-            self.angulo = self.angulo -45
-            #print("giro 7") 
-        
-        else:
-            # avanzar hasta proxima condición de giro
-            self.avanzar = True
-            print("++++ No se cambio el giro")
+            print("giro 5") 
+            return
+        """    
+
+        # avanzar hasta proxima condición de giro
+        self.avanzar = True
+        self.angulo = self.angulo -180
+        print("++++ GIRO FORZADO ")
     
     def Explorar(self):
-        while (self.ds0_value >= self.ds1_value or self.ds2_value < self.dMin+3) and (self.ds0_value >= self.ds5_value or self.ds4_value < self.dMin+3) or self.avanzar:
-            self.left_motor.setVelocity(5)
-            self.right_motor.setVelocity(5)
-
+        self.avanzar = True
+        while (self.ds0_value >= self.ds2_value or self.ds2_value < self.dMin) and (self.ds0_value >= self.ds4_value or self.ds4_value < self.dMin):
+            self.left_motor.setVelocity(10)
+            self.right_motor.setVelocity(10)
+            
             # Mostrar el trayecto explorado
             if keyboard.is_pressed("m"):
                 self.showMap = True
@@ -213,15 +253,16 @@ class Slave(Robot):
                 
             # Actualizar los valores de los sensores
             self.DatosSensores()  
-            
+             
+
             # Condiciones especiales para cambiar la rotación
-            if self.ds0_value <= self.dMin+3 or self.ds1_value <= self.dMin or self.ds5_value <= self.dMin:
+            if self.ds0_value <= self.dMin+3 or self.ds1_value <= self.dMin+1 or self.ds5_value <= self.dMin+1:
                 print("---- Freno de emergencia ----")
-                #self.avanzar = False
-                self.left_motor.setVelocity(0)
-                self.right_motor.setVelocity(0)
+                self.avanzar = False
+                #self.left_motor.setVelocity(0)
+                #self.right_motor.setVelocity(0)
                 break                   
-            
+              
             if self.step(self.timestep) == -1:
                 break
 
@@ -248,21 +289,128 @@ class Slave(Robot):
         #print(self.d_lineaRecta_Left,"  ",self.d_lineaRecta_Right, "  ",self.promedio_distancia_trayecto)
     
     def TrayectoriaExploracion(self):
-        self.T_Exploracion_x.append(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+np.cos(self.angulo*np.pi/180)*self.promedio_distancia_trayecto-0.001) # Trayectoria exploración coordenada en x
+        self.T_Exploracion_x.append(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+np.cos(self.angulo*np.pi/180)*self.promedio_distancia_trayecto) # Trayectoria exploración coordenada en x
         self.T_Exploracion_y.append(self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+np.sin(self.angulo*np.pi/180)*self.promedio_distancia_trayecto) # Trayectoria exploración coordenada en y
         #print(np.sin(self.angulo*np.pi/180), "  ", self.angulo )
         
+        # valores obtenidos con base al sensor GPS de webots 
+        self.nodos_GPS_x.append(self.GPS_values[0]+self.size_x/2)
+        self.nodos_GPS_y.append(self.GPS_values[1]+self.size_y/2)
+
+        # porcentaje de error
+        self.delta_GPS_revs_x = abs(self.T_Exploracion_x[1]-self.nodos_GPS_x[1])
+        self.delta_GPS_revs_y = abs(self.T_Exploracion_y[1]-self.nodos_GPS_y[1])
+
+        v_aproximado = np.sqrt((self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+self.delta_GPS_revs_x)**2+(self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+self.delta_GPS_revs_y)**2)
+        v_real = np.sqrt(self.nodos_GPS_x[len(self.nodos_GPS_x)-1]**2 +self.nodos_GPS_y[len(self.nodos_GPS_y)-1]**2)
+
+        self.error_GPS_revs.append(abs((v_aproximado-v_real)/v_real)*100)
+        
         if self.showMap == True:
-            print(self.Distancias_lineaRecta)
-            print(self.Angulos)
+            print(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+self.delta_GPS_revs_x ,'  ' , self.nodos_GPS_x[len(self.nodos_GPS_x)-1])
             
-            plt.plot(self.T_Exploracion_x, self.T_Exploracion_y, 'ro-')
+            # Crear una figura 
+            self.fig = plt.figure()
+            self.fig.suptitle('Trayectoria Exploración')
+            
+            # *-*-*-*-*-*-*-*-*-*-*-*-* Crear una subfigura *-*-*-*-*-*-*-*-*-*-*-*-*   
+            # (Trayectoria experimental, obtenida de las revoluciones de las ruedas)
+            self.ax1 = self.fig.add_subplot(121)
+
+            # Configurar límites de los ejes
+            self.ax1.set_xlim(0, self.size_x*10)
+            self.ax1.set_ylim(0, self.size_y*10)
+
+            # Configurar aspecto de los ejes
+            self.ax1.set_aspect('equal')
+            self.ax1.grid(True)
+            
+            plt.plot(self.T_Exploracion_x, self.T_Exploracion_y, '-o', color='red')
             plt.xlabel('X')
             plt.ylabel('Y')
-            plt.title('Trayecto Exploración')
+            plt.title('Por posición de ruedas')
             plt.xlim(0,4)
             plt.ylim(0,5)
             plt.grid(True)
+            # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+            
+            # *-*-*-*-*-*-*-*-*-*-*-*-* Crear otra subfigura *-*-*-*-*-*-*-*-*-*-*-*-*   
+            #            (Trayectoria Teórica, obtenida por el GPS del robot)
+            self.ax2 = self.fig.add_subplot(122)
+
+            # Configurar límites de los ejes
+            self.ax2.set_xlim(0, self.size_x*10)
+            self.ax2.set_ylim(0, self.size_y*10)
+
+            # Configurar aspecto de los ejes
+            self.ax2.set_aspect('equal')
+            self.ax2.grid(True)
+            
+            plt.plot(self.nodos_GPS_x, self.nodos_GPS_y, '-o', color='green')
+            plt.xlabel('X')
+            plt.ylabel('Y')
+            plt.title('GPS')
+            plt.xlim(0,4)
+            plt.ylim(0,5)
+            plt.grid(True)
+            # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+            # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+            
+            # ------------------------- Crear una figura -------------------------- 
+            # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+            # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+            self.fig2 = plt.figure()
+            self.fig2.suptitle('Errores y coordenadas')
+            # */*/*/*/*/*/*/*/*/*/*/*/* Crear una subfigura */*/*/*/*/*/*/*/*/*/*/*
+            self.ax1_fig2 = self.fig2.add_subplot(131)
+
+            # Configurar límites de los ejes
+            self.ax1_fig2.set_xlim(0,len(self.nodos_GPS_x))
+            self.ax1_fig2.set_ylim(0,100)
+
+            # Configurar aspecto de los ejes
+            self.ax1_fig2.set_aspect('equal')
+            self.ax1_fig2.grid(True)
+            
+            plt.title('Error acumulado')
+            plt.plot(self.error_GPS_revs, color='blue')
+            plt.xlabel('no. de nodos')
+            plt.ylabel('Porcentaje de error')  
+               
+            # */*/*/*/*/*/*/*/*/*/*/*/* Crear otra subfigura */*/*/*/*/*/*/*/*/*/*/*
+            self.ax2_fig2 = self.fig2.add_subplot(132)
+
+            # Configurar límites de los ejes
+            self.ax2_fig2.set_xlim(0,len(self.T_Exploracion_x))
+            self.ax2_fig2.set_ylim(0,4)
+
+            # Configurar aspecto de los ejes
+            self.ax2_fig2.grid(True)
+            
+            plt.title('Coordenadas x: GPS vs por posición de ruedas')
+            plt.plot(self.T_Exploracion_x, color='red')
+            plt.plot(self.nodos_GPS_x, color='blue')
+            plt.xlabel('Coordenadas x: GPS (rojo) y por posición de ruedas (azul)')
+            plt.ylabel('mt')  
+            # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+            # */*/*/*/*/*/*/*/*/*/*/*/* Crear otra subfigura */*/*/*/*/*/*/*/*/*/*/*
+            self.ax3_fig2 = self.fig2.add_subplot(133)
+
+            # Configurar límites de los ejes
+            self.ax3_fig2.set_xlim(0,len(self.T_Exploracion_y))
+            self.ax3_fig2.set_ylim(0,5)
+
+            # Configurar aspecto de los ejes
+            self.ax3_fig2.grid(True)
+            
+            plt.title('Coordenadas y: GPS vs por posición de ruedas')
+            plt.plot(self.T_Exploracion_y, color='red')
+            plt.plot(self.nodos_GPS_y, color='blue')
+            plt.xlabel('Coordenadas y: GPS (rojo) y por posición de ruedas (azul)')
+            plt.ylabel('mt')  
+            # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+            # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+            
             plt.show()
             self.showMap = False
 
