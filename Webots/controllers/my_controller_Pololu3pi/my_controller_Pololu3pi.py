@@ -81,6 +81,7 @@ class Slave(Robot):
         self.GPS.enable(self.timestep)
 
     def run(self):
+        print("m: mostrar mapa\ns: mostrar stats")
         fGeneral = False
         self.angulo = 90
         self.dMin = 15 # Distancia minima del objeto en cm
@@ -89,10 +90,6 @@ class Slave(Robot):
         fValoresIniciales = True
         while self.step(self.timestep) != -1:
             if fGeneral:
-                self.DatosSensores()            
-                self.DecisionGiro()
-                self.RotControl(self.angulo)                  
-     
                 
                 self.Explorar()
                 
@@ -218,15 +215,15 @@ class Slave(Robot):
     
         if self.ds1_value > self.ds0_value:
             self.angulo = self.angulo -45
-            print("giro 1")
+            #print("giro 1")
             
         elif self.ds5_value > self.ds0_value:
             self.angulo = self.angulo +45
-            print("giro 2")
+            #print("giro 2")
 
         elif self.ds3_value > self.ds0_value and self.ds3_value > self.ds1_value and self.ds3_value > self.ds5_value:
             self.angulo += 180
-            print("giro 3, 180°")    
+            #print("giro 3, 180°")    
                 
 
         
@@ -266,7 +263,10 @@ class Slave(Robot):
         print("++++ GIRO FORZADO ")
         """
     def Explorar(self):
-        
+        self.DatosSensores()            
+        self.DecisionGiro()
+        self.RotControl(self.angulo)                  
+     
         self.avanzar = True
         self.cont = 0
         self.coef_velocidad = 0.1
@@ -274,7 +274,7 @@ class Slave(Robot):
         
         while (self.ds0_value > self.ds2_value or self.ds0_value >= self.ds1_value) and (self.ds0_value > self.ds4_value or self.ds0_value>= self.ds5_value):
             self.DistanciaLineaRecta_Inicio()
-            print("Velocidad Linea Recta: ",self.vel_max*self.coef_velocidad)
+            
             self.left_motor.setVelocity(self.vel_max*self.coef_velocidad)
             self.right_motor.setVelocity(self.vel_max*self.coef_velocidad)
             if self.coef_velocidad < 1:
@@ -299,7 +299,7 @@ class Slave(Robot):
             
             # Condiciones especiales para cambiar la rotación
             if self.ds0_value <= self.dMin or self.ds1_value <= self.dMin or self.ds5_value <= self.dMin:
-                print("---- Freno de emergencia ----")
+                #print("---- Freno de emergencia ----")
                 self.avanzar = False
                 self.left_motor.setVelocity(3)
                 self.right_motor.setVelocity(3)
@@ -357,7 +357,7 @@ class Slave(Robot):
         
         if self.showMap == True:
             self.showMap = False
-            print(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+self.delta_GPS_revs_x ,'  ' , self.nodos_GPS_x[len(self.nodos_GPS_x)-1])
+            #print(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+self.delta_GPS_revs_x ,'  ' , self.nodos_GPS_x[len(self.nodos_GPS_x)-1])
             
             # Crear una figura 
             self.fig = plt.figure()
