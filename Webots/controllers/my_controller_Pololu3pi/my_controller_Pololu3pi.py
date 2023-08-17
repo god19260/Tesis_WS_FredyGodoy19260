@@ -31,6 +31,7 @@ class Slave(Robot):
     Angulos = []
     
     showMap = False
+    showStats = False
     # Definiciones previas
     distanceSensors = []
     nodos_GPS_x = []
@@ -212,7 +213,6 @@ class Slave(Robot):
 
             if self.ds5_value <= self.dMin:
                 self.angulo -=45
-                
             return
        
     
@@ -289,8 +289,8 @@ class Slave(Robot):
             # Mostrar el trayecto explorado
             if keyboard.is_pressed("m"):
                 self.showMap = True
-            if keyboard.is_pressed("o"):
-                self.showMap_Odo = True  
+            if keyboard.is_pressed("s"):
+                self.showStats = True  
             
             if self.cont == 4:
                 self.RotControl(self.angulo)
@@ -356,6 +356,7 @@ class Slave(Robot):
         self.error_GPS_revs.append(abs((v_aproximado-v_real)/abs(v_real))*100)
         
         if self.showMap == True:
+            self.showMap = False
             print(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+self.delta_GPS_revs_x ,'  ' , self.nodos_GPS_x[len(self.nodos_GPS_x)-1])
             
             # Crear una figura 
@@ -381,8 +382,9 @@ class Slave(Robot):
             plt.xlim(0,5)
             plt.ylim(0,5)
             plt.grid(True)
-            # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+
             
+            # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
             # *-*-*-*-*-*-*-*-*-*-*-*-* Crear otra subfigura *-*-*-*-*-*-*-*-*-*-*-*-*   
             #            (Trayectoria Teórica, obtenida por el GPS del robot)
             self.ax2 = self.fig.add_subplot(122)
@@ -404,7 +406,9 @@ class Slave(Robot):
             plt.grid(True)
             # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
             # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
-            
+        
+        if self.showStats == True: 
+            self.showStats = False  
             # ------------------------- Crear una figura -------------------------- 
             # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
             # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
@@ -460,8 +464,8 @@ class Slave(Robot):
             # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
             # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
             
-            plt.show()
-            self.showMap = False
+        plt.show()
+            
 
 
 
