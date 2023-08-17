@@ -215,11 +215,8 @@ class Slave(Robot):
                 
             return
        
-        if self.ds3_value > self.ds0_value and self.ds3_value > self.ds1_value and self.ds3_value > self.ds5_value:
-            self.angulo += 180
-            print("giro 3, 180°")    
-        
-        elif self.ds1_value > self.ds0_value:
+    
+        if self.ds1_value > self.ds0_value:
             self.angulo = self.angulo -45
             print("giro 1")
             
@@ -227,7 +224,10 @@ class Slave(Robot):
             self.angulo = self.angulo +45
             print("giro 2")
 
-            
+        elif self.ds3_value > self.ds0_value and self.ds3_value > self.ds1_value and self.ds3_value > self.ds5_value:
+            self.angulo += 180
+            print("giro 3, 180°")    
+                
 
         
         """
@@ -270,19 +270,22 @@ class Slave(Robot):
         self.avanzar = True
         self.cont = 0
         self.coef_velocidad = 0.1
-        self.vel_max = 8
+        self.vel_max = 9
         
-        while self.ds0_value >= self.ds2_value and self.ds0_value >= self.ds4_value:
+        while (self.ds0_value > self.ds2_value or self.ds0_value >= self.ds1_value) and (self.ds0_value > self.ds4_value or self.ds0_value>= self.ds5_value):
             self.DistanciaLineaRecta_Inicio()
+            print("Velocidad Linea Recta: ",self.vel_max*self.coef_velocidad)
             self.left_motor.setVelocity(self.vel_max*self.coef_velocidad)
             self.right_motor.setVelocity(self.vel_max*self.coef_velocidad)
-
-            if self.coef_velocidad < 0.9:
+            if self.coef_velocidad < 1:
                 self.coef_velocidad += 0.05
             # Actualizar los valores de los sensores
             self.DatosSensores()
+
             self.DistanciaLineaRecta_Fin()
             self.TrayectoriaExploracion()
+          
+          
             # Mostrar el trayecto explorado
             if keyboard.is_pressed("m"):
                 self.showMap = True

@@ -9,8 +9,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.5810178391747056 0.5719326005249072 0.5790607662565067 2.0842978630389752
-  position -0.3415753724633688 -0.14586524365824724 16.087660842613744
+  orientation -0.592727187648598 0.5883501610732601 0.5500168806384516 2.1214046800344257
+  position -0.37223054604696754 0.9666299038688778 14.94970064111442
   follow "rectangle arena"
 }
 TexturedBackgroundLight {
@@ -27,7 +27,7 @@ RectangleArena {
   }
 }
 Robot {
-  translation -1.7681333519301283 -2.265069402564356 -0.0021066026450428377
+  translation -2.36813 -2.2674 -0.00212454
   rotation 1.4849577617257276e-05 4.839582228382789e-05 -0.9999999987186673 3.1377430257752583
   children [
     DEF Body Transform {
@@ -299,12 +299,12 @@ Wall {
   size 1 0.08 0.1
 }
 Wall {
-  translation -0.9 1.06 0
+  translation -0.9 1.83 0
   name "wall(8)"
   size 4 0.08 0.1
 }
 Wall {
-  translation -0.94 0.67 0
+  translation -1.15 1.39 0
   name "wall(2)"
   size 2 0.08 0.1
 }
@@ -314,7 +314,7 @@ Wall {
   size 1 0.08 0.1
 }
 Wall {
-  translation 0.0699933 2.03001 0
+  translation 2.43999 -1.51999 0
   rotation 0 0 1 1.5708
   name "wall(9)"
   size 2 0.08 0.1
@@ -326,7 +326,7 @@ Wall {
   size 2 0.08 0.1
 }
 Wall {
-  translation -1.56 -0.28999 0
+  translation -2.11 -0.55999 0
   rotation 0 0 1 1.5708
   name "wall(1)"
   size 4 0.08 0.1
