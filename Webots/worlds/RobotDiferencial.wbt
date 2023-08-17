@@ -9,14 +9,14 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.5786351380179745 0.5723893792887661 0.5809920615019976 2.0771065147505863
-  position -0.05874803553927563 -0.22038777411979282 16.41780208592415
+  orientation -0.5810178391747056 0.5719326005249072 0.5790607662565067 2.0842978630389752
+  position -0.3415753724633688 -0.14586524365824724 16.087660842613744
   follow "rectangle arena"
 }
 TexturedBackgroundLight {
 }
 RectangleArena {
-  floorSize 3.8 4.8
+  floorSize 5 5
   floorAppearance Parquetry {
     type "chequered"
     colorOverride 0.392157 0.545098 0.784314
@@ -161,7 +161,7 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 0.06999999999204387 -4.329353291489106e-06 0.03699548236557448
+        translation 0.06999999999204387 -4.329353291487266e-06 0.03699548236557448
         rotation 0.6279840611656492 0.46032556131834773 0.6274841802936916 2.2781727243760175
         children [
           DEF wheel_1 Shape {
@@ -180,8 +180,6 @@ Robot {
         boundingObject USE wheel_1
         physics Physics {
         }
-        linearVelocity -0.0005355299210611765 0.17498515711619486 -4.715015314666907e-06
-        angularVelocity -5.000691874847569 -0.020610312562567096 -0.008178152612286937
       }
     }
     HingeJoint {
@@ -198,7 +196,7 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation -0.07000000893515845 -2.5457021279596864e-06 0.03699190839331587
+        translation -0.07000000893515845 -2.545702127960275e-06 0.03699190839331587
         rotation -0.5525032488870706 -0.624523764979934 -0.5520056403194806 4.257475026407972
         children [
           DEF wheel_2 Shape {
@@ -218,8 +216,6 @@ Robot {
         boundingObject USE wheel_2
         physics Physics {
         }
-        linearVelocity -0.0014740682482461728 0.1750234272239789 -7.79692039377219e-06
-        angularVelocity -5.000654968085877 -0.030608179485680554 0.004345710941501489
       }
     }
     BallJoint {
@@ -236,8 +232,8 @@ Robot {
         axis 0 1 0
       }
       endPoint Solid {
-        translation -2.317790246775253e-05 0.0600514323752086 0.01199982532237028
-        rotation 0.278385288133337 -0.9114204473313267 0.3030089099965268 1.767711254242356
+        translation -2.317790246775386e-05 0.0600514323752086 0.01199982532237028
+        rotation 0.2783852881333375 -0.9114204473313267 0.3030089099965266 1.767711254242357
         children [
           DEF CasterBall_1 Shape {
             appearance PBRAppearance {
@@ -254,8 +250,6 @@ Robot {
         boundingObject USE CasterBall_1
         physics Physics {
         }
-        linearVelocity -0.0009817183907674751 0.175399494349983 5.236238820412649e-05
-        angularVelocity -17.539949419191373 -0.09817184457988211 0.0003975125146423182
       }
     }
     BallJoint {
@@ -272,8 +266,8 @@ Robot {
         axis 0 1 0
       }
       endPoint Solid {
-        translation 2.306034731103246e-05 -0.0600518344247174 0.01199978469415002
-        rotation 0.7266442753117314 0.5554692845964299 0.404279570379977 2.5122886702366185
+        translation 2.306034731103157e-05 -0.0600518344247174 0.01199978469415002
+        rotation 0.7266442753117308 0.5554692845964303 0.40427957037997764 2.5122886702366185
         children [
           DEF CasterBall_2 Shape {
             appearance PBRAppearance {
@@ -290,8 +284,6 @@ Robot {
         boundingObject USE CasterBall_2
         physics Physics {
         }
-        linearVelocity -0.001031996922461202 0.17459600894634456 -3.786160062512748e-05
-        angularVelocity -17.45960085927478 -0.10319971406139247 -0.0011060663997441988
       }
     }
   ]
@@ -301,8 +293,6 @@ Robot {
   }
   controller "my_controller_Pololu3pi"
   selfCollision TRUE
-  linearVelocity -0.0010059438144231407 0.17502661956840146 1.45875431021609e-05
-  angularVelocity -0.0007346724295140506 7.47179935771304e-05 0.0034710764946145876
 }
 Wall {
   translation -1.1 -0.44 0
@@ -311,10 +301,10 @@ Wall {
 Wall {
   translation -0.9 1.06 0
   name "wall(8)"
-  size 2 0.08 0.1
+  size 4 0.08 0.1
 }
 Wall {
-  translation -0.59 0.67 0
+  translation -0.94 0.67 0
   name "wall(2)"
   size 2 0.08 0.1
 }
@@ -339,7 +329,7 @@ Wall {
   translation -1.56 -0.28999 0
   rotation 0 0 1 1.5708
   name "wall(1)"
-  size 2 0.08 0.1
+  size 4 0.08 0.1
 }
 Wall {
   translation -1.57 -1.39999 0
