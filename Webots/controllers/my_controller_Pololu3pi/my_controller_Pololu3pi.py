@@ -40,6 +40,22 @@ class Slave(Robot):
     delta_GPS_revs_x = 0
     delta_GPS_revs_y = 0
 
+    # mapeo de paredes
+    rango_max_dsen = 100 #cm
+    Pared_x_ds0 = []
+    Pared_x_ds1 = []
+    Pared_x_ds2 = []
+    Pared_x_ds3 = []
+    Pared_x_ds4 = []
+    Pared_x_ds5 = []
+
+    Pared_y_ds0 = []
+    Pared_y_ds1 = []
+    Pared_y_ds2 = []
+    Pared_y_ds3 = []
+    Pared_y_ds4 = []
+    Pared_y_ds5 = []
+    
     #*-*-*-*-*-*-*-*-* Valores iniciales *-*-*-*-*-*-*-*-*-*
     f_ValoresIniciales = True # Bandera valores iniciales 
     # sensores de posición de los motores
@@ -91,9 +107,12 @@ class Slave(Robot):
         while self.step(self.timestep) != -1:
             if fGeneral:
                 
+                self.DatosSensores()            
+                self.DecisionGiro()
+                self.RotControl(self.angulo)  
+                
                 self.Explorar()
-                
-                
+                #print("sensor ds0: ", self.ds0_value)
             
             fGeneral = True  # Bandera general del proceso
             
@@ -152,6 +171,7 @@ class Slave(Robot):
         
         while eO > 0.005:
             self.DatosSensores()
+            self.Paredes(self.rotz*180/np.pi)
             x = 0.5
             y = 0.5
             #e = [xg-x, yg-y]
@@ -159,12 +179,14 @@ class Slave(Robot):
             thetag = rotz/180*np.pi
             eO = thetag-self.rotz
             eO = np.arctan2(np.sin(eO),np.cos(eO))
+            
             if eO >0:
                 flag_dGiro = True  # bandera dirección del giro, 
                                    # True = sentido horario
                                    # False = sentido antihorario
             else:
                 flag_dGiro = False
+            
             eO = abs(eO)
             # Control de velocidad angular
             eO_D = eO - eO_1
@@ -180,15 +202,15 @@ class Slave(Robot):
                     giroder = -(w*self.distanceCenter)/self.wheelRadius
                     giroiz = (w*self.distanceCenter)/self.wheelRadius
 
-                if giroder >= 0.5:
-                    giroder = 0.5
-                if giroder <= -0.5:
-                    giroder = -0.5
+                if giroder >= 0.3:
+                    giroder = 0.3
+                if giroder <= -0.3:
+                    giroder = -0.3
 
-                if giroiz >= 0.5:
-                    giroiz = 0.5
-                if giroiz <= -0.5:
-                    giroiz = -0.5
+                if giroiz >= 0.3:
+                    giroiz = 0.3
+                if giroiz <= -0.3:
+                    giroiz = -0.3
 
                 self.right_motor.setVelocity(giroder)
                 self.left_motor.setVelocity(giroiz)
@@ -262,17 +284,15 @@ class Slave(Robot):
         self.angulo = self.angulo -180
         print("++++ GIRO FORZADO ")
         """
-    def Explorar(self):
-        self.DatosSensores()            
-        self.DecisionGiro()
-        self.RotControl(self.angulo)                  
+
+    def Explorar(self):                
      
         self.avanzar = True
         self.cont = 0
         self.coef_velocidad = 0.1
-        self.vel_max = 9
+        self.vel_max = 4
         
-        while (self.ds0_value > self.ds2_value or self.ds0_value >= self.ds1_value) and (self.ds0_value > self.ds4_value or self.ds0_value>= self.ds5_value):
+        while (self.ds0_value >= self.ds2_value) and (self.ds0_value >= self.ds4_value ):
             self.DistanciaLineaRecta_Inicio()
             
             self.left_motor.setVelocity(self.vel_max*self.coef_velocidad)
@@ -284,6 +304,7 @@ class Slave(Robot):
 
             self.DistanciaLineaRecta_Fin()
             self.TrayectoriaExploracion()
+            self.Paredes(self.angulo)
           
           
             # Mostrar el trayecto explorado
@@ -299,19 +320,27 @@ class Slave(Robot):
             
             # Condiciones especiales para cambiar la rotación
             if self.ds0_value <= self.dMin or self.ds1_value <= self.dMin or self.ds5_value <= self.dMin:
-                #print("---- Freno de emergencia ----")
+                print("---- Freno de emergencia ----")
                 self.avanzar = False
-                self.left_motor.setVelocity(3)
-                self.right_motor.setVelocity(3)
+                
+                while self.coef_velocidad > 0.1:
+                    self.left_motor.setVelocity(self.vel_max*self.coef_velocidad)
+                    self.right_motor.setVelocity(self.vel_max*self.coef_velocidad)
+                    self.coef_velocidad -= 0.5
+                self.left_motor.setVelocity(0)
+                self.right_motor.setVelocity(0)
                 break                   
             
             if self.step(self.timestep) == -1:
                 break
+        while self.coef_velocidad > 0.5:
+            self.left_motor.setVelocity(self.vel_max*self.coef_velocidad)
+            self.right_motor.setVelocity(self.vel_max*self.coef_velocidad)
+            self.coef_velocidad -= 0.05
+
         self.left_motor.setVelocity(0)
         self.right_motor.setVelocity(0)
 
-        
-        
 
     def DistanciaLineaRecta_Inicio(self):
         # Guardar distancia actual para iniciar el proceso de medición
@@ -375,7 +404,10 @@ class Slave(Robot):
             self.ax1.set_aspect('equal')
             self.ax1.grid(True)
             
+            
             plt.plot(self.T_Exploracion_x, self.T_Exploracion_y, '-o', color='red')
+            plt.plot(self.Pared_x_ds2,self.Pared_y_ds2,'o', color='black')
+            plt.plot(self.Pared_x_ds4,self.Pared_y_ds4,'o', color='black')
             plt.xlabel('X')
             plt.ylabel('Y')
             plt.title('Por posición de ruedas')
@@ -466,8 +498,22 @@ class Slave(Robot):
             
         plt.show()
             
-
-
+    def Paredes(self,angulo):
+        #print(len(self.T_Exploracion_x) , " -- ",len(self.T_Exploracion_y) , " -- " ,len(self.Pared_x) , " -- ",len(self.Pared_y))
+        if self.ds2_value<self.rango_max_dsen:
+            x = self.ds2_value*np.cos((angulo-90)*np.pi/180)/100
+            y = self.ds2_value*np.sin((angulo-90)*np.pi/180)/100
+            
+            self.Pared_x_ds2.append(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+x)
+            self.Pared_y_ds2.append(self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+y)
+        
+        if self.ds4_value<self.rango_max_dsen:
+            x = self.ds4_value*np.cos((angulo+90)*np.pi/180)/100
+            y = self.ds4_value*np.sin((angulo+90)*np.pi/180)/100
+            
+            self.Pared_x_ds4.append(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+x)
+            self.Pared_y_ds4.append(self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+y)
+        
 
 controller = Slave()
 controller.run()
