@@ -29,6 +29,7 @@ class Slave(Robot):
 
     Distancias_lineaRecta = []
     Angulos = []
+    Distancia_Total = 0
     
     showMap = False
     showStats = False
@@ -112,6 +113,7 @@ class Slave(Robot):
                 self.RotControl(self.angulo)  
                 
                 self.Explorar()
+                self.Graficas()
                 #print("sensor ds0: ", self.ds0_value)
             
             fGeneral = True  # Bandera general del proceso
@@ -233,8 +235,9 @@ class Slave(Robot):
             if self.ds5_value <= self.dMin:
                 self.angulo -=45
             return
-       
-    
+        
+        dis = 100
+        #if self.ds0_value < dis:                  
         if self.ds1_value > self.ds0_value:
             self.angulo = self.angulo -45
             #print("giro 1")
@@ -246,7 +249,7 @@ class Slave(Robot):
         elif self.ds3_value > self.ds0_value and self.ds3_value > self.ds1_value and self.ds3_value > self.ds5_value:
             self.angulo += 180
             #print("giro 3, 180°")    
-                
+                        
 
         
         """
@@ -292,7 +295,7 @@ class Slave(Robot):
         self.coef_velocidad = 0.1
         self.vel_max = 4
         
-        while (self.ds0_value >= self.ds2_value) and (self.ds0_value >= self.ds4_value ):
+        while (self.ds0_value >= self.ds2_value) and (self.ds0_value >= self.ds4_value) or self.ds0_value>100:
             self.DistanciaLineaRecta_Inicio()
             
             self.left_motor.setVelocity(self.vel_max*self.coef_velocidad)
@@ -305,13 +308,7 @@ class Slave(Robot):
             self.DistanciaLineaRecta_Fin()
             self.TrayectoriaExploracion()
             self.Paredes(self.angulo)
-          
-          
-            # Mostrar el trayecto explorado
-            if keyboard.is_pressed("m"):
-                self.showMap = True
-            if keyboard.is_pressed("s"):
-                self.showStats = True  
+           
             
             if self.cont == 4:
                 self.RotControl(self.angulo)
@@ -362,6 +359,7 @@ class Slave(Robot):
         #print(self.d_lineaRecta_Left,"  ",self.d_lineaRecta_Right, "  ",self.promedio_distancia_trayecto)
     
     def TrayectoriaExploracion(self):
+        self.Distancia_Total += self.promedio_distancia_trayecto
         T_exploracion_x_valor = self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+np.cos(self.angulo*np.pi/180)*self.promedio_distancia_trayecto
         T_exploracion_y_valor = self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+np.sin(self.angulo*np.pi/180)*self.promedio_distancia_trayecto
 
@@ -384,6 +382,31 @@ class Slave(Robot):
 
         self.error_GPS_revs.append(abs((v_aproximado-v_real)/abs(v_real))*100)
         
+        
+            
+    def Paredes(self,angulo):
+        #print(len(self.T_Exploracion_x) , " -- ",len(self.T_Exploracion_y) , " -- " ,len(self.Pared_x) , " -- ",len(self.Pared_y))
+        if self.ds2_value<self.rango_max_dsen:
+            x = self.ds2_value*np.cos((angulo-90)*np.pi/180)/100
+            y = self.ds2_value*np.sin((angulo-90)*np.pi/180)/100
+            
+            self.Pared_x_ds2.append(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+x)
+            self.Pared_y_ds2.append(self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+y)
+        
+        if self.ds4_value<self.rango_max_dsen:
+            x = self.ds4_value*np.cos((angulo+90)*np.pi/180)/100
+            y = self.ds4_value*np.sin((angulo+90)*np.pi/180)/100
+            
+            self.Pared_x_ds4.append(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+x)
+            self.Pared_y_ds4.append(self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+y)
+        
+    def Graficas(self):
+        # Mostrar el trayecto explorado
+        if keyboard.is_pressed("m"):
+            self.showMap = True
+        if keyboard.is_pressed("s"):
+            self.showStats = True 
+
         if self.showMap == True:
             self.showMap = False
             #print(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+self.delta_GPS_revs_x ,'  ' , self.nodos_GPS_x[len(self.nodos_GPS_x)-1])
@@ -407,7 +430,7 @@ class Slave(Robot):
             
             plt.plot(self.T_Exploracion_x, self.T_Exploracion_y, '-o', color='red')
             plt.plot(self.Pared_x_ds2,self.Pared_y_ds2,'o', color='black')
-            plt.plot(self.Pared_x_ds4,self.Pared_y_ds4,'o', color='black')
+            plt.plot(self.Pared_x_ds4,self.Pared_y_ds4,'o', color='blue')
             plt.xlabel('X')
             plt.ylabel('Y')
             plt.title('Por posición de ruedas')
@@ -440,6 +463,7 @@ class Slave(Robot):
             # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
         
         if self.showStats == True: 
+            print("Distancia total recorrida: ", self.Distancia_Total)
             self.showStats = False  
             # ------------------------- Crear una figura -------------------------- 
             # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
@@ -497,23 +521,6 @@ class Slave(Robot):
             # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
             
         plt.show()
-            
-    def Paredes(self,angulo):
-        #print(len(self.T_Exploracion_x) , " -- ",len(self.T_Exploracion_y) , " -- " ,len(self.Pared_x) , " -- ",len(self.Pared_y))
-        if self.ds2_value<self.rango_max_dsen:
-            x = self.ds2_value*np.cos((angulo-90)*np.pi/180)/100
-            y = self.ds2_value*np.sin((angulo-90)*np.pi/180)/100
-            
-            self.Pared_x_ds2.append(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+x)
-            self.Pared_y_ds2.append(self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+y)
-        
-        if self.ds4_value<self.rango_max_dsen:
-            x = self.ds4_value*np.cos((angulo+90)*np.pi/180)/100
-            y = self.ds4_value*np.sin((angulo+90)*np.pi/180)/100
-            
-            self.Pared_x_ds4.append(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+x)
-            self.Pared_y_ds4.append(self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+y)
-        
 
 controller = Slave()
 controller.run()

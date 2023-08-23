@@ -89,7 +89,7 @@ Robot {
           name "ds_0"
           lookupTable [
             0 0 0
-            1 300 0
+            2 200 0
           ]
           type "laser"
           aperture 0.1
@@ -104,7 +104,7 @@ Robot {
           name "ds_1"
           lookupTable [
             0 0 0
-            1 100 0
+            2 200 0
           ]
         }
         DistanceSensor {
@@ -113,7 +113,7 @@ Robot {
           name "ds_2"
           lookupTable [
             0 0 0
-            1 300 0
+            2 200 0
           ]
         }
         DistanceSensor {
@@ -122,7 +122,7 @@ Robot {
           name "ds_3"
           lookupTable [
             0 0 0
-            1 300 0
+            2 200 0
           ]
         }
         GPS {
@@ -132,8 +132,9 @@ Robot {
           name "ds_4"
           lookupTable [
             0 0 0
-            1 300 0
+            2 200 0
           ]
+          resolution 2
         }
         DistanceSensor {
           translation 0 0 0.085
@@ -141,7 +142,7 @@ Robot {
           name "ds_5"
           lookupTable [
             0 0 0
-            1 300 0
+            2 200 0
           ]
         }
       ]
