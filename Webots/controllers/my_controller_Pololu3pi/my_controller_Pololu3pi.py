@@ -31,8 +31,12 @@ class Slave(Robot):
     Angulos = []
     Distancia_Total = 0
     
+    # Banderas para activación desde teclado
     showMap = False
     showStats = False
+    show_WS = False
+    WS_2D_3D = False
+
     # Definiciones previas
     distanceSensors = []
     nodos_GPS_x = []
@@ -56,6 +60,11 @@ class Slave(Robot):
     Pared_y_ds3 = []
     Pared_y_ds4 = []
     Pared_y_ds5 = []
+    
+    #Espacio de trabajo 
+    WS_x = []
+    WS_y = []
+    #mapa_WS = np.array([])
     
     #*-*-*-*-*-*-*-*-* Valores iniciales *-*-*-*-*-*-*-*-*-*
     f_ValoresIniciales = True # Bandera valores iniciales 
@@ -98,7 +107,7 @@ class Slave(Robot):
         self.GPS.enable(self.timestep)
 
     def run(self):
-        print("m: mostrar mapa\ns: mostrar stats")
+        print("m: mostrar mapa\ns: mostrar stats\nw: mostrar espacio de trabajo")
         fGeneral = False
         self.angulo = 90
         self.dMin = 13 # Distancia minima del objeto en cm
@@ -108,7 +117,6 @@ class Slave(Robot):
 
         while self.step(self.timestep) != -1:
             if fGeneral:
-                
                 
                 self.DatosSensores()            
                 self.DecisionGiro()
@@ -303,12 +311,8 @@ class Slave(Robot):
         self.vel_max = 4
         self.ds0_min_val = 30
         while (self.ds0_value >= self.ds2_value) and (self.ds0_value >= self.ds4_value) or self.ds0_value>self.ds0_min_val:
-            # Mostrar el trayecto explorado
-            if keyboard.is_pressed("m"):
-                self.showMap = True
-            if keyboard.is_pressed("s"):
-                self.showStats = True 
-
+            # Verificar si se presiona una tecla 
+            self.KeyPress_Flag()
 
             self.DistanciaLineaRecta_Inicio()
             self.left_motor.setVelocity(self.vel_max*self.coef_velocidad)
@@ -422,11 +426,8 @@ class Slave(Robot):
             self.Pared_y_ds4.append(self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+y)
         
     def Graficas(self):
-        # Mostrar el trayecto explorado
-        if keyboard.is_pressed("m"):
-            self.showMap = True
-        if keyboard.is_pressed("s"):
-            self.showStats = True 
+        # Verificar si se presiona una tecla
+        self.KeyPress_Flag()
 
         if self.showMap == True:
             self.showMap = False
@@ -452,7 +453,7 @@ class Slave(Robot):
             plt.plot(self.T_Exploracion_x, self.T_Exploracion_y, '-o', color='red')
             plt.plot(self.Pared_x_ds2,self.Pared_y_ds2,'o', color='black')
             plt.plot(self.Pared_x_ds4,self.Pared_y_ds4,'o', color='black')
-            plt.plot(self.Pared_x_ds0,self.Pared_y_ds0,'o', color='blue')
+            plt.plot(self.Pared_x_ds0,self.Pared_y_ds0,'o', color='black')
 
             plt.xlabel('X')
             plt.ylabel('Y')
@@ -547,15 +548,213 @@ class Slave(Robot):
             # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
             # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
             """
+        if self.show_WS == True:
+            self.show_WS = False
+            self.EspacioTrabajo()
+            # ------------------------- Crear una figura -------------------------- 
+            # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+            # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+            self.fig3 = plt.figure()
+            self.fig3.suptitle('Espacio de trabajo')
+            # */*/*/*/*/*/*/*/*/*/*/*/* Crear una subfigura */*/*/*/*/*/*/*/*/*/*/*
+            self.ax1_fig3 = self.fig3.add_subplot(121)
+
+            # Configurar límites de los ejes
+            self.ax1_fig3.set_xlim(-5,50)
+            self.ax1_fig3.set_ylim(-5,50)
+
+            # Configurar aspecto de los ejes
+            self.ax1_fig3.set_aspect('equal')
+            self.ax1_fig3.grid(True)
+            
+            plt.title('mapa 2D')
+            plt.plot(self.WS_x,self.WS_y,'.',color='blue')
+            plt.xlabel('x')
+            plt.ylabel('y')     
+            # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+            # *-*-*-*-*-*-*-*-*-*-*-*-* Crear una subfigura *-*-*-*-*-*-*-*-*-*-*-*-*   
+            # (Trayectoria experimental, obtenida de las revoluciones de las ruedas)
+            self.ax2_fig3 = self.fig3.add_subplot(122)
+
+            # Configurar límites de los ejes
+            self.ax2_fig3.set_xlim(0, self.size_x*10)
+            self.ax2_fig3.set_ylim(0, self.size_y*10)
+
+            # Configurar aspecto de los ejes
+            self.ax2_fig3.set_aspect('equal')
+            self.ax2_fig3.grid(True)
+            
+            
+            
+            plt.plot(self.Pared_x_ds2,self.Pared_y_ds2,'o', color='black')
+            plt.plot(self.Pared_x_ds4,self.Pared_y_ds4,'o', color='black')
+            plt.plot(self.Pared_x_ds0,self.Pared_y_ds0,'o', color='black')
+
+            plt.xlabel('X')
+            plt.ylabel('Y')
+            plt.title('Por posición de ruedas')
+            plt.xlim(0,5)
+            plt.ylim(0,5)
+            plt.grid(True)
+
+            
+            # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+            # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/* 
+        if self.WS_2D_3D == True:
+            self.WS_2D_3D = False
+            self.Mapa_WS_2D_3D()
         plt.show()
 
     def Initial_Run_Ex(self):
         for i in [45,45,45,45,45,45,45,45]:
             self.angulo += i
             self.RotControl(self.angulo)
-            
+
+    def EspacioTrabajo(self):
+        print(" *-*-*-*-*-* Determinar espacio de trabajo *-*-*-*-*-*")
+        cant_columnas = 0
+        cant_filas = 0
+        factor = 15 # cada recuadro del mapa es de dimensiones (factor x factor)
+        d_sensors = [[self.Pared_x_ds0,self.Pared_y_ds0],
+                     [self.Pared_x_ds4,self.Pared_y_ds4],
+                     [self.Pared_x_ds2,self.Pared_y_ds2],
+                     ]
         
+        #WS_x = []
+        #WS_y = []
+        #mapa_WS = []
+
+        # preparar arrays para el espacio de trabajo
+        self.WS_x.clear()
+        self.WS_y.clear()
+
+        for d_sensor in d_sensors:
+            x_ds = d_sensor[0] # x de distance sensor 
+            y_ds = d_sensor[1] # x de distance sensor 
+            min_val_x = 0
+            min_val_y = 0
+            ws_origen_x, ws_origen_y = [],[]
+
+            for x in x_ds:
+                self.WS_x.append(int(x*factor))
+                if int(x*factor) < min_val_x:
+                    min_val_x = int(x*factor)
+
+            for y in y_ds:
+                self.WS_y.append(int(y*factor)) 
+                if int(y*factor) < min_val_y:
+                    min_val_y = int(y*factor)
+                  
+                
+                     
+        # Determinar la cantidad de filas y columnas
+        cant_columnas = max(self.WS_x)+1
+        cant_filas = max(self.WS_y) +1
+
+        total_puntos = len(self.WS_x)
+
+        # Colocar el origen del mapa en la esquina inferior izquierda
+        for i in range(total_puntos):
+            ws_origen_x.append(self.WS_x[i] + abs(min_val_x))
+            ws_origen_y.append(self.WS_y[i] + abs(min_val_y))
         
+        cant_columnas += abs(min_val_x)
+        cant_filas += abs(min_val_y)
+
+
+        # generar la matriz para el espacio de trabajo
+        self.mapa_WS= np.zeros((cant_filas,cant_columnas))
+        
+        for i in range(total_puntos):
+            x = ws_origen_x[i]
+            y = ws_origen_y[i]
+            #print("                  x: ", x, " - y: ",y)
+            self.mapa_WS[int(y),int(x)] = 1
+        #print(self.mapa_WS)
+
+    def Mapa_WS_2D_3D(self):
+        # Actualizar el espacio de trabajo
+        self.EspacioTrabajo()
+
+        
+        mapa = self.mapa_WS
+        # Obtener las dimensiones del mapa
+        #mapa_flip = np.flip(mapa,axis=0)
+        filas, columnas = mapa.shape
+
+
+        # Crear una figura 
+        fig = plt.figure()
+
+        ## -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        ## -+-+-+-+-+-+-+-+  Crear subfigura 1 -+-+-+-+-+-+-+-+
+        ax1 = fig.add_subplot(121)
+
+        # Configurar límites de los ejes
+        ax1.set_xlim(0, columnas)
+        ax1.set_ylim(0, filas)
+
+        # Configurar aspecto de los ejes
+        ax1.set_aspect('equal')
+        ax1.grid(True)
+
+        # Iterar sobre el mapa y graficar obstáculos
+        for fila in range(filas):
+            for columna in range(columnas):
+                if mapa[fila, columna] == 1:
+                    # Dibujar obstáculo
+                    rect = plt.Rectangle((columna, fila), 1, 1, facecolor='black')
+                    ax1.add_patch(rect)
+
+        # Configurar los ejes
+        ax1.set_xlabel('X')
+        ax1.set_ylabel('Y')
+
+
+
+        ## -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        ## -+-+-+-+-+-+-+-+  Crear subfigura 2 -+-+-+-+-+-+-+-+
+
+        ax2 = fig.add_subplot(122, projection='3d')
+
+
+        # Configurar límites de los ejes
+        ax2.set_xlim(0, columnas)
+        ax2.set_ylim(0, filas)
+        ax2.set_zlim(0, 1)
+
+        # Configurar aspecto de los ejes
+        ax2.set_box_aspect([1, 1, 0.1])
+        ax2.grid(True)
+
+        # Iterar sobre el mapa y graficar obstáculos
+        for fila in range(filas):
+            for columna in range(columnas):
+                if mapa[fila, columna] == 1:
+                    # Dibujar obstáculo como una caja
+                    x = columna
+                    y = fila
+                    z = 0
+                    dx = 1
+                    dy = 1
+                    dz = 1
+                    ax2.bar3d(x, y, z, dx, dy, dz, color='black')
+
+        # Mostrar la gráfica
+        plt.show()
+
+    def KeyPress_Flag(self):
+        if keyboard.is_pressed("m"):
+            self.showMap = True
+        if keyboard.is_pressed("s"):
+            self.showStats = True 
+        if keyboard.is_pressed("w"):
+            self.show_WS = True 
+        if keyboard.is_pressed("1"):
+            self.WS_2D_3D = True 
+
+   
+                
 
 
 
