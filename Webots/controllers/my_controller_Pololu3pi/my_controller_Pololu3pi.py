@@ -183,7 +183,7 @@ class Slave(Robot):
         eO_1 = 0
         eO = 1.0
         
-        while eO > 0.005:
+        while eO > 0.003:
             self.DatosSensores()
             self.Paredes(self.rotz*180/np.pi)
             x = 0.5
@@ -208,7 +208,7 @@ class Slave(Robot):
             w = kpO*eO + kiO*EO + kdO*eO_D
             eO_1 = eO
             
-            if eO >=0.005:
+            if eO >=0.003:
                 if flag_dGiro == True:
                     giroder = (w*self.distanceCenter)/self.wheelRadius
                     giroiz = -(w*self.distanceCenter)/self.wheelRadius
@@ -216,15 +216,15 @@ class Slave(Robot):
                     giroder = -(w*self.distanceCenter)/self.wheelRadius
                     giroiz = (w*self.distanceCenter)/self.wheelRadius
 
-                if giroder >= 0.3:
-                    giroder = 0.3
-                if giroder <= -0.3:
-                    giroder = -0.3
+                if giroder >= 1:
+                    giroder = 1
+                if giroder <= -1:
+                    giroder = -1
 
-                if giroiz >= 0.3:
-                    giroiz = 0.3
-                if giroiz <= -0.3:
-                    giroiz = -0.3
+                if giroiz >= 1:
+                    giroiz = 1
+                if giroiz <= -1:
+                    giroiz = -1
 
                 self.right_motor.setVelocity(giroder)
                 self.left_motor.setVelocity(giroiz)
@@ -303,7 +303,7 @@ class Slave(Robot):
         print("++++ GIRO FORZADO ")
         """
 
-    def Explorar(self):                
+    def Explorar(self):
      
         self.avanzar = True
         self.cont = 0
@@ -615,11 +615,19 @@ class Slave(Robot):
         cant_columnas = 0
         cant_filas = 0
         factor = 15 # cada recuadro del mapa es de dimensiones (factor x factor)
+        """
         d_sensors = [[self.Pared_x_ds0,self.Pared_y_ds0],
-                     [self.Pared_x_ds4,self.Pared_y_ds4],
+                     [self.Pared_x_ds1,self.Pared_y_ds1],
                      [self.Pared_x_ds2,self.Pared_y_ds2],
+                     [self.Pared_x_ds3,self.Pared_y_ds3],
+                     [self.Pared_x_ds4,self.Pared_y_ds4],
+                     [self.Pared_x_ds5,self.Pared_y_ds5],
                      ]
-        
+        """
+        d_sensors = [[self.Pared_x_ds0,self.Pared_y_ds0],
+                     [self.Pared_x_ds2,self.Pared_y_ds2],
+                     [self.Pared_x_ds4,self.Pared_y_ds4],
+                     ]
         #WS_x = []
         #WS_y = []
         #mapa_WS = []
