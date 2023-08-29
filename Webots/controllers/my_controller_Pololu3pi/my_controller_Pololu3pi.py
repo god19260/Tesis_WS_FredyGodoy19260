@@ -113,6 +113,7 @@ class Slave(Robot):
 
     def run(self):
         print("m: mostrar mapa\ns: mostrar stats\nw: mostrar espacio de trabajo")
+        print("\n1: mostrar WS en 2D y 3D\n2: mostrar trayectoria óptima")
         fGeneral = False
         self.angulo = 90
         self.dMin = 13 # Distancia minima del objeto en cm
@@ -261,7 +262,7 @@ class Slave(Robot):
 
         elif self.ds3_value > self.ds0_value and self.ds3_value > self.ds1_value and self.ds3_value > self.ds5_value:
             self.angulo += 180
-            print("giro 3, 180°") 
+            #print("giro 3, 180°") 
               
         else:
             self.angulo += 90
@@ -622,7 +623,7 @@ class Slave(Robot):
             self.RotControl(self.angulo)
 
     def EspacioTrabajo(self):
-        print(" *-*-*-*-*-* Determinar espacio de trabajo *-*-*-*-*-*")
+        #print(" *-*-*-*-*-* Determinar espacio de trabajo *-*-*-*-*-*")
         cant_columnas = 0
         cant_filas = 0
         factor = 10 # cada recuadro del mapa es de dimensiones (factor x factor)
@@ -767,6 +768,16 @@ class Slave(Robot):
                     dy = 1
                     dz = 1
                     ax2.bar3d(x, y, z, dx, dy, dz, color='black')
+        
+        try:
+            # Graficar ruta optima
+            x = [posicion[1] + 0.5 for posicion in self.ruta_optima]
+            y = [posicion[0] + 0.5 for posicion in self.ruta_optima]
+            #plt.plot(inicio[1]+0.5,inicio[0]+0.5,'-o',color='blue')
+            
+            plt.plot(x, y, 'o', color='green')
+        except:
+            print("No se generó ruta óptima, verificar puntos seleccionados.")    
 
         # Mostrar la gráfica
         plt.show()
