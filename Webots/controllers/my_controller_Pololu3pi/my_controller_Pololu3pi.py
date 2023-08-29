@@ -5,6 +5,8 @@ import math
 import matplotlib.pyplot as plt
 import keyboard
 
+import Gen_Trayectoria
+
 class Slave(Robot):
     # get the time step of the current world.
     timestep = 5
@@ -24,6 +26,8 @@ class Slave(Robot):
     distAnterior_Left = 0
 
     # Trayectoria de la exploración separada en coordenadas
+    x_vehiculo = 0
+    y_vehiculo = 0
     T_Exploracion_x = [0]
     T_Exploracion_y = [0]
 
@@ -36,6 +40,7 @@ class Slave(Robot):
     showStats = False
     show_WS = False
     WS_2D_3D = False
+    WS_Trayec_2D_3D = False
 
     # Definiciones previas
     distanceSensors = []
@@ -117,16 +122,13 @@ class Slave(Robot):
 
         while self.step(self.timestep) != -1:
             if fGeneral:
-                
                 self.DatosSensores()            
                 self.DecisionGiro()
                 self.RotControl(self.angulo)  
-                
+
                 self.Explorar()
-                
                 #self.Initial_Run_Ex()
                 self.Graficas()
-                
             else:
                 self.DatosSensores()            
                 self.Initial_Run_Ex()
@@ -380,11 +382,13 @@ class Slave(Robot):
     
     def TrayectoriaExploracion(self):
         self.Distancia_Total += self.promedio_distancia_trayecto
-        T_exploracion_x_valor = self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+np.cos(self.angulo*np.pi/180)*self.promedio_distancia_trayecto
-        T_exploracion_y_valor = self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+np.sin(self.angulo*np.pi/180)*self.promedio_distancia_trayecto
+       
+        self.x_vehiculo = self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+np.cos(self.angulo*np.pi/180)*self.promedio_distancia_trayecto
+        self.y_vehiculo = self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+np.sin(self.angulo*np.pi/180)*self.promedio_distancia_trayecto
 
-        self.T_Exploracion_x.append(T_exploracion_x_valor) # Trayectoria exploración coordenada en x
-        self.T_Exploracion_y.append(T_exploracion_y_valor) # Trayectoria exploración coordenada en y
+        self.T_Exploracion_x.append(self.x_vehiculo) # Trayectoria exploración coordenada en x
+        self.T_Exploracion_y.append(self.y_vehiculo) # Trayectoria exploración coordenada en y 
+
         #print(np.sin(self.angulo*np.pi/180), "  ", self.angulo )
         
         # valores obtenidos con base al sensor GPS de webots 
@@ -548,6 +552,7 @@ class Slave(Robot):
             # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
             # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
             """
+        
         if self.show_WS == True:
             self.show_WS = False
             self.EspacioTrabajo()
@@ -600,11 +605,17 @@ class Slave(Robot):
             
             # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
             # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/* 
+        
         if self.WS_2D_3D == True:
             self.WS_2D_3D = False
             self.Mapa_WS_2D_3D()
+            
+        if self.WS_Trayec_2D_3D == True:
+            self.WS_Trayec_2D_3D = False
+            self.Mapa_WS_Trayec_2D_3D()
+            
         plt.show()
-
+        
     def Initial_Run_Ex(self):
         for i in [45,45,45,45,45,45,45,45]:
             self.angulo += i
@@ -614,7 +625,7 @@ class Slave(Robot):
         print(" *-*-*-*-*-* Determinar espacio de trabajo *-*-*-*-*-*")
         cant_columnas = 0
         cant_filas = 0
-        factor = 15 # cada recuadro del mapa es de dimensiones (factor x factor)
+        factor = 10 # cada recuadro del mapa es de dimensiones (factor x factor)
         """
         d_sensors = [[self.Pared_x_ds0,self.Pared_y_ds0],
                      [self.Pared_x_ds1,self.Pared_y_ds1],
@@ -679,7 +690,87 @@ class Slave(Robot):
             #print("                  x: ", x, " - y: ",y)
             self.mapa_WS[int(y),int(x)] = 1
         #print(self.mapa_WS)
+        
+    def Mapa_WS_Trayec_2D_3D(self):
+        # Actualizar el espacio de trabajo
+        self.EspacioTrabajo()
 
+        self.ruta_optima =Gen_Trayectoria.dijkstra(self.mapa_WS,int(10*self.x_vehiculo),int(10*self.y_vehiculo),2,2)
+        
+        mapa = self.mapa_WS
+        # Obtener las dimensiones del mapa
+        #mapa_flip = np.flip(mapa,axis=0)
+        filas, columnas = mapa.shape
+
+
+        # Crear una figura 
+        fig = plt.figure()
+
+        ## -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        ## -+-+-+-+-+-+-+-+  Crear subfigura 1 -+-+-+-+-+-+-+-+
+        ax1 = fig.add_subplot(121)
+
+        # Configurar límites de los ejes
+        ax1.set_xlim(0, columnas)
+        ax1.set_ylim(0, filas)
+
+        # Configurar aspecto de los ejes
+        ax1.set_aspect('equal')
+        ax1.grid(True)
+
+        # Iterar sobre el mapa y graficar obstáculos
+        for fila in range(filas):
+            for columna in range(columnas):
+                if mapa[fila, columna] == 1:
+                    # Dibujar obstáculo
+                    rect = plt.Rectangle((columna, fila), 1, 1, facecolor='black')
+                    ax1.add_patch(rect)
+
+        # Configurar los ejes
+        ax1.set_xlabel('X')
+        ax1.set_ylabel('Y')
+
+        try:
+            # Graficar ruta optima
+            x = [posicion[1] + 0.5 for posicion in self.ruta_optima]
+            y = [posicion[0] + 0.5 for posicion in self.ruta_optima]
+            #plt.plot(inicio[1]+0.5,inicio[0]+0.5,'-o',color='blue')
+            
+            plt.plot(x, y, '-o', color='green')
+        except:
+            print("No se generó ruta óptima, verificar puntos seleccionados.")    
+
+        ## -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        ## -+-+-+-+-+-+-+-+  Crear subfigura 2 -+-+-+-+-+-+-+-+
+
+        ax2 = fig.add_subplot(122, projection='3d')
+
+
+        # Configurar límites de los ejes
+        ax2.set_xlim(0, columnas)
+        ax2.set_ylim(0, filas)
+        ax2.set_zlim(0, 1)
+
+        # Configurar aspecto de los ejes
+        ax2.set_box_aspect([1, 1, 0.1])
+        ax2.grid(True)
+
+        # Iterar sobre el mapa y graficar obstáculos
+        for fila in range(filas):
+            for columna in range(columnas):
+                if mapa[fila, columna] == 1:
+                    # Dibujar obstáculo como una caja
+                    x = columna
+                    y = fila
+                    z = 0
+                    dx = 1
+                    dy = 1
+                    dz = 1
+                    ax2.bar3d(x, y, z, dx, dy, dz, color='black')
+
+        # Mostrar la gráfica
+        plt.show()
+        
     def Mapa_WS_2D_3D(self):
         # Actualizar el espacio de trabajo
         self.EspacioTrabajo()
@@ -717,8 +808,6 @@ class Slave(Robot):
         # Configurar los ejes
         ax1.set_xlabel('X')
         ax1.set_ylabel('Y')
-
-
 
         ## -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
         ## -+-+-+-+-+-+-+-+  Crear subfigura 2 -+-+-+-+-+-+-+-+
@@ -760,11 +849,8 @@ class Slave(Robot):
             self.show_WS = True 
         if keyboard.is_pressed("1"):
             self.WS_2D_3D = True 
-
-   
-                
-
-
+        if keyboard.is_pressed("2"):
+            self.WS_Trayec_2D_3D = True     
 
 controller = Slave()
 controller.run()
