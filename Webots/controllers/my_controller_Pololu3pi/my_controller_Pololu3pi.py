@@ -9,11 +9,11 @@ import Gen_Trayectoria
 
 class Slave(Robot):
     # get the time step of the current world.
-    timestep = 5
+    timestep = 2
 
     # Especificaciones del mundo
     size_x = 5 #mt
-    size_y = 7 #mt
+    size_y = 5 #mt
 
     # Caracteristicas del robot
     maxSpeed = 0.035 #mt/s

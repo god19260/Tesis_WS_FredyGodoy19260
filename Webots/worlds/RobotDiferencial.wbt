@@ -9,13 +9,13 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.5826941972182316 0.5758260582874561 0.5734909093659043 2.0893103509425606
-  position 0.015832749592827267 0.13922257844264302 22.147434145449115
+  position -1.0404905527485675 0.138700981997564 15.333420156292744
   follow "rectangle arena"
 }
 TexturedBackgroundLight {
 }
 RectangleArena {
-  floorSize 5 7
+  floorSize 5 5
   floorAppearance Parquetry {
     type "chequered"
     colorOverride 0.392157 0.545098 0.784314
@@ -328,10 +328,10 @@ Wall {
   size 2 0.08 0.1
 }
 Wall {
-  translation -2.13 -0.99999 0
+  translation -2.13 -0.49999 0
   rotation 0 0 1 1.5708
   name "wall(1)"
-  size 5 0.08 0.1
+  size 4 0.08 0.1
 }
 Wall {
   translation -0.130006 0.49001 0
