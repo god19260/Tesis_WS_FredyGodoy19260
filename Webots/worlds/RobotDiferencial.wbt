@@ -2,7 +2,6 @@
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/BrushedAluminium.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/apartment_structure/protos/Wall.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/Parquetry.proto"
 
@@ -10,20 +9,17 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.5826941972182316 0.5758260582874561 0.5734909093659043 2.0893103509425606
-  position -0.6788270176906619 -0.08415850907372803 17.44105592381309
+  position 0.015832749592827267 0.13922257844264302 22.147434145449115
   follow "rectangle arena"
 }
 TexturedBackgroundLight {
 }
 RectangleArena {
-  floorSize 5 5
+  floorSize 5 7
   floorAppearance Parquetry {
     type "chequered"
     colorOverride 0.392157 0.545098 0.784314
-    IBLStrength 2
-  }
-  wallAppearance BrushedAluminium {
-    IBLStrength 0
+    IBLStrength 6
   }
 }
 Robot {
@@ -163,7 +159,7 @@ Robot {
       ]
       endPoint Solid {
         translation 0.06999999999204387 -4.329353291487266e-06 0.03699548236557448
-        rotation 0.6279840611656492 0.46032556131834773 0.6274841802936916 2.2781727243760175
+        rotation 0.6279840611656492 0.46032556131834784 0.6274841802936916 2.2781727243760175
         children [
           DEF wheel_1 Shape {
             appearance PBRAppearance {
@@ -233,7 +229,7 @@ Robot {
         axis 0 1 0
       }
       endPoint Solid {
-        translation -2.317790246775386e-05 0.0600514323752086 0.01199982532237028
+        translation -2.3177902467753968e-05 0.0600514323752086 0.011999825322370278
         rotation 0.2783852881333375 -0.9114204473313267 0.3030089099965266 1.767711254242357
         children [
           DEF CasterBall_1 Shape {
@@ -268,7 +264,7 @@ Robot {
       }
       endPoint Solid {
         translation 2.306034731103157e-05 -0.0600518344247174 0.01199978469415002
-        rotation 0.7266442753117308 0.5554692845964303 0.40427957037997764 2.5122886702366185
+        rotation 0.7266442753117307 0.5554692845964304 0.4042795703799779 2.512288670236619
         children [
           DEF CasterBall_2 Shape {
             appearance PBRAppearance {
@@ -332,10 +328,10 @@ Wall {
   size 2 0.08 0.1
 }
 Wall {
-  translation -2.13 -0.499991 0
+  translation -2.13 -0.99999 0
   rotation 0 0 1 1.5708
   name "wall(1)"
-  size 4 0.08 0.1
+  size 5 0.08 0.1
 }
 Wall {
   translation -0.130006 0.49001 0

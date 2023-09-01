@@ -13,7 +13,7 @@ class Slave(Robot):
 
     # Especificaciones del mundo
     size_x = 5 #mt
-    size_y = 5 #mt
+    size_y = 7 #mt
 
     # Caracteristicas del robot
     maxSpeed = 0.035 #mt/s
@@ -69,6 +69,8 @@ class Slave(Robot):
     #Espacio de trabajo 
     WS_x = []
     WS_y = []
+    min_val_x = 0
+    min_val_y = 0
     #mapa_WS = np.array([])
     
     #*-*-*-*-*-*-*-*-* Valores iniciales *-*-*-*-*-*-*-*-*-*
@@ -77,7 +79,6 @@ class Slave(Robot):
     PS_Right_StartValue = 0
     PS_Left_StartValue = 0
     #*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-
 
     def __init__(self):
         super(Slave, self).__init__()
@@ -179,9 +180,9 @@ class Slave(Robot):
     def RotControl(self,rotz):
         #print("Función: Rot Control")
         # PID orientación
-        kpO = 1*10
+        kpO = 15
         kiO = 0.001 
-        kdO = 0
+        kdO = 1
         EO = 0
         eO_1 = 0
         eO = 1.0
@@ -219,15 +220,19 @@ class Slave(Robot):
                     giroder = -(w*self.distanceCenter)/self.wheelRadius
                     giroiz = (w*self.distanceCenter)/self.wheelRadius
 
-                if giroder >= 1:
-                    giroder = 1
-                if giroder <= -1:
-                    giroder = -1
-
-                if giroiz >= 1:
-                    giroiz = 1
-                if giroiz <= -1:
-                    giroiz = -1
+                if giroder >= 0.5:
+                    giroder = 0.5
+                    giroiz = -0.5
+                elif giroder <= -0.5:
+                    giroder = -0.5
+                    giroiz = 0.5
+                
+                """
+                if giroiz >= 0.5:
+                    giroiz = 0.5
+                elif giroiz <= -0.5:
+                    giroiz = -0.5
+                """
 
                 self.right_motor.setVelocity(giroder)
                 self.left_motor.setVelocity(giroiz)
@@ -240,7 +245,7 @@ class Slave(Robot):
                 break
             
     def DecisionGiro(self):
-        #print("Función: Decisión giro")
+        #print(self.angulo, "   -   ", self.rotz_g)
         # Función para determinar la siguiente acción de giro
         if self.avanzar == False:
             if self.ds1_value <= self.dMin:
@@ -261,15 +266,20 @@ class Slave(Robot):
             #print("giro 2")
 
         elif self.ds3_value > self.ds0_value and self.ds3_value > self.ds1_value and self.ds3_value > self.ds5_value:
-            self.angulo += 180
+            self.angulo += 180 
             #print("giro 3, 180°") 
               
         else:
-            self.angulo += 90
+            self.angulo += 180
             #print("giro 3, 180°")  
-                        
-
         
+        """
+        self.angulo= self.angulo % 360
+        if self.angulo > 180:
+            self.angulo -= 360
+        elif self.angulo < -180:
+            self.angulo += 360
+        """
         """
         if self.ds1_value >= self.ds0_value and self.ds1_value >= self.ds5_value:
             if self.ds2_value >= self.ds4_value and self.ds2_value >= self.ds0_value and self.ds1_value >= self.dMin and self.ds2_value >= self.dMin:
@@ -334,7 +344,7 @@ class Slave(Robot):
             else:
                 self.ds0_min_val = 100
 
-            if self.cont == 4:
+            if self.cont == 9:
                 self.RotControl(self.angulo)
                 self.cont = 0
             self.cont +=1        
@@ -354,7 +364,7 @@ class Slave(Robot):
             
             if self.step(self.timestep) == -1:
                 break
-        while self.coef_velocidad > 0.5:
+        while self.coef_velocidad > 0:
             self.left_motor.setVelocity(self.vel_max*self.coef_velocidad)
             self.right_motor.setVelocity(self.vel_max*self.coef_velocidad)
             self.coef_velocidad -= 0.05
@@ -397,16 +407,17 @@ class Slave(Robot):
         self.nodos_GPS_y.append(self.GPS_values[1]+self.size_y/2)
 
         # porcentaje de error
-        self.delta_GPS_revs_x = abs(self.T_Exploracion_x[0]-self.nodos_GPS_x[1])
-        self.delta_GPS_revs_y = abs(self.T_Exploracion_y[0]-self.nodos_GPS_y[1])
-
+        self.delta_GPS_revs_x = abs(0-self.nodos_GPS_x[0])
+        self.delta_GPS_revs_y = abs(0-self.nodos_GPS_y[0])
+        
         v_aproximado = np.sqrt((self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+self.delta_GPS_revs_x)**2+(self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+self.delta_GPS_revs_y)**2)
         v_real = np.sqrt(self.nodos_GPS_x[len(self.nodos_GPS_x)-1]**2 +self.nodos_GPS_y[len(self.nodos_GPS_y)-1]**2)
-        #v_aproximado = T_exploracion_x_valor+self.delta_GPS_revs_x
-        #v_real = self.GPS_values[0]+self.size_x/2
+        #v_aproximado = round(self.y_vehiculo+self.delta_GPS_revs_y,4)
+        #v_real = round(self.GPS_values[1]+self.size_y/2,4) 
 
         self.error_GPS_revs.append(abs((v_aproximado-v_real)/abs(v_real))*100)
-            
+        #print(self.GPS_values[0]+self.size_x/2," -- ",self.GPS_values[1]+self.size_y/2," || ",self.x_vehiculo+self.delta_GPS_revs_x," -- ",self.y_vehiculo+self.delta_GPS_revs_y)
+
     def Paredes(self,angulo):
         #print(len(self.T_Exploracion_x) , " -- ",len(self.T_Exploracion_y) , " -- " ,len(self.Pared_x) , " -- ",len(self.Pared_y))
         if self.ds0_value<self.rango_max_dsen:
@@ -575,6 +586,7 @@ class Slave(Robot):
             
             plt.title('mapa 2D')
             plt.plot(self.WS_x,self.WS_y,'.',color='blue')
+            plt.plot((self.factorWS*self.x_vehiculo),(self.factorWS*self.y_vehiculo),'o',color = 'red')
             plt.xlabel('x')
             plt.ylabel('y')     
             # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
@@ -595,7 +607,8 @@ class Slave(Robot):
             plt.plot(self.Pared_x_ds2,self.Pared_y_ds2,'o', color='black')
             plt.plot(self.Pared_x_ds4,self.Pared_y_ds4,'o', color='black')
             plt.plot(self.Pared_x_ds0,self.Pared_y_ds0,'o', color='black')
-
+            plt.plot((self.x_vehiculo),(self.y_vehiculo),'o',color = 'red')
+            
             plt.xlabel('X')
             plt.ylabel('Y')
             plt.title('Por posición de ruedas')
@@ -626,7 +639,7 @@ class Slave(Robot):
         #print(" *-*-*-*-*-* Determinar espacio de trabajo *-*-*-*-*-*")
         cant_columnas = 0
         cant_filas = 0
-        factor = 10 # cada recuadro del mapa es de dimensiones (factor x factor)
+        self.factorWS = 10 # cada recuadro del mapa es de dimensiones (factor x factor)
         """
         d_sensors = [[self.Pared_x_ds0,self.Pared_y_ds0],
                      [self.Pared_x_ds1,self.Pared_y_ds1],
@@ -651,19 +664,18 @@ class Slave(Robot):
         for d_sensor in d_sensors:
             x_ds = d_sensor[0] # x de distance sensor 
             y_ds = d_sensor[1] # x de distance sensor 
-            min_val_x = 0
-            min_val_y = 0
+    
             ws_origen_x, ws_origen_y = [],[]
 
             for x in x_ds:
-                self.WS_x.append(int(x*factor))
-                if int(x*factor) < min_val_x:
-                    min_val_x = int(x*factor)
+                self.WS_x.append(int(x*self.factorWS))
+                if int(x*self.factorWS) < self.min_val_x:
+                    self.min_val_x = int(x*self.factorWS)
 
             for y in y_ds:
-                self.WS_y.append(int(y*factor)) 
-                if int(y*factor) < min_val_y:
-                    min_val_y = int(y*factor)
+                self.WS_y.append(int(y*self.factorWS)) 
+                if int(y*self.factorWS) < self.min_val_y:
+                    self.min_val_y = int(y*self.factorWS)
                   
                 
                      
@@ -675,11 +687,11 @@ class Slave(Robot):
 
         # Colocar el origen del mapa en la esquina inferior izquierda
         for i in range(total_puntos):
-            ws_origen_x.append(self.WS_x[i] + abs(min_val_x))
-            ws_origen_y.append(self.WS_y[i] + abs(min_val_y))
+            ws_origen_x.append(self.WS_x[i] + abs(self.min_val_x))
+            ws_origen_y.append(self.WS_y[i] + abs(self.min_val_y))
         
-        cant_columnas += abs(min_val_x)
-        cant_filas += abs(min_val_y)
+        cant_columnas += abs(self.min_val_x)
+        cant_filas += abs(self.min_val_y)
 
 
         # generar la matriz para el espacio de trabajo
@@ -695,8 +707,11 @@ class Slave(Robot):
     def Mapa_WS_Trayec_2D_3D(self):
         # Actualizar el espacio de trabajo
         self.EspacioTrabajo()
-
-        self.ruta_optima =Gen_Trayectoria.dijkstra(self.mapa_WS,int(10*self.x_vehiculo),int(10*self.y_vehiculo),2,2)
+        origin_x = int(-self.min_val_x +self.factorWS*self.T_Exploracion_x[1])
+        origin_y = int(-self.min_val_y +self.factorWS*self.T_Exploracion_y[1])
+        x = int(-self.min_val_x + self.factorWS*self.x_vehiculo)
+        y = int(-self.min_val_y + self.factorWS*self.y_vehiculo)
+        self.ruta_optima =Gen_Trayectoria.dijkstra(self.mapa_WS,x,y,origin_x,origin_y)
         
         mapa = self.mapa_WS
         # Obtener las dimensiones del mapa
