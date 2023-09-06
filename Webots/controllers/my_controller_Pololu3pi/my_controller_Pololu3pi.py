@@ -9,7 +9,7 @@ import Gen_Trayectoria
 
 class Slave(Robot):
     # get the time step of the current world.
-    timestep = 2
+    timestep = 3
 
     # Especificaciones del mundo
     size_x = 5 #mt
@@ -41,6 +41,7 @@ class Slave(Robot):
     show_WS = False
     WS_2D_3D = False
     WS_Trayec_2D_3D = False
+    Tray_Control = False
 
     # Definiciones previas
     distanceSensors = []
@@ -78,6 +79,14 @@ class Slave(Robot):
     # sensores de posición de los motores
     PS_Right_StartValue = 0
     PS_Left_StartValue = 0
+
+    # Función de odometría
+    PS_Right_Anterior = 0
+    PS_Left_Anterior = 0
+    
+    phi = 0
+    xc = [0]
+    yc = [0]
     #*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
     def __init__(self):
@@ -117,6 +126,7 @@ class Slave(Robot):
         print("\n1: mostrar WS en 2D y 3D\n2: mostrar trayectoria óptima")
         fGeneral = False
         self.angulo = 90
+        self.phi = self.angulo # funcion de odometria
         self.dMin = 13 # Distancia minima del objeto en cm
         self.rangoSenDis = 50 # Distancia máxima de sensado
         self.avanzar = False
@@ -131,6 +141,7 @@ class Slave(Robot):
                 self.Explorar()
                 #self.Initial_Run_Ex()
                 self.Graficas()
+                
             else:
                 self.DatosSensores()            
                 self.Initial_Run_Ex()
@@ -180,15 +191,16 @@ class Slave(Robot):
     def RotControl(self,rotz):
         #print("Función: Rot Control")
         # PID orientación
-        kpO = 15
+        kpO = 15 #15
         kiO = 0.001 
-        kdO = 1
+        kdO = 1 #1
         EO = 0
         eO_1 = 0
         eO = 1.0
         
         while eO > 0.003:
             self.DatosSensores()
+            self.Odometria()
             self.Paredes(self.rotz*180/np.pi)
             x = 0.5
             y = 0.5
@@ -334,7 +346,8 @@ class Slave(Robot):
                 self.coef_velocidad += 0.05
             # Actualizar los valores de los sensores
             self.DatosSensores()
-
+            self.Odometria()
+            
             self.DistanciaLineaRecta_Fin()
             self.TrayectoriaExploracion()
             self.Paredes(self.angulo)
@@ -441,6 +454,20 @@ class Slave(Robot):
             self.Pared_x_ds4.append(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+x)
             self.Pared_y_ds4.append(self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+y)
         
+        if self.ds1_value<self.rango_max_dsen:
+            x = self.ds1_value*np.cos((angulo-45)*np.pi/180)/100
+            y = self.ds1_value*np.sin((angulo-45)*np.pi/180)/100
+            
+            self.Pared_x_ds1.append(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+x)
+            self.Pared_y_ds1.append(self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+y)
+        
+        if self.ds5_value<self.rango_max_dsen:
+            x = self.ds5_value*np.cos((angulo+45)*np.pi/180)/100
+            y = self.ds5_value*np.sin((angulo+45)*np.pi/180)/100
+            
+            self.Pared_x_ds5.append(self.T_Exploracion_x[len(self.T_Exploracion_x)-1]+x)
+            self.Pared_y_ds5.append(self.T_Exploracion_y[len(self.T_Exploracion_y)-1]+y)
+
     def Graficas(self):
         # Verificar si se presiona una tecla
         self.KeyPress_Flag()
@@ -607,6 +634,8 @@ class Slave(Robot):
             plt.plot(self.Pared_x_ds2,self.Pared_y_ds2,'o', color='black')
             plt.plot(self.Pared_x_ds4,self.Pared_y_ds4,'o', color='black')
             plt.plot(self.Pared_x_ds0,self.Pared_y_ds0,'o', color='black')
+            plt.plot(self.Pared_x_ds1,self.Pared_y_ds1,'o', color='black')
+            plt.plot(self.Pared_x_ds5,self.Pared_y_ds5,'o', color='black')
             plt.plot((self.x_vehiculo),(self.y_vehiculo),'o',color = 'red')
             
             plt.xlabel('X')
@@ -627,7 +656,10 @@ class Slave(Robot):
         if self.WS_Trayec_2D_3D == True:
             self.WS_Trayec_2D_3D = False
             self.Mapa_WS_Trayec_2D_3D()
-            
+
+        if self.Tray_Control == True:
+            self.Tray_Control = False
+            self.Control_pos()   
         plt.show()
         
     def Initial_Run_Ex(self):
@@ -650,8 +682,10 @@ class Slave(Robot):
                      ]
         """
         d_sensors = [[self.Pared_x_ds0,self.Pared_y_ds0],
+                     [self.Pared_x_ds1,self.Pared_y_ds1],
                      [self.Pared_x_ds2,self.Pared_y_ds2],
                      [self.Pared_x_ds4,self.Pared_y_ds4],
+                     [self.Pared_x_ds5,self.Pared_y_ds5]
                      ]
         #WS_x = []
         #WS_y = []
@@ -753,9 +787,10 @@ class Slave(Robot):
             #plt.plot(inicio[1]+0.5,inicio[0]+0.5,'-o',color='blue')
             
             plt.plot(x, y, '-o', color='green')
+            plt.plot(x[0],y[0],'o',color = 'red')
         except:
             print("No se generó ruta óptima, verificar puntos seleccionados.")    
-
+        
         ## -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
         ## -+-+-+-+-+-+-+-+  Crear subfigura 2 -+-+-+-+-+-+-+-+
 
@@ -791,9 +826,11 @@ class Slave(Robot):
             #plt.plot(inicio[1]+0.5,inicio[0]+0.5,'-o',color='blue')
             
             plt.plot(x, y, 'o', color='green')
+            plt.plot(x[0],y[0],'o',color = 'red')
         except:
             print("No se generó ruta óptima, verificar puntos seleccionados.")    
-
+       
+        
         # Mostrar la gráfica
         plt.show()
         
@@ -830,7 +867,7 @@ class Slave(Robot):
                     # Dibujar obstáculo
                     rect = plt.Rectangle((columna, fila), 1, 1, facecolor='black')
                     ax1.add_patch(rect)
-
+        plt.plot(int(self.factorWS*(self.x_vehiculo)),int(self.factorWS*(self.y_vehiculo)),'o',color = 'red')
         # Configurar los ejes
         ax1.set_xlabel('X')
         ax1.set_ylabel('Y')
@@ -863,6 +900,7 @@ class Slave(Robot):
                     dz = 1
                     ax2.bar3d(x, y, z, dx, dy, dz, color='black')
 
+        plt.plot(int(self.factorWS*(self.x_vehiculo)),int(self.factorWS*(self.y_vehiculo)),'o',color = 'red')
         # Mostrar la gráfica
         plt.show()
 
@@ -876,7 +914,133 @@ class Slave(Robot):
         if keyboard.is_pressed("1"):
             self.WS_2D_3D = True 
         if keyboard.is_pressed("2"):
-            self.WS_Trayec_2D_3D = True     
+            self.WS_Trayec_2D_3D = True   
+        if keyboard.is_pressed("3"):
+            self.Tray_Control = True
 
+    def Control_pos(self):
+        print("Contro de pose Init")
+        # Acercamiento exponencial
+        v0 = 500
+        alpha = 50 #%0.5;50
+        # PID orientación
+        kpO = 15 #15
+        kiO = 0.001 
+        kdO = 1 #1
+        EO = 0
+        eO_1 = 0
+        eO = 1.0
+        
+        contador = 0
+
+        while eO > 0.003:
+            self.DatosSensores()
+            self.Paredes(self.rotz*180/np.pi)
+
+            #  -*-*-*- posiciones actuales del vehiculo -*-*-*-
+            x = (self.factorWS*self.x_vehiculo)
+            y = (self.factorWS*self.y_vehiculo)
+            # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+
+            # *-*-*-*-*-*-*-* puntos de trayectoria a seguir *-*-*-*-*-*-*-*
+            """
+            # con una trayectoria ya calculada
+            if contador < len(self.ruta_optima):
+                xg = self.ruta_optima[contador]
+                yg = self.ruta_optima[contador]
+                coords = [xg,yg]
+                #disp(coords)
+            """
+
+            # para hacer pruebas: Unicamente un punto de destino
+            xg = 10
+            yg = 10
+            # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+
+            #e = [xg-x, yg-y]
+            #thetag = np.arctan2(e[1],e[0])
+            
+
+            e = [xg - x, yg - y]
+            thetag = np.arctan2(e[1], e[0])
+            eP = np.norm(e)
+            
+            eO = thetag-self.rotz
+            eO = np.arctan2(np.sin(eO),np.cos(eO))
+            
+            
+            if eO >0:
+                flag_dGiro = True  # bandera dirección del giro, 
+                                    # True = sentido horario
+                                    # False = sentido antihorario
+            else:
+                flag_dGiro = False
+
+            eO = abs(eO)
+            # Control de velocidad lineal
+            kP = v0 * (1-np.exp(-alpha*eP^2)) / eP
+            v = kP*eP
+
+            # Control de velocidad angular
+            eO_D = eO - eO_1
+            EO = EO + eO
+            w = kpO*eO + kiO*EO + kdO*eO_D
+            eO_1 = eO
+
+            if eO >=0.003:
+                if flag_dGiro == True:
+                    giroder = (v+w*self.distanceCenter)/self.wheelRadius
+                    giroiz = (v-w*self.distanceCenter)/self.wheelRadius
+                else: 
+                    giroder = (v-w*self.distanceCenter)/self.wheelRadius
+                    giroiz = (v+w*self.distanceCenter)/self.wheelRadius
+
+                if giroder >= 0.5:
+                    giroder = 0.5
+                    giroiz = -0.5
+                elif giroder <= -0.5:
+                    giroder = -0.5
+                    giroiz = 0.5
+                
+                
+                #if giroiz >= 0.5:
+                #    giroiz = 0.5
+                #elif giroiz <= -0.5:
+                #    giroiz = -0.5
+                
+
+                self.right_motor.setVelocity(giroder)
+                self.left_motor.setVelocity(giroiz)
+
+            else:
+                self.left_motor.setVelocity(0)
+                self.right_motor.setVelocity(0)
+
+            if self.step(self.timestep) == -1:
+                break
+    
+    def Odometria(self):
+        print("Funcion de odometria")
+        #self.DatosSensores()
+
+        theta_d = (self.PS_Right_value - self.PS_Right_Anterior)*1.003
+        theta_i = (self.PS_Left_value - self.PS_Left_Anterior)*1.003
+               
+        self.phi += (self.wheelRadius*theta_d-self.wheelRadius*theta_i)/(2*self.distanceCenter)*(180/np.pi)
+        
+        
+        dPromedio = (self.wheelRadius*theta_d+self.wheelRadius*theta_i)/2
+        self.xc.append(self.xc[len(self.xc)-1] +(dPromedio)*np.cos(self.phi*np.pi/180))
+        self.yc.append(self.yc[len(self.yc)-1] +(dPromedio)*np.sin(self.phi*np.pi/180))
+       
+
+        self.PS_Right_Anterior = self.PS_Right_value # posicion de la rueda derecha
+        self.PS_Left_Anterior  = self.PS_Left_value # posicion de la rueda izquierda
+        
+        print("xc: ", self.xc[len(self.xc)-1], " - yc: ",self.yc[len(self.yc)-1],"   ----   xVehiculo: ",self.x_vehiculo," - yVehiculo: ",self.y_vehiculo, "\n|| phi: ", self.phi," - rotz", self.angulo)
+        print('theta_d: ',theta_d,' - theta_i: ',theta_i)
+        
 controller = Slave()
 controller.run()
+
+
