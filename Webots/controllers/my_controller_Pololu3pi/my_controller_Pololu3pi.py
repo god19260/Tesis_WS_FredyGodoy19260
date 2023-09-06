@@ -659,7 +659,19 @@ class Slave(Robot):
 
         if self.Tray_Control == True:
             self.Tray_Control = False
+            # -+-+- Actualizción de variables para realizar el seguimiento de trayectoria
+            self.phi = self.angulo
+            
+            #self.xc.clear()
+            #self.xc.append(self.x_vehiculo)
+
+            #self.yc.clear()
+            #self.yc.append(self.y_vehiculo)
+
+
+            # Seguir la trayectoria
             self.Control_pos()   
+            self.angulo = self.phi
         plt.show()
         
     def Initial_Run_Ex(self):
@@ -919,9 +931,9 @@ class Slave(Robot):
             self.Tray_Control = True
 
     def Control_pos(self):
-        print("Contro de pose Init")
+        print("Control de pose Init")
         # Acercamiento exponencial
-        v0 = 500
+        v0 = 5000
         alpha = 50 #%0.5;50
         # PID orientación
         kpO = 15 #15
@@ -930,16 +942,19 @@ class Slave(Robot):
         EO = 0
         eO_1 = 0
         eO = 1.0
+        eP = 1.0
         
         contador = 0
 
-        while eO > 0.003:
+        while eP > 0.03:
+            self.Odometria()
             self.DatosSensores()
             self.Paredes(self.rotz*180/np.pi)
 
             #  -*-*-*- posiciones actuales del vehiculo -*-*-*-
-            x = (self.factorWS*self.x_vehiculo)
-            y = (self.factorWS*self.y_vehiculo)
+            x = (self.factorWS*self.xc[len(self.xc)-1])
+            y = (self.factorWS*self.yc[len(self.yc)-1])
+            print("control posición: x: ", x," - y: ", y)
             # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
             # *-*-*-*-*-*-*-* puntos de trayectoria a seguir *-*-*-*-*-*-*-*
@@ -963,7 +978,7 @@ class Slave(Robot):
 
             e = [xg - x, yg - y]
             thetag = np.arctan2(e[1], e[0])
-            eP = np.norm(e)
+            eP = np.linalg.norm(e)
             
             eO = thetag-self.rotz
             eO = np.arctan2(np.sin(eO),np.cos(eO))
@@ -977,8 +992,9 @@ class Slave(Robot):
                 flag_dGiro = False
 
             eO = abs(eO)
+
             # Control de velocidad lineal
-            kP = v0 * (1-np.exp(-alpha*eP^2)) / eP
+            kP = v0 * (1-np.exp(-alpha*eP**2)) / eP
             v = kP*eP
 
             # Control de velocidad angular
@@ -987,40 +1003,45 @@ class Slave(Robot):
             w = kpO*eO + kiO*EO + kdO*eO_D
             eO_1 = eO
 
-            if eO >=0.003:
+            if eO >=0.03:
                 if flag_dGiro == True:
-                    giroder = (v+w*self.distanceCenter)/self.wheelRadius
-                    giroiz = (v-w*self.distanceCenter)/self.wheelRadius
+                    giroder = (+w*self.distanceCenter)/self.wheelRadius
+                    giroiz = (-w*self.distanceCenter)/self.wheelRadius
                 else: 
-                    giroder = (v-w*self.distanceCenter)/self.wheelRadius
-                    giroiz = (v+w*self.distanceCenter)/self.wheelRadius
+                    giroder = (-w*self.distanceCenter)/self.wheelRadius
+                    giroiz = (+w*self.distanceCenter)/self.wheelRadius
 
+                
                 if giroder >= 0.5:
                     giroder = 0.5
-                    giroiz = -0.5
+                    #giroiz = -0.5
                 elif giroder <= -0.5:
                     giroder = -0.5
+                    #giroiz = 0.5
+                                   
+                
+                if giroiz >= 0.5:
                     giroiz = 0.5
+                elif giroiz <= -0.5:
+                    giroiz = -0.5
                 
-                
-                #if giroiz >= 0.5:
-                #    giroiz = 0.5
-                #elif giroiz <= -0.5:
-                #    giroiz = -0.5
-                
-
                 self.right_motor.setVelocity(giroder)
                 self.left_motor.setVelocity(giroiz)
 
             else:
-                self.left_motor.setVelocity(0)
-                self.right_motor.setVelocity(0)
+                if v > 5:
+                    v = 5
+                self.left_motor.setVelocity(v)
+                self.right_motor.setVelocity(v)
 
             if self.step(self.timestep) == -1:
                 break
-    
+        
+        while not(keyboard.is_pressed("c")):
+            None
+
     def Odometria(self):
-        print("Funcion de odometria")
+        #print("Funcion de odometria")
         #self.DatosSensores()
 
         theta_d = (self.PS_Right_value - self.PS_Right_Anterior)*1.003
@@ -1038,7 +1059,7 @@ class Slave(Robot):
         self.PS_Left_Anterior  = self.PS_Left_value # posicion de la rueda izquierda
         
         print("xc: ", self.xc[len(self.xc)-1], " - yc: ",self.yc[len(self.yc)-1],"   ----   xVehiculo: ",self.x_vehiculo," - yVehiculo: ",self.y_vehiculo, "\n|| phi: ", self.phi," - rotz", self.angulo)
-        print('theta_d: ',theta_d,' - theta_i: ',theta_i)
+        #print('theta_d: ',theta_d,' - theta_i: ',theta_i)
         
 controller = Slave()
 controller.run()
