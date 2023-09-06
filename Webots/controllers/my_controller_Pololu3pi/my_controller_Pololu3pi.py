@@ -933,7 +933,7 @@ class Slave(Robot):
     def Control_pos(self):
         print("Control de pose Init")
         # Acercamiento exponencial
-        v0 = 5000
+        v0 = 500
         alpha = 50 #%0.5;50
         # PID orientación
         kpO = 15 #15
@@ -945,8 +945,9 @@ class Slave(Robot):
         eP = 1.0
         
         contador = 0
-
-        while eP > 0.03:
+        xGoal = [10,20]
+        yGoal = [10,10]
+        while eP > 0.03 or contador <len(xGoal):
             self.Odometria()
             self.DatosSensores()
             self.Paredes(self.rotz*180/np.pi)
@@ -954,22 +955,23 @@ class Slave(Robot):
             #  -*-*-*- posiciones actuales del vehiculo -*-*-*-
             x = (self.factorWS*self.xc[len(self.xc)-1])
             y = (self.factorWS*self.yc[len(self.yc)-1])
-            print("control posición: x: ", x," - y: ", y)
+            #print("control posición: x: ", x," - y: ", y)
             # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
             # *-*-*-*-*-*-*-* puntos de trayectoria a seguir *-*-*-*-*-*-*-*
-            """
+            
             # con una trayectoria ya calculada
-            if contador < len(self.ruta_optima):
-                xg = self.ruta_optima[contador]
-                yg = self.ruta_optima[contador]
+            if contador < len(xGoal):
+                #xg = self.ruta_optima[contador]
+                #yg = self.ruta_optima[contador]
+                xg = xGoal[contador]
+                yg = yGoal[contador]
+
                 coords = [xg,yg]
                 #disp(coords)
-            """
+            
 
-            # para hacer pruebas: Unicamente un punto de destino
-            xg = 10
-            yg = 10
+            
             # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
             #e = [xg-x, yg-y]
@@ -1003,13 +1005,13 @@ class Slave(Robot):
             w = kpO*eO + kiO*EO + kdO*eO_D
             eO_1 = eO
 
-            if eO >=0.03:
+            if eO >=0.3:
                 if flag_dGiro == True:
-                    giroder = (+w*self.distanceCenter)/self.wheelRadius
+                    giroder = (w*self.distanceCenter)/self.wheelRadius
                     giroiz = (-w*self.distanceCenter)/self.wheelRadius
                 else: 
                     giroder = (-w*self.distanceCenter)/self.wheelRadius
-                    giroiz = (+w*self.distanceCenter)/self.wheelRadius
+                    giroiz = (w*self.distanceCenter)/self.wheelRadius
 
                 
                 if giroder >= 0.5:
@@ -1028,12 +1030,13 @@ class Slave(Robot):
                 self.right_motor.setVelocity(giroder)
                 self.left_motor.setVelocity(giroiz)
 
-            else:
+            elif eP >= 0.3:
                 if v > 5:
                     v = 5
                 self.left_motor.setVelocity(v)
                 self.right_motor.setVelocity(v)
-
+            else: 
+                contador += 1
             if self.step(self.timestep) == -1:
                 break
         
@@ -1058,7 +1061,7 @@ class Slave(Robot):
         self.PS_Right_Anterior = self.PS_Right_value # posicion de la rueda derecha
         self.PS_Left_Anterior  = self.PS_Left_value # posicion de la rueda izquierda
         
-        print("xc: ", self.xc[len(self.xc)-1], " - yc: ",self.yc[len(self.yc)-1],"   ----   xVehiculo: ",self.x_vehiculo," - yVehiculo: ",self.y_vehiculo, "\n|| phi: ", self.phi," - rotz", self.angulo)
+        #print("xc: ", self.xc[len(self.xc)-1], " - yc: ",self.yc[len(self.yc)-1],"   ----   xVehiculo: ",self.x_vehiculo," - yVehiculo: ",self.y_vehiculo, "\n|| phi: ", self.phi," - rotz", self.angulo)
         #print('theta_d: ',theta_d,' - theta_i: ',theta_i)
         
 controller = Slave()
