@@ -656,11 +656,13 @@ class Slave(Robot):
         if self.WS_Trayec_2D_3D == True:
             self.WS_Trayec_2D_3D = False
             self.Mapa_WS_Trayec_2D_3D()
+            while not(keyboard.is_pressed("n")) and not(keyboard.is_pressed("3")):
+                None
 
         if self.Tray_Control == True:
             self.Tray_Control = False
             # -+-+- Actualizción de variables para realizar el seguimiento de trayectoria
-            self.phi = self.angulo
+            self.phi = int(self.angulo)
             
             self.xc.clear()
             self.xc.append(self.x_vehiculo)
@@ -672,9 +674,9 @@ class Slave(Robot):
                 if self.step(self.timestep) == -1:
                     break
             """
-            #xGoal = self.x_rutaOptima
-            #yGoal = self.y_rutaOptima
-            #print(xGoal[0],'  ', yGoal[0])
+            xGoal = self.x_rutaOptima
+            yGoal = self.y_rutaOptima
+            print(xGoal[len(xGoal)-1]-int(-self.min_val_x),'  ', yGoal[len(yGoal)-1]-int(-self.min_val_y))
             
             
             # Seguir la trayectoria
@@ -764,8 +766,8 @@ class Slave(Robot):
     def Mapa_WS_Trayec_2D_3D(self):
         # Actualizar el espacio de trabajo
         self.EspacioTrabajo()
-        origin_x = int(-self.min_val_x +self.factorWS*self.T_Exploracion_x[1])
-        origin_y = int(-self.min_val_y +self.factorWS*self.T_Exploracion_y[1])
+        origin_x = int(-self.min_val_x)#int(-self.min_val_x +self.factorWS*self.T_Exploracion_x[1])
+        origin_y = int(-self.min_val_y)#int(-self.min_val_y +self.factorWS*self.T_Exploracion_y[1])
         x = int(-self.min_val_x + self.factorWS*self.x_vehiculo)
         y = int(-self.min_val_y + self.factorWS*self.y_vehiculo)
         self.ruta_optima =Gen_Trayectoria.dijkstra(self.mapa_WS,x,y,origin_x,origin_y)
@@ -805,8 +807,8 @@ class Slave(Robot):
 
         try:
             # Graficar ruta optima
-            self.x_rutaOptima = [posicion[1] for posicion in self.ruta_optima]
-            self.y_rutaOptima = [posicion[0] for posicion in self.ruta_optima]
+            self.x_rutaOptima = [posicion[1]+0.5 for posicion in self.ruta_optima]
+            self.y_rutaOptima = [posicion[0]+0.5 for posicion in self.ruta_optima]
             #plt.plot(inicio[1]+0.5,inicio[0]+0.5,'-o',color='blue')
             
             plt.plot(self.x_rutaOptima, self.y_rutaOptima, '-o', color='green')
@@ -944,20 +946,20 @@ class Slave(Robot):
         v0 = 500
         alpha = 50 #%0.5;50
         # PID orientación
-        kpO = 5 #15
-        kiO = 0.001 
-        kdO = 1 #1
+        kpO = 15 #15
+        kiO = 0.1 
+        kdO = 0.1 #1
         EO = 0
         eO_1 = 0
         eO = 1.0
         eP = 1.0
         
         contador = 0
-        xGoal = [1*self.factorWS]  # mt
-        yGoal = [1*self.factorWS]  # mt
-        #xGoal = [self.x_rutaOptima[0]]
-        #yGoal = [self.y_rutaOptima[0]]
-        while eP > 0.5 or contador <len(xGoal):
+        #xGoal = [0*self.factorWS]  # mt
+        #yGoal = [0*self.factorWS]  # mt
+        xGoal = self.x_rutaOptima
+        yGoal = self.y_rutaOptima
+        while eP >= 0.1 or contador <=len(xGoal):
             self.Odometria()
             self.DatosSensores()
             self.Paredes(self.rotz*180/np.pi)
@@ -974,8 +976,8 @@ class Slave(Robot):
             if contador < len(xGoal):
                 #xg = self.ruta_optima[contador]
                 #yg = self.ruta_optima[contador]
-                xg = xGoal[contador]
-                yg = yGoal[contador]
+                xg = xGoal[contador]-int(-self.min_val_x)
+                yg = yGoal[contador]-int(-self.min_val_y)
 
                 coords = [xg,yg]
                 #disp(coords)
@@ -1007,7 +1009,7 @@ class Slave(Robot):
 
             # Control de velocidad lineal
             #kP = v0 * (1-np.exp(-alpha*eP**2)) / eP
-            kP = 3
+            kP = 2
             v = kP*eP
 
             # Control de velocidad angular
@@ -1016,7 +1018,7 @@ class Slave(Robot):
             w = kpO*eO + kiO*EO + kdO*eO_D
             eO_1 = eO
 
-            if eO >=0.05:
+            if eO >=0.009:
                 if flag_dGiro == True:
                     giroder = (w*self.distanceCenter)/self.wheelRadius
                     giroiz = (-w*self.distanceCenter)/self.wheelRadius
@@ -1041,13 +1043,14 @@ class Slave(Robot):
                 self.right_motor.setVelocity(giroder)
                 self.left_motor.setVelocity(giroiz)
 
-            elif eP >= 0.05:
-                if v > 5:
-                    v = 5
+            elif eP > 0.01:
+                if v > 4:
+                    v = 4
                 self.left_motor.setVelocity(v)
                 self.right_motor.setVelocity(v)
             else: 
                 contador += 1
+                
             if self.step(self.timestep) == -1:
                 break
         
