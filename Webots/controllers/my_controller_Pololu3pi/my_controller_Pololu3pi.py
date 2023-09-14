@@ -976,12 +976,10 @@ class Slave(Robot):
             if contador < len(xGoal):
                 #xg = self.ruta_optima[contador]
                 #yg = self.ruta_optima[contador]
-                if contador == len(xGoal)-1:
-                    xg = xGoal[contador]-int(-self.min_val_x)-0.5
-                    yg = yGoal[contador]-int(-self.min_val_y)-0.5
-                else:
-                    xg = xGoal[contador]-int(-self.min_val_x)
-                    yg = yGoal[contador]-int(-self.min_val_y)
+                
+                xg = xGoal[contador]-int(-self.min_val_x)
+                yg = yGoal[contador]-int(-self.min_val_y)
+                
 
 
                 coords = [xg,yg]
