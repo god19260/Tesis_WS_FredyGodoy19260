@@ -696,7 +696,7 @@ class Slave(Robot):
         #print(" *-*-*-*-*-* Determinar espacio de trabajo *-*-*-*-*-*")
         cant_columnas = 0
         cant_filas = 0
-        self.factorWS = 10 # cada recuadro del mapa es de dimensiones (factor x factor)
+        self.factorWS = 9 # cada recuadro del mapa es de dimensiones (factor x factor)
         """
         d_sensors = [[self.Pared_x_ds0,self.Pared_y_ds0],
                      [self.Pared_x_ds1,self.Pared_y_ds1],
@@ -946,9 +946,9 @@ class Slave(Robot):
         v0 = 500
         alpha = 50 #%0.5;50
         # PID orientación
-        kpO = 15 #15
-        kiO = 0.1 
-        kdO = 0.1 #1
+        kpO = 0.1 #15
+        kiO = 0.1
+        kdO = 0.005 #1
         EO = 0
         eO_1 = 0
         eO = 1.0
@@ -976,8 +976,13 @@ class Slave(Robot):
             if contador < len(xGoal):
                 #xg = self.ruta_optima[contador]
                 #yg = self.ruta_optima[contador]
-                xg = xGoal[contador]-int(-self.min_val_x)
-                yg = yGoal[contador]-int(-self.min_val_y)
+                if contador == len(xGoal)-1:
+                    xg = xGoal[contador]-int(-self.min_val_x)-0.5
+                    yg = yGoal[contador]-int(-self.min_val_y)-0.5
+                else:
+                    xg = xGoal[contador]-int(-self.min_val_x)
+                    yg = yGoal[contador]-int(-self.min_val_y)
+
 
                 coords = [xg,yg]
                 #disp(coords)
