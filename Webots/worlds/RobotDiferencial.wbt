@@ -8,8 +8,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.5796049164784747 0.573150732587598 0.5792722835837049 2.079315244216909
-  position -0.49929876139183493 -0.302197484049019 8.755666393403326
+  orientation -0.5769568169929346 0.5711540916027636 0.5838697071871458 2.071436343243668
+  position -0.9717478766942358 -0.3368381536868181 10.735440447237204
   follow "rectangle arena"
 }
 TexturedBackgroundLight {
@@ -340,7 +340,7 @@ Wall {
   size 2 0.08 0.1
 }
 Solid {
-  translation -2.32 -2.11 0.001
+  translation -2.34 -2.11 0.001
   children [
     Shape {
       appearance PBRAppearance {

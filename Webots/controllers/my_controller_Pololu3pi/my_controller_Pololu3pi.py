@@ -683,6 +683,7 @@ class Slave(Robot):
             self.Control_pos()   
             print("Pos actual odo: ",self.xc[len(self.xc)-1],"  ",self.yc[len(self.yc)-1])
             
+            
             self.RotControl(self.angulo) 
 
         plt.show()
@@ -959,7 +960,7 @@ class Slave(Robot):
         #yGoal = [0*self.factorWS]  # mt
         xGoal = self.x_rutaOptima
         yGoal = self.y_rutaOptima
-        while eP >= 0.1 or contador <=len(xGoal):
+        while eP >= 0.05 or contador <=len(xGoal):
             self.Odometria()
             self.DatosSensores()
             self.Paredes(self.rotz*180/np.pi)
@@ -977,9 +978,12 @@ class Slave(Robot):
                 #xg = self.ruta_optima[contador]
                 #yg = self.ruta_optima[contador]
                 
-                xg = xGoal[contador]-int(-self.min_val_x)
-                yg = yGoal[contador]-int(-self.min_val_y)
-                
+                if contador == len(xGoal)-1:
+                    xg = xGoal[contador]-int(-self.min_val_x)-0.5
+                    yg = yGoal[contador]-int(-self.min_val_y)-0.5
+                else:
+                    xg = xGoal[contador]-int(-self.min_val_x)
+                    yg = yGoal[contador]-int(-self.min_val_y)
 
 
                 coords = [xg,yg]
@@ -1012,7 +1016,7 @@ class Slave(Robot):
 
             # Control de velocidad lineal
             #kP = v0 * (1-np.exp(-alpha*eP**2)) / eP
-            kP = 2
+            kP = 1.6
             v = kP*eP
 
             # Control de velocidad angular
@@ -1046,13 +1050,15 @@ class Slave(Robot):
                 self.right_motor.setVelocity(giroder)
                 self.left_motor.setVelocity(giroiz)
 
-            elif eP > 0.01:
+            elif eP > 0.05:
                 if v > 4:
                     v = 4
                 self.left_motor.setVelocity(v)
                 self.right_motor.setVelocity(v)
             else: 
                 contador += 1
+                self.left_motor.setVelocity(0)
+                self.right_motor.setVelocity(0)
                 
             if self.step(self.timestep) == -1:
                 break
