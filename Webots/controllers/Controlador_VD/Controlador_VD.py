@@ -5,7 +5,10 @@ import math
 import matplotlib.pyplot as plt
 import keyboard
 import random
-import Gen_Trayectoria
+
+
+# Funciones Desarrollads en este trabajo
+import Rot_Control
 
 class Slave(Robot):
     # get the time step of the current world.
@@ -54,12 +57,7 @@ class Slave(Robot):
         self.GPS = self.getDevice('gps')
         self.GPS.enable(self.timestep)
 
-    def run(self):
-               
-
-        while self.step(self.timestep) != -1:
-            if self.step(self.timestep) == -1:
-                break
+    
                  
     def DatosSensores(self):
         # Actualizar sensores de distancia
@@ -73,23 +71,33 @@ class Slave(Robot):
         # Actualizar sensor de compass y angulo de rotación en z
         self.compass_values = self.compass.getValues()
         radian = np.arctan2(self.compass_values[0],self.compass_values[1])
-        self.rotz_g = radian*180/np.pi
-        self.rotz = radian
+        self.rotz_g = radian*180/np.pi     # Rotación en el eje z del vehículo en grados
+        self.rotz = radian                 # Rotación en el eje z del vehículo en radianes
 
         # Actualizar valores de sensores de posición de las ruedas
-        self.PS_Right_value = round(self.PositionSensor_right.getValue() - self.PS_Right_StartValue, 4)  # PS_Right_value --> position sensor right value
-        self.PS_Left_value = round(self.PositionSensor_left.getValue() - self.PS_Left_StartValue,4)    # PS_Left_value --> position sensor left value 
+        self.PS_Right_value = self.PositionSensor_right.getValue() #- self.PS_Right_StartValue   # PS_Right_value --> position sensor right value
+        self.PS_Left_value  = self.PositionSensor_left.getValue()  #- self.PS_Left_StartValue    # PS_Left_value --> position sensor left value 
         
         self.revsRight = self.PS_Right_value/(2*np.pi)
-        self.revsLeft = self.PS_Left_value/(2*np.pi)
+        self.revsLeft  = self.PS_Left_value/(2*np.pi)
         
-        self.DRW_Right = round(self.revsRight*2*np.pi*self.wheelRadius,10)    # Distancia recorrida por la llanta derecha
-        self.DRW_Left = round(self.revsLeft*2*np.pi*self.wheelRadius,10)      # Distancia recorrida por la llanta izquierda
+        self.DRW_Right =  self.revsRight*2*np.pi*self.wheelRadius    # Distancia recorrida por la llanta derecha
+        self.DRW_Left  =  self.revsLeft*2*np.pi*self.wheelRadius     # Distancia recorrida por la llanta izquierda
 
         # Actualizar valores de GPS
         self.GPS_values = self.GPS.getValues()
+        
+
+Agente_1 = Slave()
+#controller.run()
 
 
-controller = Slave()
-controller.run()
+while Agente_1.step(Agente_1.timestep) != -1:
+    Agente_1.DatosSensores() 
+    Rot_Control.Rot_control(90,Agente_1)
+    
+    if Agente_1.step(Agente_1.timestep) == -1:
+        break
+    
+
 
