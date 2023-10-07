@@ -7,21 +7,24 @@ import keyboard
 import random
 
 
-# Funciones Desarrollads en este trabajo
+# Funciones Desarrolladas en este trabajo
 import Rot_Control
+import Explorar
+import Condiciones_Giro
+
 
 class Slave(Robot):
     # get the time step of the current world.
     timestep = 3
 
     # Caracteristicas del robot
-    maxSpeed = 0.035 #mt/s
     wheelRadius = 0.035 #radio en m 
     distanceCenter = 0.075 #m
-    rev = maxSpeed/(2*3.14*wheelRadius)*60
+    
     
     # Definiciones previas
     distanceSensors = []
+    angulo = 0
 
 
 
@@ -94,8 +97,11 @@ Agente_1 = Slave()
 
 while Agente_1.step(Agente_1.timestep) != -1:
     Agente_1.DatosSensores() 
-    Rot_Control.Rot_control(90,Agente_1)
-    
+    Rot_Control.Rot_Control(Agente_1.angulo,Agente_1)
+    Explorar.Explorar(Agente_1)
+    Condiciones_Giro.DecisionGiro(Agente_1)
+
+
     if Agente_1.step(Agente_1.timestep) == -1:
         break
     

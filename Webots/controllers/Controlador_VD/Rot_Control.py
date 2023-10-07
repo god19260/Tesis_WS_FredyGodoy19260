@@ -1,8 +1,11 @@
 import numpy as np
 
+# Función Controlador de rotación
+
+# Parámetros: 
 # rotz goal en grados
-# rotz en radianes
-def Rot_control(rotz_goal,agente):
+
+def Rot_Control(rotz_goal,agente):
     # PID orientación
     kpO = 15 #15
     kiO = 0.001 
