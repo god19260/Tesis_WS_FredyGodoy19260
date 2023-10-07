@@ -8,8 +8,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.5769568169929346 0.5711540916027636 0.5838697071871458 2.071436343243668
-  position -0.9717478766942358 -0.3368381536868181 10.735440447237204
+  orientation -0.5824639031492828 0.5760872999075122 0.5734624873637115 2.087934584265222
+  position -0.26059356411874735 -0.2230855262838145 8.510109629287575
   follow "rectangle arena"
 }
 TexturedBackgroundLight {
@@ -23,7 +23,7 @@ RectangleArena {
   }
 }
 Robot {
-  translation -2.34874 -2.10735 -0.00210856
+  translation -2.36874 -2.1075 -0.00210924
   rotation 1.4849577617257276e-05 4.839582228382789e-05 -0.9999999987186673 3.1377430257752583
   children [
     DEF Body Transform {
@@ -71,7 +71,7 @@ Robot {
           }
           geometry Mesh {
             url [
-              "../Modelos_3D/Pololu/BaseSensorDistancia.stl"
+              "../Modelos_3D/Pololu/BaseSensorDistancia Proto2.stl"
             ]
           }
         }
@@ -88,7 +88,7 @@ Robot {
             2 200 0
           ]
           type "laser"
-          aperture 0.1
+          aperture 0.01
         }
         Compass {
           translation 0 0 0.085
@@ -102,6 +102,8 @@ Robot {
             0 0 0
             2 200 0
           ]
+          type "laser"
+          aperture 0.01
         }
         DistanceSensor {
           translation 0 0 0.085
@@ -111,6 +113,8 @@ Robot {
             0 0 0
             2 200 0
           ]
+          type "laser"
+          aperture 0.01
         }
         DistanceSensor {
           translation 0 0 0.085
@@ -120,6 +124,8 @@ Robot {
             0 0 0
             2 200 0
           ]
+          type "laser"
+          aperture 0.01
         }
         GPS {
         }
@@ -130,7 +136,9 @@ Robot {
             0 0 0
             2 200 0
           ]
-          resolution 2
+          type "laser"
+          aperture 0.01
+          resolution 1
         }
         DistanceSensor {
           translation 0 0 0.085
@@ -140,6 +148,8 @@ Robot {
             0 0 0
             2 200 0
           ]
+          type "laser"
+          aperture 0.01
         }
       ]
       name "solid(4)"
@@ -159,7 +169,7 @@ Robot {
       ]
       endPoint Solid {
         translation 0.06999999999204387 -4.329353291487266e-06 0.03699548236557448
-        rotation 0.6279840611656493 0.4603255613183475 0.6274841802936919 2.278172724376016
+        rotation 0.6279840611656493 0.4603255613183474 0.627484180293692 2.278172724376016
         children [
           DEF wheel_1 Shape {
             appearance PBRAppearance {
@@ -194,7 +204,7 @@ Robot {
       ]
       endPoint Solid {
         translation -0.07000000893515845 -2.545702127960275e-06 0.03699190839331587
-        rotation -0.5525032488870706 -0.6245237649799341 -0.5520056403194807 4.257475026407972
+        rotation -0.5525032488870701 -0.6245237649799342 -0.552005640319481 4.257475026407974
         children [
           DEF wheel_2 Shape {
             appearance PBRAppearance {
@@ -229,8 +239,8 @@ Robot {
         axis 0 1 0
       }
       endPoint Solid {
-        translation -2.3177902467753968e-05 0.0600514323752086 0.011999825322370278
-        rotation 0.27838528813333974 -0.9114204473313264 0.3030089099965249 1.7677112542423583
+        translation -2.3177902467754148e-05 0.060051432375208595 0.011999825322370277
+        rotation 0.27838528813334074 -0.9114204473313265 0.3030089099965239 1.7677112542423592
         children [
           DEF CasterBall_1 Shape {
             appearance PBRAppearance {
@@ -263,7 +273,7 @@ Robot {
         axis 0 1 0
       }
       endPoint Solid {
-        translation 2.3060347311030727e-05 -0.0600518344247174 0.011999784694150018
+        translation 2.3060347311029884e-05 -0.0600518344247174 0.011999784694150016
         rotation 0.7266442753117307 0.5554692845964304 0.4042795703799779 2.512288670236619
         children [
           DEF CasterBall_2 Shape {
@@ -340,7 +350,7 @@ Wall {
   size 2 0.08 0.1
 }
 Solid {
-  translation -2.34 -2.11 0.001
+  translation -2.35 -2.11 0.001
   children [
     Shape {
       appearance PBRAppearance {
@@ -355,7 +365,7 @@ Solid {
   ]
 }
 Solid {
-  translation -1.21282 -1.66 0.15
+  translation -0.632595 -1.325 0.15
   rotation 0 0 1 0.523599
   children [
     Shape {

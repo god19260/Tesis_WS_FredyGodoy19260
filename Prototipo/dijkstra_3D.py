@@ -13,17 +13,23 @@ if tipoMapa ==1:
     filas = 20
     columnas = 20
     mapa = np.zeros((filas, columnas))
-    
+    porcentajeObstaculos = 40 #%
+    cantidadObstaculos = int(filas*columnas*porcentajeObstaculos/100)
     # Generar obstáculos al azar
-    for i in range(150):  # Número de obstáculos que deseas generar
-        fila = np.random.randint(0, filas)  # Fila aleatoria
-        columna = np.random.randint(0, columnas)  # Columna aleatoria
-        mapa[fila, columna] = 1  # Establecer el elemento como un obstáculo (1)
+    for i in range(cantidadObstaculos):  # Número de obstáculos que deseas generar
+        Obstaculo_flag = False
+        while Obstaculo_flag == False:
+            fila = np.random.randint(0, filas)  # Fila aleatoria
+            columna = np.random.randint(0, columnas)  # Columna aleatoria
+            if mapa[fila, columna] == 0:
+                mapa[fila, columna] = 1  # Establecer el elemento como un obstáculo (1)
+                Obstaculo_flag = True
+
     print(mapa)
 
 elif tipoMapa == 2:
     # Mapa definido 1
-    mapa = np.array([[0,1,0,0,0,0,0,1,0,0,0],
+    mapa = np.array([[0,1,0,0,0,0,0,1,0,0,1],
                     [1,0,0,0,1,0,0,0,0,1,1],
                     [1,0,0,0,0,1,0,0,1,1,0],
                     [0,0,1,0,0,0,0,0,0,1,0],
@@ -36,7 +42,7 @@ elif tipoMapa == 2:
     
 elif tipoMapa ==3:
     # Mapa definido 2
-    mapa = np.array([[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    mapa = np.array([[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1,],
                     [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0,],
                     [0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1,],
                     [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0,],
@@ -82,7 +88,6 @@ elif tipoMapa == 4:
                      [0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0]])
     # Obtener las dimensiones del mapa
     filas, columnas = mapa.shape
-
 mapa_flip = np.flip(mapa,axis=0)
 
 # Definir punto de inicio y final
@@ -90,11 +95,15 @@ inicio = [0,0]
 while mapa_flip[inicio[1],inicio[0]] == 1:
     inicio[0] = inicio[0]+1
     inicio[1] = inicio[1]+1
-final = [10,10]
+final = [columnas-1,filas-1]
 
 
 inicio = (inicio[1],inicio[0])
 final = (final[1],final[0])
+
+cantidad_obstaculos = np.count_nonzero(mapa == 1)
+# Imprimir el resultado
+print("Cantidad de unos en la matriz: ", cantidad_obstaculos)
 
 # Definir los movimientos permitidos (arriba, abajo, izquierda, derecha) y (diagonales)
 movimientos = [(-1, 0), (1, 0), (0, -1), (0, 1)]

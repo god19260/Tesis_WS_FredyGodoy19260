@@ -5,7 +5,7 @@ import heapq
 # Mapa a usar
 # 1: Mapa aleatorio
 # 2 en adelante: Mapas guardados
-tipoMapa = 2
+tipoMapa = 3
 
 if tipoMapa ==1:
     # Se define un mapa aleatorio
@@ -22,7 +22,7 @@ if tipoMapa ==1:
 
 elif tipoMapa == 2:
     # Mapa definido 1
-    mapa = np.array([[1,0,0,0,0,0,0,1,0,0,0],
+    mapa = np.array([[1,0,0,0,0,0,0,1,0,0,1],
                     [1,0,0,0,1,0,0,0,0,1,1],
                     [1,0,0,0,0,1,0,0,1,1,0],
                     [0,0,1,0,0,0,0,0,0,1,0],
@@ -35,7 +35,7 @@ elif tipoMapa == 2:
     
 elif tipoMapa ==3:
     # Mapa definido 2
-    mapa = np.array([[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    mapa = np.array([[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1,],
                     [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0,],
                     [0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1,],
                     [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0,],
@@ -62,19 +62,19 @@ elif tipoMapa ==3:
 mapa_flip = np.flip(mapa,axis=0)
 
 # Definir punto de inicio y final
-inicio = [columnas-1,0]
+inicio = [0,0]
 while mapa_flip[inicio[1],inicio[0]] == 1:
     inicio[0] = inicio[0]+1
     inicio[1] = inicio[1]+1
-final = [0, filas-1]
+final = [columnas-1, filas-1]
 
 
 inicio = (inicio[1],inicio[0])
 final = (final[1],final[0])
 
 # Definir los movimientos permitidos (arriba, abajo, izquierda, derecha) y (diagonales)
-movimientos = [(-1, 0), (1, 0), (0, -1), (0, 1)
-               ,(1,1), (-1,1), (-1,-1), (1,-1)]
+movimientos = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+               #,(1,1), (-1,1), (-1,-1), (1,-1)]
 
 # Función para obtener los vecinos válidos de una posición en el mapa
 def obtener_vecinos(posicion):
