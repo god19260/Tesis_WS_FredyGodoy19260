@@ -11,21 +11,40 @@ import random
 import Rot_Control
 import Explorar
 import Condiciones_Giro
-
+import Odometria
 
 class Slave(Robot):
     # get the time step of the current world.
-    timestep = 3
+    timestep = 32
 
-    # Caracteristicas del robot
+    #------------------ Características del robot ------------------
     wheelRadius = 0.035 #radio en m 
-    distanceCenter = 0.075 #m
+    distanceCenter = 0.0748664*2 #0.075 #m 
+    angulo = 90  # ángulo respecto marco de referencia entorno
+    
+    #--------------------------------------------------------------- 
     
     
-    # Definiciones previas
-    distanceSensors = []
-    angulo = 0
+    #-------------------------- Odometría -------------------------- 
 
+    PS_Right_Anterior = 0  # Pocisión de rueda derecha en n-1
+    PS_Left_Anterior  = 0  # Pocisión de rueda izquierda en n-1
+
+    phi = angulo # rotz estimado respecto marco de referencia entorno
+
+    # posición centroide vehículo
+    xc = [0]
+    yc = [0]
+
+    # Distancia en tramos de linea recta
+    Distancias_lineaRecta = []
+    Angulos = []
+
+    #---------------------------------------------------------------  
+
+    #--------------------- Definiciones previas --------------------
+    distanceSensors = []
+    #---------------------------------------------------------------  
 
 
     def __init__(self):
@@ -61,7 +80,10 @@ class Slave(Robot):
         self.GPS.enable(self.timestep)
 
     
-                 
+    def DatosSensores_Init(self):
+        self.PS_Right_StartValue =  self.PositionSensor_right.getValue()  # PS_Right_value --> position sensor right value
+        self.PS_Left_StartValue  =  self.PositionSensor_left.getValue()  # PS_Right_value --> position sensor right value
+            
     def DatosSensores(self):
         # Actualizar sensores de distancia
         self.ds0_value = self.distanceSensors[0].getValue()
@@ -71,15 +93,15 @@ class Slave(Robot):
         self.ds4_value = self.distanceSensors[4].getValue()
         self.ds5_value = self.distanceSensors[5].getValue()
 
-        # Actualizar sensor de compass y angulo de rotación en z
+        # Actualizar sensor de compass y angulo de rotz
         self.compass_values = self.compass.getValues()
         radian = np.arctan2(self.compass_values[0],self.compass_values[1])
         self.rotz_g = radian*180/np.pi     # Rotación en el eje z del vehículo en grados
         self.rotz = radian                 # Rotación en el eje z del vehículo en radianes
 
         # Actualizar valores de sensores de posición de las ruedas
-        self.PS_Right_value = self.PositionSensor_right.getValue() #- self.PS_Right_StartValue   # PS_Right_value --> position sensor right value
-        self.PS_Left_value  = self.PositionSensor_left.getValue()  #- self.PS_Left_StartValue    # PS_Left_value --> position sensor left value 
+        self.PS_Right_value = self.PositionSensor_right.getValue()- self.PS_Right_StartValue   # PS_Right_value --> position sensor right value
+        self.PS_Left_value  = self.PositionSensor_left.getValue()- self.PS_Left_StartValue    # PS_Left_value --> position sensor left value 
         
         self.revsRight = self.PS_Right_value/(2*np.pi)
         self.revsLeft  = self.PS_Left_value/(2*np.pi)
@@ -92,18 +114,29 @@ class Slave(Robot):
         
 
 Agente_1 = Slave()
-#controller.run()
+
+if Agente_1.step(Agente_1.timestep) != -1:
+    None
+
+Agente_1.DatosSensores_Init() 
+Odometria.Odometria_Init(Agente_1)
 
 
 while Agente_1.step(Agente_1.timestep) != -1:
-    Agente_1.DatosSensores() 
+    
     Rot_Control.Rot_Control(Agente_1.angulo,Agente_1)
     Explorar.Explorar(Agente_1)
+    print("Estimado: ", round(Agente_1.phi,0), " - Real: ",Agente_1.angulo) 
+      
     Condiciones_Giro.DecisionGiro(Agente_1)
-
+    
 
     if Agente_1.step(Agente_1.timestep) == -1:
         break
     
+    if Agente_1.step(Agente_1.timestep) >= 10:
+        break
+
+
 
 

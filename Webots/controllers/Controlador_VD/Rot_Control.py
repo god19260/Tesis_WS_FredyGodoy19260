@@ -1,5 +1,8 @@
 import numpy as np
 
+import Odometria
+
+
 # Función Controlador de rotación
 
 # Parámetros: 
@@ -15,6 +18,8 @@ def Rot_Control(rotz_goal,agente):
     eO = 1.0
 
     while eO > 0.003:
+        Odometria.Odometria(agente)
+        
         agente.DatosSensores()
         x = 0.5
         y = 0.5
@@ -46,12 +51,12 @@ def Rot_Control(rotz_goal,agente):
                 giroder = -(w*agente.distanceCenter)/agente.wheelRadius
                 giroiz = (w*agente.distanceCenter)/agente.wheelRadius
 
-            if giroder >= 5:
-                giroder = 5
-                giroiz = -5
-            elif giroder <= -5:
-                giroder = -5
-                giroiz = 5
+            if giroder >= 0.2:
+                giroder = 0.2
+                giroiz = -0.2
+            elif giroder <= -0.2:
+                giroder = -0.2
+                giroiz = 0.2
             
             """
             if giroiz >= 0.5:
