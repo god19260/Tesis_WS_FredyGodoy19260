@@ -2,12 +2,12 @@ Descripción del Proyecto
 Este proyecto es un controlador para un robot simulado desarrollado en Webots, un entorno de simulación de robótica 3D. El controlador permite que el robot explore su entorno, evitando obstáculos y registrando su posición y orientación en todo momento. El proyecto se compone de múltiples archivos que implementan diferentes funcionalidades del controlador.
 
 Características Clave
-- Control de movimiento del robot.
-- Exploración autónoma del entorno.
-- Odometría para rastrear la posición y orientación del robot.
-- Detección y evitación de obstáculos.
-- Registro de datos de posición y orientación en tiempo real.
-- Generación de gráficos para análisis.
+  Control de movimiento del robot.
+  Exploración autónoma del entorno.
+  Odometría para rastrear la posición y orientación del robot.
+  Detección y evitación de obstáculos.
+  Registro de datos de posición y orientación en tiempo real.
+  Generación de gráficos para análisis.
 
 Requisitos
 Antes de ejecutar este controlador, asegúrate de tener instalado Webots, el entorno de simulación robótica en el que se ejecutará este código.
