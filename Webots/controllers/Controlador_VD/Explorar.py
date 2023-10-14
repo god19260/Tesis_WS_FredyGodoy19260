@@ -1,5 +1,13 @@
+import numpy as np
+
 import Rot_Control
 import Odometria
+import Obstaculos
+
+def Rutina_Inicio(agente):
+    for i in [45,45,45,45,45,45,45,45]:
+        agente.angulo += i
+        Rot_Control.Rot_Control(agente.angulo,agente)
 
 def Explorar(agente):
     coef_velocidad = 0.01
@@ -23,7 +31,7 @@ def Explorar(agente):
         agente.DatosSensores()
         Odometria.Avance_Lineal(agente,1) # Fin de avance lineal
         Odometria.Odometria(agente)
-        
+        Obstaculos.Obstaculos(agente,agente.rotz*180/np.pi)
 
         if agente.ds2_value < 100 and agente.ds4_value < 100:
             ds0_min_val = 30
@@ -55,6 +63,7 @@ def Explorar(agente):
             agente.DatosSensores()
             Odometria.Avance_Lineal(agente,1) # Fin de avance lineal
             Odometria.Odometria(agente)
+            Obstaculos.Obstaculos(agente,agente.rotz*180/np.pi)
             break                   
         
         if agente.step(agente.timestep) == -1:
@@ -72,7 +81,8 @@ def Explorar(agente):
     agente.DatosSensores()
     Odometria.Avance_Lineal(agente,1) # Fin de avance lineal
     Odometria.Odometria(agente)
-    
+    Obstaculos.Obstaculos(agente,agente.rotz*180/np.pi)
+
     agente.left_motor.setVelocity(0)
     agente.right_motor.setVelocity(0)
     #Odometria.Odometria(agente)

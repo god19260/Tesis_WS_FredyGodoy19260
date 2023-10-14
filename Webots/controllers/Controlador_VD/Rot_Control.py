@@ -1,7 +1,7 @@
 import numpy as np
 
 import Odometria
-
+import Obstaculos
 
 # Función Controlador de rotación
 
@@ -20,7 +20,7 @@ def Rot_Control(rotz_goal,agente):
     while eO > 0.003:
         agente.DatosSensores()
         Odometria.Odometria(agente)
-        
+        Obstaculos.Obstaculos(agente,agente.rotz*180/np.pi)
         
         x = 0.5
         y = 0.5

@@ -51,10 +51,10 @@ def Trayectoria_Exploracion(agente):
     plt.xlim(0,5)
     plt.ylim(0,5)
     plt.grid(True)
+    
+    # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+    # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
     plt.show()
-    # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
-    # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
-
 def Error(agente):
     # ------------------------- Crear una figura -------------------------- 
     # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
@@ -62,7 +62,7 @@ def Error(agente):
     agente.fig2 = plt.figure()
     agente.fig2.suptitle('Errores y coordenadas')
     # */*/*/*/*/*/*/*/*/*/*/*/* Crear una subfigura */*/*/*/*/*/*/*/*/*/*/*
-    agente.ax1_fig2 = agente.fig2.add_subplot(121)
+    agente.ax1_fig2 = agente.fig2.add_subplot(111)
 
     # Configurar límites de los ejes
     agente.ax1_fig2.set_xlim(0,len(agente.T_Exploracion_GPS_x))
@@ -77,42 +77,36 @@ def Error(agente):
     plt.xlabel('no. de nodos')
     plt.ylabel('Porcentaje de error')  
         
+    plt.show()
 
-    # */*/*/*/*/*/*/*/*/*/*/*/* Crear otra subfigura */*/*/*/*/*/*/*/*/*/*/*
-    agente.ax2_fig2 = agente.fig2.add_subplot(122)
+def Obstaculos(agente):
+     # Crear una figura 
+    agente.fig = plt.figure()
+    agente.fig.suptitle('Trayectoria Exploración')
+    
+    # *-*-*-*-*-*-*-*-*-*-*-*-* Crear una subfigura *-*-*-*-*-*-*-*-*-*-*-*-*   
+    # (Trayectoria experimental, obtenida de las revoluciones de las ruedas)
+    agente.ax1 = agente.fig.add_subplot(111)
 
     # Configurar límites de los ejes
-    agente.ax2_fig2.set_xlim(0,len(agente.T_Exploracion_x))
-    agente.ax2_fig2.set_ylim(0,4)
+    agente.ax1.set_xlim(0, agente.size_x*10)
+    agente.ax1.set_ylim(0, agente.size_y*10)
 
     # Configurar aspecto de los ejes
-    agente.ax2_fig2.grid(True)
-    
-    plt.title('Coordenadas x: GPS vs por posición de ruedas')
-    plt.plot(agente.T_Exploracion_x, color='red')
-    plt.plot(agente.T_Exploracion_GPS_x, color='blue')
-    plt.xlabel('Coordenadas x: GPS (rojo) y por posición de ruedas (azul)')
-    plt.ylabel('mt')  
+    agente.ax1.set_aspect('equal')
+    agente.ax1.grid(True)
     
     
-    # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
-    """
-    # */*/*/*/*/*/*/*/*/*/*/*/* Crear otra subfigura */*/*/*/*/*/*/*/*/*/*/*
-    agente.ax3_fig2 = agente.fig2.add_subplot(133)
+    plt.plot(agente.T_Exploracion_x, agente.T_Exploracion_y, '-o', color='red')
+    plt.plot(agente.Pared_x_ds2,agente.Pared_y_ds2,'o', color='black')
+    plt.plot(agente.Pared_x_ds4,agente.Pared_y_ds4,'o', color='black')
+    plt.plot(agente.Pared_x_ds0,agente.Pared_y_ds0,'o', color='black')
 
-    # Configurar límites de los ejes
-    agente.ax3_fig2.set_xlim(0,len(agente.T_Exploracion_y))
-    agente.ax3_fig2.set_ylim(0,5)
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    plt.title('Por posición de ruedas')
+    plt.xlim(0,5)
+    plt.ylim(0,5)
+    plt.grid(True)
 
-    # Configurar aspecto de los ejes
-    agente.ax3_fig2.grid(True)
-    
-    plt.title('Coordenadas y: GPS vs por posición de ruedas')
-    plt.plot(agente.T_Exploracion_y, color='red')
-    plt.plot(agente.nodos_GPS_y, color='blue')
-    plt.xlabel('Coordenadas y: GPS (rojo) y por posición de ruedas (azul)')
-    plt.ylabel('mt')  
-    # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
-    # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
-    """
     plt.show()
