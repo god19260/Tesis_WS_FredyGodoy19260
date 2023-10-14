@@ -34,16 +34,34 @@ def Odometria(agente):
 
 
 def Avance_Lineal(agente,estado):
+    # Función de odometría unica solo para trayectoria de exploración
+    
     # estado: 0 para inicio de medición
     # 1 para fin de medión y obtener resultado
     
-    agente.DatosSensores()
+    #agente.DatosSensores()
     if estado == 0:
+        agente.revsRight = agente.PS_Right_value/(2*np.pi)
+        agente.revsLeft  = agente.PS_Left_value/(2*np.pi)
+        
+        agente.DRW_Right =  agente.revsRight*2*np.pi*agente.wheelRadius    # Distancia recorrida por la llanta derecha
+        agente.DRW_Left  =  agente.revsLeft*2*np.pi*agente.wheelRadius     # Distancia recorrida por la llanta izquierda
+
+
          # variables de odometría lineal
         agente.distAnterior_Right = agente.DRW_Right
         agente.distAnterior_Left = agente.DRW_Left
+        #print("Inicio lineal:  ", agente.distAnterior_Right)
         
-    elif estado == 1:
+    if estado == 1:
+        agente.revsRight = agente.PS_Right_value/(2*np.pi)
+        agente.revsLeft  = agente.PS_Left_value/(2*np.pi)
+        
+        agente.DRW_Right =  agente.revsRight*2*np.pi*agente.wheelRadius    # Distancia recorrida por la llanta derecha
+        agente.DRW_Left  =  agente.revsLeft*2*np.pi*agente.wheelRadius     # Distancia recorrida por la llanta izquierda
+
+
+
         # llanta derecha
         agente.distActual_Right = agente.DRW_Right
         agente.d_lineaRecta_Right = agente.distActual_Right-agente.distAnterior_Right
@@ -53,5 +71,32 @@ def Avance_Lineal(agente,estado):
         agente.d_lineaRecta_Left = agente.distActual_Left-agente.distAnterior_Left
         
         agente.promedio_distancia_trayecto = (agente.d_lineaRecta_Left+agente.d_lineaRecta_Right)/2
+        agente.Distancia_Total += agente.promedio_distancia_trayecto
         agente.Distancias_lineaRecta.append(agente.promedio_distancia_trayecto)
         agente.Angulos.append(agente.angulo)
+        
+
+        # Odometría. Posición estimada trayectoria de exploración 
+        agente.x_vehiculo = agente.T_Exploracion_x[-1]+np.cos(agente.angulo*np.pi/180)*agente.promedio_distancia_trayecto
+        agente.y_vehiculo = agente.T_Exploracion_y[-1]+np.sin(agente.angulo*np.pi/180)*agente.promedio_distancia_trayecto
+
+        agente.T_Exploracion_x.append(agente.x_vehiculo) # Trayectoria exploración coordenada en x
+        agente.T_Exploracion_y.append(agente.y_vehiculo) # Trayectoria exploración coordenada en y 
+
+        # Odometría. Posición trayectoria exploración obtenida con GPS
+        agente.T_Exploracion_GPS_x.append(agente.GPS_values[0]+agente.size_x/2)
+        agente.T_Exploracion_GPS_y.append(agente.GPS_values[1]+agente.size_y/2)
+        
+        # Obtener el % de error entre el posición estimada y el obtenido con GPS
+        v_estimado = np.sqrt((agente.T_Exploracion_x[-1]+agente.delta_GPS_Estimado_x)**2+(agente.T_Exploracion_y[-1]+agente.delta_GPS_Estimado_y)**2)
+        v_real = np.sqrt(agente.T_Exploracion_GPS_x[-1]**2 +agente.T_Exploracion_GPS_y[-1]**2)
+        #v_aproximado = round(agente.y_vehiculo+agente.delta_GPS_revs_y,4)
+        #v_real = round(agente.GPS_values[1]+agente.size_y/2,4) 
+
+        agente.error_GPS_Estimado.append(abs((v_estimado-v_real)/abs(v_real))*100)
+        #print(agente.GPS_values[0]+agente.size_x/2," -- ",agente.GPS_values[1]+agente.size_y/2," || ",agente.x_vehiculo+agente.delta_GPS_revs_x," -- ",agente.y_vehiculo+agente.delta_GPS_revs_y)
+        
+        
+        #print("Fin de lineal:  ", agente.distActual_Right)
+        #print(" ")
+        #print(agente.distActual_Right, "  -  ", agente.distAnterior_Right  )

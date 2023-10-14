@@ -18,9 +18,10 @@ def Rot_Control(rotz_goal,agente):
     eO = 1.0
 
     while eO > 0.003:
+        agente.DatosSensores()
         Odometria.Odometria(agente)
         
-        agente.DatosSensores()
+        
         x = 0.5
         y = 0.5
         #e = [xg-x, yg-y]

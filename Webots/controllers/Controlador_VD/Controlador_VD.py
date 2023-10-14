@@ -2,7 +2,6 @@
 from controller import Robot
 import numpy as np
 import math
-import matplotlib.pyplot as plt
 import keyboard
 import random
 
@@ -12,10 +11,15 @@ import Rot_Control
 import Explorar
 import Condiciones_Giro
 import Odometria
+import Graficas
 
 class Slave(Robot):
     # get the time step of the current world.
-    timestep = 32
+    timestep = 3
+    
+    # Especificaciones del mundo
+    size_x = 5 #mt
+    size_y = 5 #mt
 
     #------------------ Características del robot ------------------
     wheelRadius = 0.035 #radio en m 
@@ -39,7 +43,12 @@ class Slave(Robot):
     # Distancia en tramos de linea recta
     Distancias_lineaRecta = []
     Angulos = []
-
+    Distancia_Total = 0
+    T_Exploracion_x = [0]
+    T_Exploracion_y = [0]
+    T_Exploracion_GPS_x = []
+    T_Exploracion_GPS_y = []
+    error_GPS_Estimado = []
     #---------------------------------------------------------------  
 
     #--------------------- Definiciones previas --------------------
@@ -83,7 +92,17 @@ class Slave(Robot):
     def DatosSensores_Init(self):
         self.PS_Right_StartValue =  self.PositionSensor_right.getValue()  # PS_Right_value --> position sensor right value
         self.PS_Left_StartValue  =  self.PositionSensor_left.getValue()  # PS_Right_value --> position sensor right value
-            
+
+        # Offset para valores GPS 
+        # Actualizar valores de GPS
+        self.GPS_values = self.GPS.getValues()
+        self.T_Exploracion_GPS_x.append(self.GPS_values[0]+self.size_x/2)
+        self.T_Exploracion_GPS_y.append(self.GPS_values[1]+self.size_y/2)
+
+        self.delta_GPS_Estimado_x = abs(self.T_Exploracion_GPS_x[0])
+        self.delta_GPS_Estimado_y = abs(self.T_Exploracion_GPS_y[0])
+
+
     def DatosSensores(self):
         # Actualizar sensores de distancia
         self.ds0_value = self.distanceSensors[0].getValue()
@@ -103,12 +122,6 @@ class Slave(Robot):
         self.PS_Right_value = self.PositionSensor_right.getValue()- self.PS_Right_StartValue   # PS_Right_value --> position sensor right value
         self.PS_Left_value  = self.PositionSensor_left.getValue()- self.PS_Left_StartValue    # PS_Left_value --> position sensor left value 
         
-        self.revsRight = self.PS_Right_value/(2*np.pi)
-        self.revsLeft  = self.PS_Left_value/(2*np.pi)
-        
-        self.DRW_Right =  self.revsRight*2*np.pi*self.wheelRadius    # Distancia recorrida por la llanta derecha
-        self.DRW_Left  =  self.revsLeft*2*np.pi*self.wheelRadius     # Distancia recorrida por la llanta izquierda
-
         # Actualizar valores de GPS
         self.GPS_values = self.GPS.getValues()
         
@@ -121,22 +134,31 @@ if Agente_1.step(Agente_1.timestep) != -1:
 Agente_1.DatosSensores_Init() 
 Odometria.Odometria_Init(Agente_1)
 
-
+i = False
 while Agente_1.step(Agente_1.timestep) != -1:
-    
+    Agente_1.DatosSensores()
     Rot_Control.Rot_Control(Agente_1.angulo,Agente_1)
     Explorar.Explorar(Agente_1)
-    print("Estimado: ", round(Agente_1.phi,0), " - Real: ",Agente_1.angulo) 
-      
-    Condiciones_Giro.DecisionGiro(Agente_1)
     
+
+    if Agente_1.getTime() >= 40*60:
+        Graficas.Trayectoria_Exploracion(Agente_1)
+        Graficas.Error(Agente_1)
+        
+        print(Agente_1.xc[-1], "  -  ", Agente_1.T_Exploracion_x[-1], "  -  ", Agente_1.T_Exploracion_GPS_x[-1]-Agente_1.delta_GPS_Estimado_x)
+        #print("tiempo al corte: ", Agente_1.getTime()," s")
+        #print("Estimado: ", round(Agente_1.phi,0), " - Real: ",Agente_1.angulo)
+        
+        #print("cant nodos: Distancia linea: ", len(Agente_1.Distancias_lineaRecta), " - ", len(Agente_1.Angulos))
+        #print("T GPS: ", len(Agente_1.T_Exploracion_GPS_x), " - ", len(Agente_1.T_Exploracion_GPS_y))
+        #print("T Estimada: ", len(Agente_1.T_Exploracion_x), " - ", len(Agente_1.T_Exploracion_y))
+        break
+
+    Condiciones_Giro.DecisionGiro(Agente_1)
 
     if Agente_1.step(Agente_1.timestep) == -1:
         break
     
-    if Agente_1.step(Agente_1.timestep) >= 10:
-        break
-
 
 
 
