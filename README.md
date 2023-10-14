@@ -13,7 +13,7 @@ Este proyecto es un controlador para un robot simulado desarrollado en Webots, u
 
 ## Requisitos
 
-Antes de ejecutar este controlador, asegúrate de tener instalado Webots, el entorno de simulación robótica en el que se ejecutará este código.
+Antes de ejecutar este controlador, asegúrate de tener instalado Webots R2023a, el entorno de simulación robótica en el que se ejecutará este código.
 
 ## Instrucciones de Instalación
 
