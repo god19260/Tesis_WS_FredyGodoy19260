@@ -39,18 +39,11 @@ El proyecto se divide en varios archivos, cada uno con una funcionalidad especí
 - `Odometria.py`: Realiza el seguimiento de la odometría del robot.
 - `Graficas.py`: Genera gráficos para el análisis de datos.
 
-## Contribución
-
-Si deseas contribuir a este proyecto, sigue estos pasos:
-
-1. Haz un fork del repositorio.
-2. Realiza tus cambios y mejoras.
-3. Envía un pull request para revisión.
 
 ## Contacto
 
-Si tienes alguna pregunta o comentario, no dudes en ponerte en contacto con el equipo de desarrollo:
+Si tienes alguna pregunta o comentario, no dudes en ponerte en contacto:
 
-- **Nombre del Desarrollador**
-- Correo electrónico: tu@email.com
-- Perfil de GitHub: [github.com/tuusuario](https://github.com/tuusuario)
+- Fredy Godoy 
+- Correo electrónico: god19260@uvg.edu.gt
+
