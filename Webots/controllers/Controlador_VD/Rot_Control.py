@@ -75,3 +75,6 @@ def Rot_Control(rotz_goal,agente):
 
         if agente.step(agente.timestep) == -1:
             break
+
+    agente.left_motor.setVelocity(0)
+    agente.right_motor.setVelocity(0)    

@@ -1,8 +1,9 @@
 import random
 
 def DecisionGiro(agente):
-    dMin = 15
-    if agente.FrenoEmergencia == False:
+    dMin = 15.5#agente.distanceCenter*100
+    if agente.FrenoEmergencia == True:
+        agente.FrenoEmergencia = False
         if agente.ds1_value <= dMin:
             agente.angulo +=45
 
@@ -13,11 +14,11 @@ def DecisionGiro(agente):
     
     dis = 100
     #if agente.ds0_value < dis:                  
-    if agente.ds2_value >= agente.ds0_value and agente.ds2_value >= agente.ds4_value:
+    if agente.ds1_value >= agente.ds5_value:#agente.ds2_value >= agente.ds0_value and agente.ds2_value >= agente.ds4_value and agente.ds1_value >= agente.ds5_value:
         agente.angulo = agente.angulo -45
         #print("giro 1")
         
-    elif agente.ds4_value >= agente.ds0_value and agente.ds4_value >= agente.ds2_value:
+    elif agente.ds5_value >= agente.ds1_value:#agente.ds4_value >= agente.ds0_value and agente.ds4_value >= agente.ds2_value and agente.ds5_value >= agente.ds1_value:
         agente.angulo = agente.angulo +45
         #print("giro 2")
 

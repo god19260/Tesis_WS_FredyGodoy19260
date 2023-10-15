@@ -159,14 +159,15 @@ while Agente_1.step(Agente_1.timestep) != -1:
     Explorar.Explorar(Agente_1)
     
 
-    if Agente_1.getTime() >= 30*60:
+    if Agente_1.getTime() >= 50*60:
+        
+        print("x: ",round(Agente_1.xc[-1]*100,0), "  -  ", round(Agente_1.T_Exploracion_x[-1]*100,0), "  -  ", round(Agente_1.T_Exploracion_GPS_x[-1]*100-Agente_1.delta_GPS_Estimado_x*100))
+        print("y: ",round(Agente_1.yc[-1]*100,0), "  -  ", round(Agente_1.T_Exploracion_y[-1]*100,0), "  -  ", round(Agente_1.T_Exploracion_GPS_y[-1]*100-Agente_1.delta_GPS_Estimado_y*100,0))
+        print("tiempo al corte: ", int(Agente_1.getTime()/60)," min")
+        print("Estimado: ", round(Agente_1.phi,0), " - Real: ",Agente_1.angulo)
         Graficas.Trayectoria_Exploracion(Agente_1)
         Graficas.Error(Agente_1)
         Graficas.Obstaculos(Agente_1)
-        print(Agente_1.xc[-1], "  -  ", Agente_1.T_Exploracion_x[-1], "  -  ", Agente_1.T_Exploracion_GPS_x[-1]-Agente_1.delta_GPS_Estimado_x)
-        #print("tiempo al corte: ", Agente_1.getTime()," s")
-        #print("Estimado: ", round(Agente_1.phi,0), " - Real: ",Agente_1.angulo)
-        
         #print("cant nodos: Distancia linea: ", len(Agente_1.Distancias_lineaRecta), " - ", len(Agente_1.Angulos))
         #print("T GPS: ", len(Agente_1.T_Exploracion_GPS_x), " - ", len(Agente_1.T_Exploracion_GPS_y))
         #print("T Estimada: ", len(Agente_1.T_Exploracion_x), " - ", len(Agente_1.T_Exploracion_y))

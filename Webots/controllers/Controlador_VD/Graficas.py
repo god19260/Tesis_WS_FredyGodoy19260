@@ -55,6 +55,9 @@ def Trayectoria_Exploracion(agente):
     # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
     # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
     plt.show()
+
+
+    
 def Error(agente):
     # ------------------------- Crear una figura -------------------------- 
     # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
@@ -84,8 +87,6 @@ def Obstaculos(agente):
     agente.fig = plt.figure()
     agente.fig.suptitle('Trayectoria Exploración')
     
-    # *-*-*-*-*-*-*-*-*-*-*-*-* Crear una subfigura *-*-*-*-*-*-*-*-*-*-*-*-*   
-    # (Trayectoria experimental, obtenida de las revoluciones de las ruedas)
     agente.ax1 = agente.fig.add_subplot(111)
 
     # Configurar límites de los ejes

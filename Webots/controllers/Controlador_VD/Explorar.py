@@ -13,10 +13,10 @@ def Explorar(agente):
     coef_velocidad = 0.01
     vel_max = 8
     ds0_min_val = 30
-    dMin = 15.5
+    dMin = 15.5#agente.distanceCenter*100#15.5
     cont = 0
-    agente.FrenoEmergencia = True
-
+    agente.FrenoEmergencia = False
+    print("---- Inicio ----")
     while (agente.ds0_value >= agente.ds2_value) and (agente.ds0_value >= agente.ds4_value) or agente.ds0_value>ds0_min_val:
         #agente.DatosSensores()
         
@@ -46,7 +46,7 @@ def Explorar(agente):
         # Condiciones especiales para cambiar la rotación
         if agente.ds0_value <= dMin or agente.ds1_value <= dMin or agente.ds5_value <= dMin:
             print("---- Freno de emergencia ----")
-            agente.FrenoEmergencia = False
+            agente.FrenoEmergencia = True
             
             Odometria.Avance_Lineal(agente,0) # Inicio de avance lineal
             while coef_velocidad > 0.1:
@@ -68,21 +68,24 @@ def Explorar(agente):
         
         if agente.step(agente.timestep) == -1:
             break
-
-    Odometria.Avance_Lineal(agente,0) # Inicio de avance lineal
-    while coef_velocidad > 0:
-        agente.left_motor.setVelocity(vel_max*coef_velocidad)
-        agente.right_motor.setVelocity(vel_max*coef_velocidad)
-        #Odometria.Odometria(agente)
+    
+    if agente.FrenoEmergencia == False:
+        Odometria.Avance_Lineal(agente,0) # Inicio de avance lineal
+        while coef_velocidad > 0.1:
+            agente.left_motor.setVelocity(vel_max*coef_velocidad)
+            agente.right_motor.setVelocity(vel_max*coef_velocidad)
+            #Odometria.Odometria(agente)
+            
+            coef_velocidad -= 0.1
+            if agente.step(agente.timestep) == -1:
+                break
+        agente.left_motor.setVelocity(0)
+        agente.right_motor.setVelocity(0)
         
-        coef_velocidad -= 0.05
-        if agente.step(agente.timestep) == -1:
-            break
-    agente.DatosSensores()
-    Odometria.Avance_Lineal(agente,1) # Fin de avance lineal
-    Odometria.Odometria(agente)
-    Obstaculos.Obstaculos(agente,agente.rotz*180/np.pi)
+        agente.DatosSensores()
+        Odometria.Avance_Lineal(agente,1) # Fin de avance lineal
+        Odometria.Odometria(agente)
+        Obstaculos.Obstaculos(agente,agente.rotz*180/np.pi)
 
-    agente.left_motor.setVelocity(0)
-    agente.right_motor.setVelocity(0)
-    #Odometria.Odometria(agente)
+        print("---- Fin ----")
+        #Odometria.Odometria(agente)
