@@ -16,7 +16,6 @@ def Explorar(agente):
     dMin = 15.5#agente.distanceCenter*100#15.5
     cont = 0
     agente.FrenoEmergencia = False
-    print("---- Inicio ----")
     while (agente.ds0_value >= agente.ds2_value) and (agente.ds0_value >= agente.ds4_value) or agente.ds0_value>ds0_min_val:
         #agente.DatosSensores()
         
@@ -87,5 +86,4 @@ def Explorar(agente):
         Odometria.Odometria(agente)
         Obstaculos.Obstaculos(agente,agente.rotz*180/np.pi)
 
-        print("---- Fin ----")
         #Odometria.Odometria(agente)
