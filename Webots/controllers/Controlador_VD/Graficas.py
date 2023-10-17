@@ -3,6 +3,8 @@ import keyboard
 
 
 def graph_select(agente):
+    print(" ")
+    print("-------------------------------------------------------")
     print("d: mostrar datos\nm: mostrar mapa\ns: mostrar stats")
     print("\nw: mostrar espacio de trabajo\nn: salir")
     
@@ -20,14 +22,23 @@ def graph_select(agente):
                     break
             Data(agente)
 
-        if keyboard.is_pressed("m"):
-            Trayectoria_Exploracion(agente)
-        
         if keyboard.is_pressed("s"):
             Error(agente)
+
+        if keyboard.is_pressed("1"):
+            Trayectoria_Exploracion(agente)
         
-        if keyboard.is_pressed("w"):
+        if keyboard.is_pressed("2"):
             Obstaculos(agente)
+
+        if keyboard.is_pressed("3"):
+            Espacio_Trabjo(agente)
+
+        if keyboard.is_pressed("4"):
+            Ruta_Optima(agente)
+
+        
+
         
         if agente.step(agente.timestep) == -1:
             break
@@ -35,9 +46,11 @@ def graph_select(agente):
         
         
 def Data(agente):
-    print("x: ",round(agente.xc[-1]*100,0), "  -  ", round(agente.T_Exploracion_x[-1]*100,0), "  -  ", round(agente.T_Exploracion_GPS_x[-1]*100-agente.delta_GPS_Estimado_x*100))
-    print("y: ",round(agente.yc[-1]*100,0), "  -  ", round(agente.T_Exploracion_y[-1]*100,0), "  -  ", round(agente.T_Exploracion_GPS_y[-1]*100-agente.delta_GPS_Estimado_y*100,0))
-    print("tiempo al corte: ", int(agente.getTime()/60)," min")
+    print("-------------------------------------------------------")
+    print("------------------------ Datos ------------------------")
+    print("Tiempo de simulación: ", int(agente.getTime()/60)," min")
+    print("Pos x: ",round(agente.xc[-1]*100,0), "  -  ", round(agente.T_Exploracion_x[-1]*100,0), "  -  ", round(agente.T_Exploracion_GPS_x[-1]*100-agente.delta_GPS_Estimado_x*100))
+    print("Pos wy: ",round(agente.yc[-1]*100,0), "  -  ", round(agente.T_Exploracion_y[-1]*100,0), "  -  ", round(agente.T_Exploracion_GPS_y[-1]*100-agente.delta_GPS_Estimado_y*100,0))
     print("Estimado: ", round(agente.phi,0), " - Real: ",agente.angulo)
         
 
@@ -61,15 +74,29 @@ def Trayectoria_Exploracion(agente):
     
     
     plt.plot(agente.T_Exploracion_x, agente.T_Exploracion_y, '-o', color='red')
-    #plt.plot(agente.Pared_x_ds2,agente.Pared_y_ds2,'o', color='black')
-    #plt.plot(agente.Pared_x_ds4,agente.Pared_y_ds4,'o', color='black')
-    #plt.plot(agente.Pared_x_ds0,agente.Pared_y_ds0,'o', color='black')
+    
+    # Obtener los limites del mapa
+    xlim=[0,0]
+    ylim=[0,0]
+
+    if min(agente.T_Exploracion_x) < xlim[0]: xlim[0] = min(agente.T_Exploracion_x)
+    if max(agente.T_Exploracion_x) > xlim[1]: xlim[1] = max(agente.T_Exploracion_x)
+
+    if min(agente.T_Exploracion_y) < ylim[0]: ylim[0] = min(agente.T_Exploracion_y)
+    if max(agente.T_Exploracion_y) > ylim[1]: ylim[1] = max(agente.T_Exploracion_y)
+
+    # Expandir el área de la gráfica
+    xlim[0] = xlim[0]-1
+    xlim[1] = xlim[1]+1
+
+    ylim[0] = ylim[0]-1
+    ylim[1] = ylim[1]+1
 
     plt.xlabel('X')
     plt.ylabel('Y')
     plt.title('Por posición de ruedas')
-    plt.xlim(0,5)
-    plt.ylim(0,5)
+    plt.xlim(xlim)
+    plt.ylim(ylim)
     plt.grid(True)
 
     
@@ -87,19 +114,35 @@ def Trayectoria_Exploracion(agente):
     agente.ax2.grid(True)
     
     plt.plot(agente.T_Exploracion_GPS_x, agente.T_Exploracion_GPS_y, '-o', color='green')
+    
+    # Obtener los limites del mapa
+    xlim=[0,0]
+    ylim=[0,0]
+
+    if min(agente.T_Exploracion_GPS_x) < xlim[0]: xlim[0] = min(agente.T_Exploracion_GPS_x)
+    if max(agente.T_Exploracion_GPS_x) > xlim[1]: xlim[1] = max(agente.T_Exploracion_GPS_x)
+
+    if min(agente.T_Exploracion_GPS_y) < ylim[0]: ylim[0] = min(agente.T_Exploracion_GPS_y)
+    if max(agente.T_Exploracion_GPS_y) > ylim[1]: ylim[1] = max(agente.T_Exploracion_GPS_y)
+
+    # Expandir el área de la gráfica
+    xlim[0] = xlim[0]-1
+    xlim[1] = xlim[1]+1
+
+    ylim[0] = ylim[0]-1
+    ylim[1] = ylim[1]+1
+
     plt.xlabel('X')
     plt.ylabel('Y')
     plt.title('GPS')
-    plt.xlim(0,5)
-    plt.ylim(0,5)
+    plt.xlim(xlim)
+    plt.ylim(ylim)
     plt.grid(True)
     
     # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
     # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
     plt.show()
 
-
-    
 def Error(agente):
     # ------------------------- Crear una figura -------------------------- 
     # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
@@ -141,15 +184,187 @@ def Obstaculos(agente):
     
     
     plt.plot(agente.T_Exploracion_x, agente.T_Exploracion_y, '-o', color='red')
+    plt.plot(agente.Pared_x_ds0,agente.Pared_y_ds0,'o', color='black')
+    plt.plot(agente.Pared_x_ds1,agente.Pared_y_ds1,'o', color='black')
     plt.plot(agente.Pared_x_ds2,agente.Pared_y_ds2,'o', color='black')
     plt.plot(agente.Pared_x_ds4,agente.Pared_y_ds4,'o', color='black')
-    plt.plot(agente.Pared_x_ds0,agente.Pared_y_ds0,'o', color='black')
+    plt.plot(agente.Pared_x_ds5,agente.Pared_y_ds5,'o', color='black')
+
+    # Obtener los limites del mapa
+    xlim=[0,0]
+    ylim=[0,0]
+
+    if min(agente.T_Exploracion_x) < xlim[0]: xlim[0] = min(agente.T_Exploracion_x)
+    if max(agente.T_Exploracion_x) > xlim[1]: xlim[1] = max(agente.T_Exploracion_x)
+
+    if min(agente.T_Exploracion_y) < ylim[0]: ylim[0] = min(agente.T_Exploracion_y)
+    if max(agente.T_Exploracion_y) > ylim[1]: ylim[1] = max(agente.T_Exploracion_y)
+
+    # Expandir el área de la gráfica
+    xlim[0] = xlim[0]-1
+    xlim[1] = xlim[1]+1
+
+    ylim[0] = ylim[0]-1
+    ylim[1] = ylim[1]+1
+
 
     plt.xlabel('X')
     plt.ylabel('Y')
     plt.title('Por posición de ruedas')
-    plt.xlim(0,5)
-    plt.ylim(0,5)
+    plt.xlim(xlim)
+    plt.ylim(ylim)
     plt.grid(True)
 
+    plt.show()
+
+def Espacio_Trabjo(agente):    
+    mapa = agente.mapa_WS
+    # Obtener las dimensiones del mapa
+    #mapa_flip = np.flip(mapa,axis=0)
+    filas, columnas = mapa.shape
+
+
+    # Crear una figura 
+    fig = plt.figure()
+
+    ## -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    ## -+-+-+-+-+-+-+-+  Crear subfigura 1 -+-+-+-+-+-+-+-+
+    ax1 = fig.add_subplot(121)
+
+    # Configurar límites de los ejes
+    ax1.set_xlim(0, columnas)
+    ax1.set_ylim(0, filas)
+
+    # Configurar aspecto de los ejes
+    ax1.set_aspect('equal')
+    ax1.grid(True)
+
+    # Iterar sobre el mapa y graficar obstáculos
+    for fila in range(filas):
+        for columna in range(columnas):
+            if mapa[fila, columna] == 1:
+                # Dibujar obstáculo
+                rect = plt.Rectangle((columna, fila), 1, 1, facecolor='black')
+                ax1.add_patch(rect)
+    plt.plot(int(agente.factorWS*(agente.x_vehiculo)),int(agente.factorWS*(agente.y_vehiculo)),'o',color = 'red')
+    # Configurar los ejes
+    ax1.set_xlabel('X')
+    ax1.set_ylabel('Y')
+
+    ## -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    ## -+-+-+-+-+-+-+-+  Crear subfigura 2 -+-+-+-+-+-+-+-+
+
+    ax2 = fig.add_subplot(122, projection='3d')
+
+
+    # Configurar límites de los ejes
+    ax2.set_xlim(0, columnas)
+    ax2.set_ylim(0, filas)
+    ax2.set_zlim(0, 1)
+
+    # Configurar aspecto de los ejes
+    ax2.set_box_aspect([1, 1, 0.1])
+    ax2.grid(True)
+
+    # Iterar sobre el mapa y graficar obstáculos
+    for fila in range(filas):
+        for columna in range(columnas):
+            if mapa[fila, columna] == 1:
+                # Dibujar obstáculo como una caja
+                x = columna
+                y = fila
+                z = 0
+                dx = 1
+                dy = 1
+                dz = 1
+                ax2.bar3d(x, y, z, dx, dy, dz, color='black')
+
+    plt.plot(int(agente.factorWS*(agente.x_vehiculo)),int(agente.factorWS*(agente.y_vehiculo)),'o',color = 'red')
+    # Mostrar la gráfica
+    plt.show()
+
+def Ruta_Optima(agente):
+    mapa = agente.mapa_WS
+    # Obtener las dimensiones del mapa
+    #mapa_flip = np.flip(mapa,axis=0)
+    filas, columnas = mapa.shape
+
+
+    # Crear una figura 
+    fig = plt.figure()
+
+    ## -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    ## -+-+-+-+-+-+-+-+  Crear subfigura 1 -+-+-+-+-+-+-+-+
+    ax1 = fig.add_subplot(121)
+
+    # Configurar límites de los ejes
+    ax1.set_xlim(0, columnas)
+    ax1.set_ylim(0, filas)
+
+    # Configurar aspecto de los ejes
+    ax1.set_aspect('equal')
+    ax1.grid(True)
+
+    # Iterar sobre el mapa y graficar obstáculos
+    for fila in range(filas):
+        for columna in range(columnas):
+            if mapa[fila, columna] == 1:
+                # Dibujar obstáculo
+                rect = plt.Rectangle((columna, fila), 1, 1, facecolor='black')
+                ax1.add_patch(rect)
+
+    # Configurar los ejes
+    ax1.set_xlabel('X')
+    ax1.set_ylabel('Y')
+
+    try:
+        # Graficar ruta optima
+        agente.x_rutaOptima = [posicion[1]+0.5 for posicion in agente.ruta_optima]
+        agente.y_rutaOptima = [posicion[0]+0.5 for posicion in agente.ruta_optima]
+        #plt.plot(inicio[1]+0.5,inicio[0]+0.5,'-o',color='blue')
+        
+        plt.plot(agente.x_rutaOptima, agente.y_rutaOptima, '-o', color='green')
+        plt.plot(agente.x_rutaOptima[0], agente.y_rutaOptima[0], '-o', color='blue')
+        #plt.plot(agente.x_rutaOptima[0],agente.y_rutaOptima[0],'o',color = 'red')
+        #plt.plot(int(agente.factorWS*(agente.x_vehiculo))+abs(agente.min_val_x),int(agente.factorWS*(agente.y_vehiculo))+abs(agente.min_val_y),'o',color = 'blue')
+    except:
+        print("No se generó ruta óptima, verificar puntos seleccionados.")    
+    
+    ## -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    ## -+-+-+-+-+-+-+-+  Crear subfigura 2 -+-+-+-+-+-+-+-+
+
+    ax2 = fig.add_subplot(122, projection='3d')
+
+
+    # Configurar límites de los ejes
+    ax2.set_xlim(0, columnas)
+    ax2.set_ylim(0, filas)
+    ax2.set_zlim(0, 1)
+
+    # Configurar aspecto de los ejes
+    ax2.set_box_aspect([1, 1, 0.1])
+    ax2.grid(True)
+
+    # Iterar sobre el mapa y graficar obstáculos
+    for fila in range(filas):
+        for columna in range(columnas):
+            if mapa[fila, columna] == 1:
+                # Dibujar obstáculo como una caja
+                x = columna
+                y = fila
+                z = 0
+                dx = 1
+                dy = 1
+                dz = 1
+                ax2.bar3d(x, y, z, dx, dy, dz, color='black')
+    
+    try:            
+        plt.plot( agente.x_rutaOptima,  agente.y_rutaOptima, 'o', color='green')
+        plt.plot( agente.x_rutaOptima[0], agente.y_rutaOptima[0],'o',color = 'red')
+        
+    except:
+        print("No se generó ruta óptima, verificar puntos seleccionados.")    
+    
+    
+    # Mostrar la gráfica
     plt.show()

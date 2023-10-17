@@ -12,6 +12,8 @@ import Explorar
 import Condiciones_Giro
 import Odometria
 import Graficas
+import Obstaculos
+import Trayectoria
 
 class Slave(Robot):
     # get the time step of the current world.
@@ -66,7 +68,20 @@ class Slave(Robot):
     Pared_y_ds3 = []
     Pared_y_ds4 = []
     Pared_y_ds5 = []
+
+    # Espacio de trabajo
+    factorWS = 9 # cada recuadro del mapa es de dimensiones (factor x factor)
+    WS_x = []
+    WS_y = []
+    min_val_x = 0
+    min_val_y = 0
+    
     #---------------------------------------------------------------
+
+    #------------------------- Trayectoria -------------------------
+    ruta_optima = []
+    #---------------------------------------------------------------
+
 
     #--------------------- Definiciones previas --------------------
     distanceSensors = []
@@ -153,15 +168,24 @@ Odometria.Odometria_Init(Agente_1)
 
 Explorar.Rutina_Inicio(Agente_1)
 
+tiempos = [10,10,10] # minutos4n
+u = 0
 while Agente_1.step(Agente_1.timestep) != -1:
     Agente_1.DatosSensores()
     Rot_Control.Rot_Control(Agente_1.angulo,Agente_1)
     Explorar.Explorar(Agente_1)
     
 
-    if Agente_1.getTime() >= 10*60:
+    if Agente_1.getTime() >= tiempos[u]*60:
+        # Se considera este espacio el fin de la exploración
+        # y se genera la trayectoria al punto de inicio
+        Obstaculos.Espacio_Trabajo(Agente_1)
+        Trayectoria.Ruta_Optima(Agente_1)
+
         Graficas.graph_select(Agente_1)
-        break
+        u = 1
+        tiempos[u] = tiempos[u]+Agente_1.getTime()/60
+        #break
 
     Condiciones_Giro.DecisionGiro(Agente_1)
 
