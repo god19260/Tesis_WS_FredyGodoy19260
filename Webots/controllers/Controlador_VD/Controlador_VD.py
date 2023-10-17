@@ -2,8 +2,7 @@
 from controller import Robot
 import numpy as np
 import math
-import keyboard
-import random
+
 
 
 # Funciones Desarrolladas en este trabajo
@@ -20,12 +19,12 @@ class Slave(Robot):
     timestep = 3
     
     # Especificaciones del mundo
-    size_x = 5 #mt
-    size_y = 5 #mt
+    size_x = 5 #m
+    size_y = 5 #m
 
     #------------------ Características del robot ------------------
     wheelRadius = 0.035 #radio en m 
-    distanceCenter = 0.0748664*2 #0.075 #m 
+    distanceCenter = 0.0748664*2 #0.075 # distancia en m 
     angulo = 90  # ángulo respecto marco de referencia entorno
     
     #--------------------------------------------------------------- 
@@ -70,7 +69,7 @@ class Slave(Robot):
     Pared_y_ds5 = []
 
     # Espacio de trabajo
-    factorWS = 9 # cada recuadro del mapa es de dimensiones (factor x factor)
+    factorWS = 10 # cada recuadro del mapa es de dimensiones (factor x factor)
     WS_x = []
     WS_y = []
     min_val_x = 0
@@ -168,7 +167,7 @@ Odometria.Odometria_Init(Agente_1)
 
 Explorar.Rutina_Inicio(Agente_1)
 
-tiempos = [10,10,10] # minutos4n
+tiempos = [20,10,10] # minutos4n
 u = 0
 while Agente_1.step(Agente_1.timestep) != -1:
     Agente_1.DatosSensores()
@@ -183,7 +182,10 @@ while Agente_1.step(Agente_1.timestep) != -1:
         Trayectoria.Ruta_Optima(Agente_1)
 
         Graficas.graph_select(Agente_1)
-        u = 1
+        if u == 0:
+            Explorar.Seguimiento_Trayectoria(Agente_1)
+
+        u += 1
         tiempos[u] = tiempos[u]+Agente_1.getTime()/60
         #break
 

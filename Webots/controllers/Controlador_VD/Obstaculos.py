@@ -2,57 +2,49 @@ import numpy as np
 
 
 def Obstaculos(agente, angulo):
-
+    inflate = 3
     #print(len(agente.T_Exploracion_x) , " -- ",len(agente.T_Exploracion_y) , " -- " ,len(agente.Pared_x) , " -- ",len(agente.Pared_y))
     if agente.ds0_value<agente.rango_max_dsen:
-        x = agente.ds0_value*np.cos((angulo)*np.pi/180)/100
-        y = agente.ds0_value*np.sin((angulo)*np.pi/180)/100
+        x = (agente.ds0_value-inflate)*np.cos((angulo)*np.pi/180)/100
+        y = (agente.ds0_value-inflate)*np.sin((angulo)*np.pi/180)/100
         
         agente.Pared_x_ds0.append(agente.T_Exploracion_x[-1]+x)
         agente.Pared_y_ds0.append(agente.T_Exploracion_y[-1]+y)
 
     if agente.ds2_value<agente.rango_max_dsen:
-        x = agente.ds2_value*np.cos((angulo-90)*np.pi/180)/100
-        y = agente.ds2_value*np.sin((angulo-90)*np.pi/180)/100
+        x = (agente.ds2_value-inflate)*np.cos((angulo-90)*np.pi/180)/100
+        y = (agente.ds2_value-inflate)*np.sin((angulo-90)*np.pi/180)/100
         
         agente.Pared_x_ds2.append(agente.T_Exploracion_x[-1]+x)
         agente.Pared_y_ds2.append(agente.T_Exploracion_y[-1]+y)
     
     if agente.ds4_value<agente.rango_max_dsen:
-        x = agente.ds4_value*np.cos((angulo+90)*np.pi/180)/100
-        y = agente.ds4_value*np.sin((angulo+90)*np.pi/180)/100
+        x = (agente.ds4_value-inflate)*np.cos((angulo+90)*np.pi/180)/100
+        y = (agente.ds4_value-inflate)*np.sin((angulo+90)*np.pi/180)/100
         
         agente.Pared_x_ds4.append(agente.T_Exploracion_x[-1]+x)
         agente.Pared_y_ds4.append(agente.T_Exploracion_y[-1]+y)
-    
+    """
     if agente.ds1_value<agente.rango_max_dsen:
-        x = agente.ds1_value*np.cos((angulo-45)*np.pi/180)/100
-        y = agente.ds1_value*np.sin((angulo-45)*np.pi/180)/100
+        x = (agente.ds1_value-inflate)*np.cos((angulo-45)*np.pi/180)/100
+        y = (agente.ds1_value-inflate)*np.sin((angulo-45)*np.pi/180)/100
         
         agente.Pared_x_ds1.append(agente.T_Exploracion_x[-1]+x)
         agente.Pared_y_ds1.append(agente.T_Exploracion_y[-1]+y)
     
     if agente.ds5_value<agente.rango_max_dsen:
-        x = agente.ds5_value*np.cos((angulo+45)*np.pi/180)/100
-        y = agente.ds5_value*np.sin((angulo+45)*np.pi/180)/100
+        x = (agente.ds5_value-inflate)*np.cos((angulo+45)*np.pi/180)/100
+        y = (agente.ds5_value-inflate)*np.sin((angulo+45)*np.pi/180)/100
         
         agente.Pared_x_ds5.append(agente.T_Exploracion_x[-1]+x)
         agente.Pared_y_ds5.append(agente.T_Exploracion_y[-1]+y)
-
+    """
 def Espacio_Trabajo(agente):
      #print(" *-*-*-*-*-* Determinar espacio de trabajo *-*-*-*-*-*")
         cant_columnas = 0
         cant_filas = 0
 
-        """
-        d_sensors = [[agente.Pared_x_ds0,agente.Pared_y_ds0],
-                     [agente.Pared_x_ds1,agente.Pared_y_ds1],
-                     [agente.Pared_x_ds2,agente.Pared_y_ds2],
-                     [agente.Pared_x_ds3,agente.Pared_y_ds3],
-                     [agente.Pared_x_ds4,agente.Pared_y_ds4],
-                     [agente.Pared_x_ds5,agente.Pared_y_ds5],
-                     ]
-        """
+       
         d_sensors = [[agente.Pared_x_ds0,agente.Pared_y_ds0],
                      [agente.Pared_x_ds1,agente.Pared_y_ds1],
                      [agente.Pared_x_ds2,agente.Pared_y_ds2],
@@ -109,3 +101,6 @@ def Espacio_Trabajo(agente):
             agente.mapa_WS[int(y),int(x)] = 1
 
         #print(agente.mapa_WS)
+
+
+        

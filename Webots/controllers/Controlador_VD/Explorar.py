@@ -1,4 +1,5 @@
 import numpy as np
+import keyboard
 
 import Rot_Control
 import Odometria
@@ -87,3 +88,127 @@ def Explorar(agente):
         Obstaculos.Obstaculos(agente,agente.rotz*180/np.pi)
 
         #Odometria.Odometria(agente)
+
+def Seguimiento_Trayectoria(agente):
+    # Función para seguimiento de trayectoria óptima
+    print("Seguimiento de trayectoria óptima")
+
+    # Acercamiento exponencial
+    v0 = 500
+    alpha = 50 #%0.5;50
+    # PID orientación
+    kpO = 15 #15
+    kiO = 0.1 
+    kdO = 2 #1
+    EO = 0
+    eO_1 = 0
+    eO = 1.0
+    eP = 1.0
+    
+    contador = 0
+    #xGoal = [0*agente.factorWS]  # mt
+    #yGoal = [0*agente.factorWS]  # mt
+
+    xGoal = [posicion[1]+0.5 for posicion in agente.ruta_optima]
+    yGoal = [posicion[0]+0.5 for posicion in agente.ruta_optima]
+
+    while eP >= 0.005 or contador <=len(xGoal):
+        Odometria.Odometria(agente)
+        agente.DatosSensores()
+        #agente.Paredes(agente.rotz*180/np.pi)
+
+        #  -*-*-*- posiciones actuales del vehiculo -*-*-*-
+        x = (agente.factorWS*agente.xc[len(agente.xc)-1])
+        y = (agente.factorWS*agente.yc[len(agente.yc)-1])
+        #print("control posición: x: ", x," - y: ", y)
+        # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+
+        # *-*-*-*-*-*-*-* puntos de trayectoria a seguir *-*-*-*-*-*-*-*
+        
+        # con una trayectoria ya calculada
+        if contador < len(xGoal):
+            #xg = agente.ruta_optima[contador]
+            #yg = agente.ruta_optima[contador]
+            
+            if contador == len(xGoal)-1:
+                xg = xGoal[contador]-int(-agente.min_val_x)-0.5
+                yg = yGoal[contador]-int(-agente.min_val_y)-0.5
+            else:
+                xg = xGoal[contador]-int(-agente.min_val_x)
+                yg = yGoal[contador]-int(-agente.min_val_y)
+
+
+            coords = [xg,yg]
+            #disp(coords)
+        
+
+        
+        # *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+
+        #e = [xg-x, yg-y]
+        #thetag = np.arctan2(e[1],e[0])
+        
+
+        e = [xg - x, yg - y]
+        thetag = np.arctan2(e[1], e[0])
+        eP = np.linalg.norm(e)
+        
+        eO = thetag-agente.rotz
+        eO = np.arctan2(np.sin(eO),np.cos(eO))
+        
+        
+        if eO >0:
+            flag_dGiro = True  # bandera dirección del giro, 
+                                # True = sentido horario
+                                # False = sentido antihorario
+        else:
+            flag_dGiro = False
+
+        eO = abs(eO)
+
+        # Control de velocidad lineal
+        #kP = v0 * (1-np.exp(-alpha*eP**2)) / eP
+        kP = 1
+        v = abs(kP*eP)
+
+        # Control de velocidad angular
+        eO_D = eO - eO_1
+        EO = EO + eO
+        w = kpO*eO + kiO*EO + kdO*eO_D
+        eO_1 = eO
+
+        agente.left_motor.setVelocity(0)
+        agente.right_motor.setVelocity(0)
+        if eO >=0.03:
+            if flag_dGiro == True:
+                giroder = (w*agente.distanceCenter)/agente.wheelRadius
+                giroiz = (-w*agente.distanceCenter)/agente.wheelRadius
+            else: 
+                giroder = (-w*agente.distanceCenter)/agente.wheelRadius
+                giroiz = (w*agente.distanceCenter)/agente.wheelRadius
+
+            
+            if giroder >= 0.5:
+                giroder = 0.5
+                giroiz = -0.5
+            elif giroder <= -0.5:
+                giroder = -0.5
+                giroiz = 0.5
+            
+            
+            
+            agente.right_motor.setVelocity(giroder)
+            agente.left_motor.setVelocity(giroiz)
+
+        elif eP > 0.2:
+            if v > 4:
+                v = 4
+            agente.left_motor.setVelocity(v)
+            agente.right_motor.setVelocity(v)
+        else: 
+            contador += 1
+            
+            
+        if agente.step(agente.timestep) == -1:
+            break
+    

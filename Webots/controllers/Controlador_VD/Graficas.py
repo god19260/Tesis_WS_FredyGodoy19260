@@ -5,9 +5,12 @@ import keyboard
 def graph_select(agente):
     print(" ")
     print("-------------------------------------------------------")
-    print("d: mostrar datos\nm: mostrar mapa\ns: mostrar stats")
-    print("\nw: mostrar espacio de trabajo\nn: salir")
-    
+    print("d: mostrar datos\ns: mostrar stats")
+    print("1: mostrar mapa\n2: mostrar obstaculos")
+    print("3: mostrar procesamiento de espacio de trabjo\n4: mostrar 3Expacio de trabajo")
+    print("5: mostrar Ruta óptima")
+    print("n: salir")    
+
     select_process_flag = True
     while select_process_flag == True: 
         
@@ -32,9 +35,12 @@ def graph_select(agente):
             Obstaculos(agente)
 
         if keyboard.is_pressed("3"):
-            Espacio_Trabjo(agente)
+            Procesamiento_Espacio_Trabajo(agente)
 
         if keyboard.is_pressed("4"):
+            Espacio_Trabajo(agente)
+
+        if keyboard.is_pressed("5"):
             Ruta_Optima(agente)
 
         
@@ -217,7 +223,60 @@ def Obstaculos(agente):
 
     plt.show()
 
-def Espacio_Trabjo(agente):    
+def Procesamiento_Espacio_Trabajo(agente):
+    # ------------------------- Crear una figura -------------------------- 
+    # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+    # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+    agente.fig3 = plt.figure()
+    agente.fig3.suptitle('Espacio de trabajo')
+    # */*/*/*/*/*/*/*/*/*/*/*/* Crear una subfigura */*/*/*/*/*/*/*/*/*/*/*
+    agente.ax1_fig3 = agente.fig3.add_subplot(121)
+
+    # Configurar límites de los ejes
+    agente.ax1_fig3.set_xlim(-5,50)
+    agente.ax1_fig3.set_ylim(-5,50)
+
+    # Configurar aspecto de los ejes
+    agente.ax1_fig3.set_aspect('equal')
+    agente.ax1_fig3.grid(True)
+    
+    plt.title('mapa 2D')
+    plt.plot(agente.WS_x,agente.WS_y,'.',color='blue')
+    plt.plot((agente.factorWS*agente.x_vehiculo),(agente.factorWS*agente.y_vehiculo),'o',color = 'red')
+    plt.xlabel('x')
+    plt.ylabel('y')     
+    # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+    # *-*-*-*-*-*-*-*-*-*-*-*-* Crear una subfigura *-*-*-*-*-*-*-*-*-*-*-*-*   
+    # (Trayectoria experimental, obtenida de las revoluciones de las ruedas)
+    agente.ax2_fig3 = agente.fig3.add_subplot(122)
+
+    # Configurar límites de los ejes
+    agente.ax2_fig3.set_xlim(0, agente.size_x*10)
+    agente.ax2_fig3.set_ylim(0, agente.size_y*10)
+
+    # Configurar aspecto de los ejes
+    agente.ax2_fig3.set_aspect('equal')
+    agente.ax2_fig3.grid(True)
+    
+    
+    
+    plt.plot(agente.Pared_x_ds2,agente.Pared_y_ds2,'o', color='black')
+    plt.plot(agente.Pared_x_ds4,agente.Pared_y_ds4,'o', color='black')
+    plt.plot(agente.Pared_x_ds0,agente.Pared_y_ds0,'o', color='black')
+    plt.plot(agente.Pared_x_ds1,agente.Pared_y_ds1,'o', color='black')
+    plt.plot(agente.Pared_x_ds5,agente.Pared_y_ds5,'o', color='black')
+    plt.plot((agente.x_vehiculo),(agente.y_vehiculo),'o',color = 'red')
+    
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    plt.title('Por posición de ruedas')
+    plt.xlim(0,5)
+    plt.ylim(0,5)
+    plt.grid(True)
+
+    plt.show()
+
+def Espacio_Trabajo(agente):    
     mapa = agente.mapa_WS
     # Obtener las dimensiones del mapa
     #mapa_flip = np.flip(mapa,axis=0)
