@@ -7,7 +7,7 @@ def graph_select(agente):
     print("-------------------------------------------------------")
     print("d: mostrar datos\ns: mostrar stats")
     print("1: mostrar mapa\n2: mostrar obstaculos")
-    print("3: mostrar procesamiento de espacio de trabjo\n4: mostrar 3Expacio de trabajo")
+    print("3: mostrar procesamiento de espacio de trabjo\n4: mostrar Espacio de trabajo")
     print("5: mostrar Ruta óptima")
     print("n: salir")    
 

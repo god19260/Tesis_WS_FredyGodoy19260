@@ -9,7 +9,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.5824639031492828 0.5760872999075122 0.5734624873637115 2.087934584265222
-  position -0.29094609273079924 -0.002189883263418463 9.082393807326142
+  position -0.034184873860111424 0.054892327707270434 7.247276333511172
   follow "rectangle arena"
 }
 TexturedBackgroundLight {
@@ -21,6 +21,7 @@ RectangleArena {
     colorOverride 0.392157 0.545098 0.784314
     IBLStrength 6
   }
+  wallThickness 0.1
 }
 Robot {
   translation -2.36867 -2.1175 -0.00211009
@@ -311,7 +312,7 @@ Wall {
   size 1 0.08 0.1
 }
 Wall {
-  translation -0.91 2.43 0
+  translation -0.91 2.46 0
   name "wall(8)"
   size 3.2 0.08 0.1
 }
@@ -321,18 +322,18 @@ Wall {
   size 2 0.08 0.1
 }
 Wall {
-  translation 0.76 0.43 0
+  translation 0.76 0.46 0
   name "wall(7)"
   size 1 0.08 0.1
 }
 Wall {
-  translation 0.65999 1.46 0
+  translation 0.65999 1.5 0
   rotation 0 0 1 1.5708
   name "wall(9)"
   size 2 0.08 0.1
 }
 Wall {
-  translation 0.300002 1.45001 0
+  translation 0.300002 1.50001 0
   rotation 0 0 1 1.5708
   name "wall(10)"
   size 2 0.08 0.1
