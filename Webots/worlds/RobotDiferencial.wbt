@@ -8,8 +8,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.5824639031492828 0.5760872999075122 0.5734624873637115 2.087934584265222
-  position -0.034184873860111424 0.054892327707270434 7.247276333511172
+  orientation -0.5834071976675889 0.5770564395410457 0.5715259462997829 2.0908174456301913
+  position -0.23441755125905958 -0.04473457980328043 7.399622813058106
   follow "rectangle arena"
 }
 TexturedBackgroundLight {
@@ -24,7 +24,7 @@ RectangleArena {
   wallThickness 0.1
 }
 Robot {
-  translation -2.36867 -2.1175 -0.00211009
+  translation -2.34867 -2.11742 -0.00210949
   rotation 1.4849577617257276e-05 4.839582228382789e-05 -0.9999999987186673 3.1377430257752583
   children [
     DEF Body Transform {
@@ -295,6 +295,7 @@ Robot {
       }
     }
   ]
+  name "ROBOT_1"
   contactMaterial "plastic"
   boundingObject USE Body
   physics Physics {
@@ -302,49 +303,50 @@ Robot {
   controller "Controlador_VD"
   selfCollision TRUE
 }
-Wall {
-  translation 0.33 -0.55 0
+DEF wall(5) Wall {
+  translation 0.33 -0.48 0
+  name "wall(5)"
   size 1 0.08 0.1
 }
-Wall {
+DEF wall(3) Wall {
   translation -0.03 -2.32 0
   name "wall(3)"
   size 1 0.08 0.1
 }
-Wall {
+DEF wall(8) Wall {
   translation -0.91 2.46 0
   name "wall(8)"
   size 3.2 0.08 0.1
 }
-Wall {
+DEF wall(2) Wall {
   translation -1.09 1.46 0
   name "wall(2)"
   size 2 0.08 0.1
 }
-Wall {
+DEF wall(7) Wall {
   translation 0.76 0.46 0
   name "wall(7)"
   size 1 0.08 0.1
 }
-Wall {
+DEF wall(9) Wall {
   translation 0.65999 1.5 0
   rotation 0 0 1 1.5708
   name "wall(9)"
   size 2 0.08 0.1
 }
-Wall {
+DEF wall(10) Wall {
   translation 0.300002 1.50001 0
   rotation 0 0 1 1.5708
   name "wall(10)"
   size 2 0.08 0.1
 }
-Wall {
+DEF wall(1) Wall {
   translation -2.13 -0.49999 0
   rotation 0 0 1 1.5708
   name "wall(1)"
   size 4 0.08 0.1
 }
-Wall {
+DEF wall(4) Wall {
   translation -0.130006 0.49001 0
   rotation 0 0 1 1.5708
   name "wall(4)"
@@ -409,4 +411,24 @@ Solid {
   boundingObject Box {
     size 0.3 0.3 0.3
   }
+}
+Transform {
+  translation -2.33 -2.11 0.05
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 1 1
+        transparency 0.5
+        metalness 0
+      }
+      geometry Cylinder {
+        height 0.1
+        radius 0.15
+      }
+    }
+  ]
+}
+Robot {
+  controller "Supervisor_Mundo"
+  supervisor TRUE
 }

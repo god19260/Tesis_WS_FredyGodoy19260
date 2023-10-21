@@ -112,7 +112,7 @@ def Seguimiento_Trayectoria(agente):
     xGoal = [posicion[1]+0.5 for posicion in agente.ruta_optima]
     yGoal = [posicion[0]+0.5 for posicion in agente.ruta_optima]
 
-    while eP >= 0.005 or contador <=len(xGoal):
+    while contador <=len(xGoal):
         Odometria.Odometria(agente)
         agente.DatosSensores()
         #agente.Paredes(agente.rotz*180/np.pi)

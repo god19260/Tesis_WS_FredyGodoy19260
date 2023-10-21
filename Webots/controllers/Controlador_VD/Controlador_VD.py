@@ -167,7 +167,7 @@ Odometria.Odometria_Init(Agente_1)
 
 Explorar.Rutina_Inicio(Agente_1)
 
-tiempos = [20,10,10] # minutos4n
+tiempos = [10] # minutos4n
 u = 0
 while Agente_1.step(Agente_1.timestep) != -1:
     Agente_1.DatosSensores()
@@ -182,12 +182,16 @@ while Agente_1.step(Agente_1.timestep) != -1:
         Trayectoria.Ruta_Optima(Agente_1)
 
         Graficas.graph_select(Agente_1)
+
         if u == 0:
             Explorar.Seguimiento_Trayectoria(Agente_1)
 
         u += 1
-        tiempos[u] = tiempos[u]+Agente_1.getTime()/60
-        #break
+        try:
+            tiempos[u] = tiempos[u]+Agente_1.getTime()/60
+        except:
+            print("Tiempo de Simulación alcanzado.")
+            break
 
     Condiciones_Giro.DecisionGiro(Agente_1)
 
