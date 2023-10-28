@@ -162,7 +162,14 @@ Agente_1 = Slave()
 if Agente_1.step(Agente_1.timestep) != -1:
     None
 
+
 Agente_1.DatosSensores_Init() 
+Agente_1.DatosSensores()
+
+# inicializar el ángulo de rotación del vehículo
+Agente_1.angulo = Agente_1.rotz_g
+Agente_1.phi = Agente_1.angulo
+
 Odometria.Odometria_Init(Agente_1)
 
 Explorar.Rutina_Inicio(Agente_1)
@@ -173,6 +180,7 @@ while Agente_1.step(Agente_1.timestep) != -1:
     Agente_1.DatosSensores()
     Rot_Control.Rot_Control(Agente_1.angulo,Agente_1)
     Explorar.Explorar(Agente_1)
+    
     
 
     if Agente_1.getTime() >= tiempos[u]*60:

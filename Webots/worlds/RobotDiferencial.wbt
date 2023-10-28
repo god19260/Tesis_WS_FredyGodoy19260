@@ -8,8 +8,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.5834071976675889 0.5770564395410457 0.5715259462997829 2.0908174456301913
-  position -0.23441755125905958 -0.04473457980328043 7.399622813058106
+  orientation -0.5815157689914902 0.5751133129621981 0.5753990681847518 2.085056580709972
+  position -0.3243936268441727 -0.06234898800199417 12.13634642781109
   follow "rectangle arena"
 }
 TexturedBackgroundLight {
@@ -24,8 +24,8 @@ RectangleArena {
   wallThickness 0.1
 }
 Robot {
-  translation -2.34867 -2.11742 -0.00210949
-  rotation 1.4849577617257276e-05 4.839582228382789e-05 -0.9999999987186673 3.1377430257752583
+  translation -2.3486699337666677 -2.1174199544558796 -0.002105136981542372
+  rotation 0 0 1 3.14
   children [
     DEF Body Transform {
       translation 0 0 0.0255
@@ -157,7 +157,7 @@ Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position 129.87480345830414
+        position 129.75320362297518
         anchor 0.07 0 0.037
       }
       device [
@@ -169,8 +169,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 0.06999999999204387 -4.329353291487266e-06 0.03699548236557448
-        rotation -1.5700895750559031e-16 1 0 1.5707999999999998
+        translation 0.06999999999204387 -4.845375467681428e-06 0.03699604087670028
+        rotation -0.06065038328749632 0.9963147268762609 -0.060650606069202743 1.5744920720594044
         children [
           DEF wheel_1 Shape {
             appearance PBRAppearance {
@@ -192,7 +192,7 @@ Robot {
     }
     HingeJoint {
       jointParameters HingeJointParameters {
-        position 174.1252155648255
+        position 174.24681540011767
         anchor -0.07 0 0.037
       }
       device [
@@ -204,8 +204,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation -0.07 1.6697136972750395e-18 0.0369919
-        rotation 7.850447875279517e-17 1 7.850447875279517e-17 1.5708
+        translation -0.07 9.82533108014563e-07 0.03699195981165074
+        rotation 0.06065038326922863 0.9963147268784849 0.060650606050934815 1.5744920720571725
         children [
           DEF wheel_2 Shape {
             appearance PBRAppearance {
@@ -228,20 +228,20 @@ Robot {
     }
     BallJoint {
       jointParameters BallJointParameters {
-        position -8.142938976949699
+        position -8.145252730687245
         anchor 0 0.06 0.012
       }
       jointParameters2 JointParameters {
-        position -11.04503186335375
+        position -11.027096720648924
         axis 1 0 0
       }
       jointParameters3 JointParameters {
-        position -46.72059943281718
+        position -46.62239980569589
         axis 0 1 0
       }
       endPoint Solid {
-        translation -2.3177902467754148e-05 0.060051432375208595 0.011999825322370277
-        rotation 0.27838528813334074 -0.9114204473313265 0.3030089099965239 1.7677112542423592
+        translation -2.3283543740338806e-05 0.060051203005925154 0.012004320146964724
+        rotation 0.3094901176850106 -0.9154075651865963 0.2573807620131423 1.8129855820840095
         children [
           DEF CasterBall_1 Shape {
             appearance PBRAppearance {
@@ -262,20 +262,20 @@ Robot {
     }
     BallJoint {
       jointParameters BallJointParameters {
-        position 11.188247387963962
+        position 11.190551780782569
         anchor 0 -0.06 0.012
       }
       jointParameters2 JointParameters {
-        position -2.0831525503979083
+        position -2.065190201772811
         axis 1 0 0
       }
       jointParameters3 JointParameters {
-        position 45.59050944487511
+        position 45.49231684007855
         axis 0 1 0
       }
       endPoint Solid {
-        translation 2.3060347311029884e-05 -0.0600518344247174 0.011999784694150016
-        rotation 0.7266442753117307 0.5554692845964304 0.4042795703799779 2.512288670236619
+        translation 2.0468454969692178e-05 -0.06005270716880564 0.011995349164790533
+        rotation 0.7475047993158702 0.5141469632004313 0.42058230494341436 2.5522592545365006
         children [
           DEF CasterBall_2 Shape {
             appearance PBRAppearance {
@@ -308,6 +308,11 @@ DEF wall(5) Wall {
   name "wall(5)"
   size 1 0.08 0.1
 }
+DEF wall(0) Wall {
+  translation 0.58 -1.09 0
+  name "wall(0)"
+  size 1 0.08 0.1
+}
 DEF wall(3) Wall {
   translation -0.03 -2.32 0
   name "wall(3)"
@@ -334,10 +339,10 @@ DEF wall(9) Wall {
   name "wall(9)"
   size 2 0.08 0.1
 }
-DEF wall(10) Wall {
+DEF wall(6) Wall {
   translation 0.300002 1.50001 0
   rotation 0 0 1 1.5708
-  name "wall(10)"
+  name "wall(6)"
   size 2 0.08 0.1
 }
 DEF wall(1) Wall {
@@ -367,7 +372,7 @@ Solid {
     }
   ]
 }
-Solid {
+DEF BOX_0 Solid {
   translation -0.632595 -1.325 0.15
   rotation 0 0 1 0.523599
   children [
@@ -377,12 +382,12 @@ Solid {
       }
     }
   ]
-  name "solid(1)"
+  name "BOX_1"
   boundingObject Box {
     size 0.3 0.3 0.3
   }
 }
-Solid {
+DEF BOX_1 Solid {
   translation 1.38219 -0.0347126 0.15
   rotation 0 0 1 0.523599
   children [
@@ -397,7 +402,7 @@ Solid {
     size 0.3 0.3 0.3
   }
 }
-Solid {
+DEF BOX_2 Solid {
   translation 1.76719 -1.75155 0.15
   rotation 0 0 -1 4.692820414042842e-06
   children [
