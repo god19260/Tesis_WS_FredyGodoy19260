@@ -2,32 +2,44 @@
 
 # You may need to import some classes of the controller module. Ex:
 #  from controller import Robot, Motor, DistanceSensor
-from controller import Supervisor
+from controller import Supervisor, Receiver, Emitter
 import numpy as np
+
+
+
 # create the Robot instance.
 robot = Supervisor()
 
 # get the time step of the current world.
-timestep = int(robot.getBasicTimeStep())
+timestep = 3
 
-# You should insert a getDevice-like function in order to get the
-# instance of a device of the robot. Something like:
-#  motor = robot.getDevice('motorname') 
-#  ds = robot.getDevice('dsname')
-#  ds.enable(timestep)
+# Configuración de receptor
+receiver = robot.getDevice("receiver")
+receiver.enable(timestep)
+
+# Configuración de emisor
+emitter = robot.getDevice("emitter")
+emitter.setChannel(0)
+
 
 
 Walls = []
 translation_field = []
 orientation_field = []
 
+Obs = []
 Obs_Translation_Field = []
 Obs_Orientation_Field = []
-Obs = []
+
+Checkpoints = []
+Checkpoints_Translation_Field = []
+Checkpoints_Orientation_Field = []
+Checkpoints_appearance = []
 
 
 cant_paredes = 10
 cant_cajas = 3
+cant_checkpoints = 1
 
 modo = 0 # 0 Obtener datos, 1 colocar paredes, 2 pruebas
 
@@ -44,7 +56,45 @@ for box_number in range(cant_cajas):
     Obs_Translation_Field.append(Obs[box_number].getField('translation'))
     Obs_Orientation_Field.append(Obs[box_number].getField('rotation'))
 
+# Checkpoint
+for checkpoint_number in range(cant_checkpoints):
+    Checkpoints.append(robot.getFromDef('CP_'+str(checkpoint_number)))
+    Checkpoints_Translation_Field.append(Checkpoints[checkpoint_number].getField('translation'))
+    Checkpoints_Orientation_Field.append(Checkpoints[checkpoint_number].getField('rotation'))
+    
 
+#Checkpoint_Shape = robot.getFromDef('CP_0_Shape')
+#Checkpoints_appearance.append(Checkpoint_Shape.getField("appearance").getSFNode())
+
+#new_color = [1.0, 0.0, 0.0, 1.0]  # Red color
+#Checkpoints_appearance[0].setSFColor("baseColor",new_color)
+
+#-*-
+
+print(" Prueba para obtener los nodos de cambio de color.")
+
+Nodo = robot.getFromDef('PLACA_1.PLACA_1_Shape')
+appearance = Nodo.getField('PBRAppearance')
+color = appearance.getSFColor()
+print(color)
+
+"""
+for i in range(child_node.getCount()):
+    nodos=child_node.getMFNode(i)
+    if nodos.getTypeName() == 'Shape':
+        print('si entro: i> ',i)
+        color_field= nodos.getField('diffuseColor')
+        #color_field.setSFColor([0.0, 1.0, 0.0])
+    print( nodos.getTypeName() )
+"""
+#appearance = child_node.getField('diffuseColor')
+
+#appearance = child_node.getField('baseColor')
+#baseColor = appearance.getField('baseColor')
+
+#appearance.setSFColor([1,0,0])
+#-*-    
+    
 # -'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-
 
 
@@ -96,7 +146,6 @@ elif modo == 1:
                         [0.0, 0.0, 1.0, 0.0],
                         [0.0, 0.0, 1.0, 1.5708]]
 
-
     for i in range(len(Walls)):
         new_translation = Walls_Positions[i]
         translation_field[i].setSFVec3f(new_translation)
@@ -104,20 +153,32 @@ elif modo == 1:
         new_orientation = Walls_Orientations[i]
         orientation_field[i].setSFRotation(new_orientation)
 
+    # Obstaculos: Cajas
+    Obs_Positions =[[-0.632595, -1.325, 0.15],
+                    [1.38219, -0.0347126, 0.15],
+                    [1.76719, -1.75155, 0.15]]
+
+    Obs_Orientations = [[0.0, 0.0, 1.0, 0.523599],
+                        [0.0, 0.0, 1.0, 0.523599],
+                        [0.0, 0.0, -1.0, 4.692820414042842e-06]]
+
+    for i in range(len(Obs)):
+        new_translation = Obs_Positions[i]
+        Obs_Translation_Field[i].setSFVec3f(new_translation)
+
+        new_orientation = Obs_Orientations[i]
+        Obs_Orientation_Field[i].setSFRotation(new_orientation)
 # -'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-
 
 
-# Main loop:
-# - perform simulation steps until Webots is stopping the controller
 while robot.step(timestep) != -1:
-    # Read the sensors:
-    # Enter here functions to read sensor data, like:
-    #  val = ds.getValue()
 
-    # Process sensor data here.
+    if receiver.getQueueLength() > 0:
+        data = receiver.getString()
+        print(data)
+        receiver.nextPacket()
+        #------ Enviar datos a robot ----
+        data = str(Checkpoints[0].getPosition())
+        emitter.send(data.encode())
+   
 
-    # Enter here functions to send actuator commands, like:
-    #  motor.setPosition(10.0)
-    pass
-
-# Enter here exit cleanup code.

@@ -1,5 +1,5 @@
 
-from controller import Robot
+from controller import Robot, Emitter, Receiver
 import numpy as np
 import math
 
@@ -159,6 +159,14 @@ class Slave(Robot):
 
 Agente_1 = Slave()
 
+# Configuración de emisor
+emitter = Agente_1.getDevice("emitter")
+emitter.setChannel(1)
+
+# Configuración de receptor
+receiver = Agente_1.getDevice("receiver")
+receiver.enable(Agente_1.timestep)
+
 if Agente_1.step(Agente_1.timestep) != -1:
     None
 
@@ -184,10 +192,33 @@ while Agente_1.step(Agente_1.timestep) != -1:
     
 
     if Agente_1.getTime() >= tiempos[u]*60:
+        #------ Enviar datos a supervisor ----
+        data = "Robot: Hola"
+        emitter.send(data.encode())
+
+        datos_obtenidos = False
+        while datos_obtenidos == False:
+            # ----- Recibir datos de supervisor -----
+            if receiver.getQueueLength() > 0:
+                data = receiver.getString()
+                print(data)
+                receiver.nextPacket()
+                numeros = eval(data)
+                try:
+                    # Asignar los valores a variables individuales
+                    primer_numero = numeros[0]
+                    segundo_numero = numeros[1]
+                    datos_obtenidos = True
+                except:
+                    None
+            
+            if Agente_1.step(Agente_1.timestep) == -1:
+                break
+        
         # Se considera este espacio el fin de la exploración
         # y se genera la trayectoria al punto de inicio
         Obstaculos.Espacio_Trabajo(Agente_1)
-        Trayectoria.Ruta_Optima(Agente_1)
+        Trayectoria.Ruta_Optima(Agente_1,primer_numero+Agente_1.size_x/2,segundo_numero+Agente_1.size_y/2)
 
         Graficas.graph_select(Agente_1)
 

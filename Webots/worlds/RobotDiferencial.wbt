@@ -8,8 +8,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.5815157689914902 0.5751133129621981 0.5753990681847518 2.085056580709972
-  position -0.3243936268441727 -0.06234898800199417 12.13634642781109
+  orientation -0.5765007046853114 0.572856040214705 0.5826516066114188 2.069964121245501
+  position -0.13875840931038408 -0.25136825675562563 10.77685639700114
   follow "rectangle arena"
 }
 TexturedBackgroundLight {
@@ -27,6 +27,13 @@ Robot {
   translation -2.3486699337666677 -2.1174199544558796 -0.002105136981542372
   rotation 0 0 1 3.14
   children [
+    Receiver {
+      type "serial"
+    }
+    Emitter {
+      type "serial"
+      channel 1
+    }
     DEF Body Transform {
       translation 0 0 0.0255
       children [
@@ -304,63 +311,69 @@ Robot {
   selfCollision TRUE
 }
 DEF wall(5) Wall {
-  translation 0.33 -0.48 0
+  translation 1.59 1.93 0
+  rotation 0 0 1 -1.5707953071795862
   name "wall(5)"
   size 1 0.08 0.1
 }
 DEF wall(0) Wall {
-  translation 0.58 -1.09 0
+  translation 1.48 1.93 0
+  rotation 0 0 1 1.5708
   name "wall(0)"
   size 1 0.08 0.1
 }
 DEF wall(3) Wall {
-  translation -0.03 -2.32 0
+  translation 1.37 1.93 0
+  rotation 0 0 1 -1.5707953071795862
   name "wall(3)"
   size 1 0.08 0.1
 }
 DEF wall(8) Wall {
-  translation -0.91 2.46 0
+  translation 2.32001 0.840009 0
+  rotation 0 0 1 1.5708
   name "wall(8)"
   size 3.2 0.08 0.1
 }
 DEF wall(2) Wall {
-  translation -1.09 1.46 0
+  translation 1.82 1.43 0
+  rotation 0 0 1 -1.5707953071795862
   name "wall(2)"
   size 2 0.08 0.1
 }
 DEF wall(7) Wall {
-  translation 0.76 0.46 0
+  translation 1.7 1.93 0
+  rotation 0 0 1 1.5708
   name "wall(7)"
   size 1 0.08 0.1
 }
 DEF wall(9) Wall {
-  translation 0.65999 1.5 0
+  translation 2.19999 1.43 0
   rotation 0 0 1 1.5708
   name "wall(9)"
   size 2 0.08 0.1
 }
 DEF wall(6) Wall {
-  translation 0.300002 1.50001 0
+  translation 2.07 1.43001 0
   rotation 0 0 1 1.5708
   name "wall(6)"
   size 2 0.08 0.1
 }
 DEF wall(1) Wall {
-  translation -2.13 -0.49999 0
+  translation 2.45 0.440027 0
   rotation 0 0 1 1.5708
   name "wall(1)"
   size 4 0.08 0.1
 }
 DEF wall(4) Wall {
-  translation -0.130006 0.49001 0
+  translation 1.93999 1.43001 0
   rotation 0 0 1 1.5708
   name "wall(4)"
   size 2 0.08 0.1
 }
-Solid {
+DEF PLACA_1 Solid {
   translation -2.35 -2.11 0.001
   children [
-    Shape {
+    DEF PLACA_1_Shape Shape {
       appearance PBRAppearance {
         baseColor 0 1 0
         roughness 1
@@ -373,8 +386,8 @@ Solid {
   ]
 }
 DEF BOX_0 Solid {
-  translation -0.632595 -1.325 0.15
-  rotation 0 0 1 0.523599
+  translation 0.737397 2.265 0.15
+  rotation 0 0 1 1.5708
   children [
     Shape {
       geometry Box {
@@ -388,8 +401,8 @@ DEF BOX_0 Solid {
   }
 }
 DEF BOX_1 Solid {
-  translation 1.38219 -0.0347126 0.15
-  rotation 0 0 1 0.523599
+  translation 1.10218 2.26529 0.15
+  rotation 0 0 1 1.5708
   children [
     Shape {
       geometry Box {
@@ -403,7 +416,7 @@ DEF BOX_1 Solid {
   }
 }
 DEF BOX_2 Solid {
-  translation 1.76719 -1.75155 0.15
+  translation 1.10719 1.83845 0.15
   rotation 0 0 -1 4.692820414042842e-06
   children [
     Shape {
@@ -417,14 +430,15 @@ DEF BOX_2 Solid {
     size 0.3 0.3 0.3
   }
 }
-Transform {
-  translation -2.33 -2.11 0.05
+DEF CP_0 Transform {
+  translation -0.72 -1.75 0.05
   children [
-    Shape {
-      appearance PBRAppearance {
+    DEF CP_0_Shape Shape {
+      appearance DEF PBRAappearance_CP_0 PBRAppearance {
         baseColor 0 1 1
         transparency 0.5
         metalness 0
+        name ""
       }
       geometry Cylinder {
         height 0.1
@@ -434,6 +448,15 @@ Transform {
   ]
 }
 Robot {
+  children [
+    Emitter {
+      type "serial"
+    }
+    Receiver {
+      type "serial"
+      channel 1
+    }
+  ]
   controller "Supervisor_Mundo"
   supervisor TRUE
 }

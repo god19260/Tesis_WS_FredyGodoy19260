@@ -3,12 +3,18 @@ import matplotlib.pyplot as plt
 import heapq
 
 
-def Ruta_Optima(agente):
+def Ruta_Optima(agente,dx,dy):
     origin_x = int(-agente.min_val_x)#int(-agente.min_val_x +agente.factorWS*agente.T_Exploracion_x[1])
     origin_y = int(-agente.min_val_y)#int(-agente.min_val_y +agente.factorWS*agente.T_Exploracion_y[1])
+    
+    destino_x = int(dx*agente.factorWS)
+    destino_y = int(dy*agente.factorWS)
+    print("Calculo de puntos para ruta optima: ", destino_x, ' - ', destino_y)
+
     x = int(-agente.min_val_x + agente.factorWS*agente.x_vehiculo)
     y = int(-agente.min_val_y + agente.factorWS*agente.y_vehiculo)
-    agente.ruta_optima =dijkstra(agente.mapa_WS,x,y,origin_x,origin_y)
+    #agente.ruta_optima =dijkstra(agente.mapa_WS,x,y,origin_x,origin_y)
+    agente.ruta_optima =dijkstra(agente.mapa_WS,x,y,destino_x,destino_y)
     
 
 def dijkstra(mapa,ox,oy,dx,dy):
