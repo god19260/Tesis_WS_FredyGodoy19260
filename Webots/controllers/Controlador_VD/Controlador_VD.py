@@ -136,12 +136,12 @@ class Slave(Robot):
 
     def DatosSensores(self):
         # Actualizar sensores de distancia
-        self.ds0_value = self.distanceSensors[0].getValue()
-        self.ds1_value = self.distanceSensors[1].getValue()
-        self.ds2_value = self.distanceSensors[2].getValue()
-        self.ds3_value = self.distanceSensors[3].getValue()
-        self.ds4_value = self.distanceSensors[4].getValue()
-        self.ds5_value = self.distanceSensors[5].getValue()
+        self.ds0_value = self.distanceSensors[0].getValue()+8
+        self.ds1_value = self.distanceSensors[1].getValue()+8
+        self.ds2_value = self.distanceSensors[2].getValue()+8
+        self.ds3_value = self.distanceSensors[3].getValue()+8
+        self.ds4_value = self.distanceSensors[4].getValue()+8
+        self.ds5_value = self.distanceSensors[5].getValue()+8
 
         # Actualizar sensor de compass y angulo de rotz
         self.compass_values = self.compass.getValues()

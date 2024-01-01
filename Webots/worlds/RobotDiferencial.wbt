@@ -9,7 +9,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0944
-  position 7.544636145362982e-06 7.544657479839334e-06 10.729159150646836
+  position -0.08287037407566422 -0.20309365390349154 15.607260916480797
   follow "rectangle arena"
 }
 TexturedBackgroundLight {
@@ -48,6 +48,25 @@ Robot {
           }
         }
       ]
+    }
+    Solid {
+      translation 0 0 0.1
+      children [
+        Shape {
+          appearance PBRAppearance {
+            transparency 1
+          }
+          geometry Cylinder {
+            height 0.05
+            radius 0.078
+          }
+        }
+      ]
+      name "solid(5)"
+      boundingObject Cylinder {
+        height 0.05
+        radius 0.078
+      }
     }
     Transform {
       translation 0 0 0.016
@@ -88,7 +107,7 @@ Robot {
     DEF BaseSensores Solid {
       children [
         DistanceSensor {
-          translation 0 0 0.085
+          translation 6.37305e-05 -0.08 0.085
           rotation 0 0 -1 1.5699996938995748
           name "ds_0"
           lookupTable [
@@ -103,7 +122,7 @@ Robot {
           rotation 0 0 -1 1.57
         }
         DistanceSensor {
-          translation 0 0 0.085
+          translation -0.0563983 -0.0567384 0.085
           rotation 0 0 1 -2.353185307179586
           name "ds_1"
           lookupTable [
@@ -114,7 +133,7 @@ Robot {
           aperture 0.01
         }
         DistanceSensor {
-          translation 0 0 0.085
+          translation -0.08 0.000127413 0.085
           rotation 0 0 1 3.14
           name "ds_2"
           lookupTable [
@@ -125,7 +144,7 @@ Robot {
           aperture 0.01
         }
         DistanceSensor {
-          translation 0 0 0.085
+          translation 6.37063e-05 0.08 0.085
           rotation 0 0 1 1.57
           name "ds_3"
           lookupTable [
@@ -138,7 +157,7 @@ Robot {
         GPS {
         }
         DistanceSensor {
-          translation 0 0 0.085
+          translation 0.08 0 0.085
           name "ds_4"
           lookupTable [
             0 0 0
@@ -149,7 +168,7 @@ Robot {
           resolution 1
         }
         DistanceSensor {
-          translation 0 0 0.085
+          translation 0.0566936 -0.0564432 0.085
           rotation 0 0 1 -0.7831853071795862
           name "ds_5"
           lookupTable [
@@ -176,8 +195,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 0.06999999999204387 -4.845375467681428e-06 0.03699604087670028
-        rotation -0.06065038328749632 0.9963147268762609 -0.060650606069202743 1.5744920720594044
+        translation 0.06999999999204387 -4.845375467686412e-06 0.036996040876700276
+        rotation -0.06065038328749604 0.9963147268762609 -0.06065060606920262 1.5744920720594033
         children [
           DEF wheel_1 Shape {
             appearance PBRAppearance {
@@ -212,7 +231,7 @@ Robot {
       ]
       endPoint Solid {
         translation -0.07 9.82533108014563e-07 0.03699195981165074
-        rotation 0.06065038326922863 0.9963147268784849 0.060650606050934815 1.5744920720571725
+        rotation 0.06065038326922791 0.996314726878485 0.06065060605093441 1.5744920720571722
         children [
           DEF wheel_2 Shape {
             appearance PBRAppearance {
@@ -247,8 +266,8 @@ Robot {
         axis 0 1 0
       }
       endPoint Solid {
-        translation -2.3283543740338806e-05 0.060051203005925154 0.012004320146964724
-        rotation 0.3094901176850106 -0.9154075651865963 0.2573807620131423 1.8129855820840095
+        translation -2.328354374033853e-05 0.06005120300592516 0.012004320146964731
+        rotation 0.3094901176850109 -0.9154075651865963 0.2573807620131424 1.812985582084009
         children [
           DEF CasterBall_1 Shape {
             appearance PBRAppearance {
@@ -282,7 +301,7 @@ Robot {
       }
       endPoint Solid {
         translation 2.0468454969692178e-05 -0.06005270716880564 0.011995349164790533
-        rotation 0.7475047993158702 0.5141469632004313 0.42058230494341436 2.5522592545365006
+        rotation 0.7475047993158703 0.5141469632004312 0.42058230494341364 2.552259254536499
         children [
           DEF CasterBall_2 Shape {
             appearance PBRAppearance {
@@ -303,6 +322,312 @@ Robot {
     }
   ]
   name "ROBOT_1"
+  contactMaterial "plastic"
+  boundingObject USE Body
+  physics Physics {
+  }
+  controller "Controlador_VD"
+  selfCollision TRUE
+}
+Robot {
+  translation -2.00794 -1.74787 0.0978949
+  rotation 0 0 1 3.14
+  children [
+    Receiver {
+      type "serial"
+    }
+    Emitter {
+      type "serial"
+      channel 1
+    }
+    DEF Body Transform {
+      translation 0 0 0.0255
+      children [
+        Shape {
+          appearance PBRAppearance {
+            roughness 1
+            metalness 0
+          }
+          geometry Cylinder {
+            height 0.019
+            radius 0.075
+          }
+        }
+      ]
+    }
+    Solid {
+      translation 0 0 0.1
+      children [
+        Shape {
+          appearance PBRAppearance {
+            transparency 1
+          }
+          geometry Cylinder {
+            height 0.05
+            radius 0.078
+          }
+        }
+      ]
+      name "solid(5)"
+      boundingObject Cylinder {
+        height 0.05
+        radius 0.078
+      }
+    }
+    Transform {
+      translation 0 0 0.016
+      scale 0.001 0.001 0.001
+      children [
+        Shape {
+          appearance PBRAppearance {
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../Modelos_3D/Pololu/BumperV2.stl"
+            ]
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 0 0 0.0165
+      rotation 0 0 1 3.141
+      scale 0.001 0.001 0.001
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.454902 0.462745 0.419608
+            roughness 1
+            metalness 0
+          }
+          geometry Mesh {
+            url [
+              "../Modelos_3D/Pololu/BaseSensorDistancia Proto2.stl"
+            ]
+          }
+        }
+      ]
+    }
+    DEF BaseSensores Solid {
+      children [
+        DistanceSensor {
+          translation 6.37305e-05 -0.08 0.085
+          rotation 0 0 -1 1.5699996938995748
+          name "ds_0"
+          lookupTable [
+            0 0 0
+            2 200 0
+          ]
+          type "laser"
+          aperture 0.01
+        }
+        Compass {
+          translation 0 0 0.085
+          rotation 0 0 -1 1.57
+        }
+        DistanceSensor {
+          translation -0.0563983 -0.0567384 0.085
+          rotation 0 0 1 -2.353185307179586
+          name "ds_1"
+          lookupTable [
+            0 0 0
+            2 200 0
+          ]
+          type "laser"
+          aperture 0.01
+        }
+        DistanceSensor {
+          translation -0.08 0.000127413 0.085
+          rotation 0 0 1 3.14
+          name "ds_2"
+          lookupTable [
+            0 0 0
+            2 200 0
+          ]
+          type "laser"
+          aperture 0.01
+        }
+        DistanceSensor {
+          translation 6.37063e-05 0.08 0.085
+          rotation 0 0 1 1.57
+          name "ds_3"
+          lookupTable [
+            0 0 0
+            2 200 0
+          ]
+          type "laser"
+          aperture 0.01
+        }
+        GPS {
+        }
+        DistanceSensor {
+          translation 0.08 0 0.085
+          name "ds_4"
+          lookupTable [
+            0 0 0
+            2 200 0
+          ]
+          type "laser"
+          aperture 0.01
+          resolution 1
+        }
+        DistanceSensor {
+          translation 0.0566936 -0.0564432 0.085
+          rotation 0 0 1 -0.7831853071795862
+          name "ds_5"
+          lookupTable [
+            0 0 0
+            2 200 0
+          ]
+          type "laser"
+          aperture 0.01
+        }
+      ]
+      name "solid(4)"
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 129.75320362297518
+        anchor 0.07 0 0.037
+      }
+      device [
+        PositionSensor {
+          name "PositionSensor_1"
+        }
+        RotationalMotor {
+          name "motor_1"
+        }
+      ]
+      endPoint Solid {
+        translation 0.06999999999204387 -4.845375467686412e-06 0.036996040876700276
+        rotation -0.06065038328749604 0.9963147268762609 -0.06065060606920262 1.5744920720594033
+        children [
+          DEF wheel_1 Shape {
+            appearance PBRAppearance {
+              baseColor 0 0 0
+              roughness 1
+              metalness 0
+            }
+            geometry Cylinder {
+              height 0.01
+              radius 0.035
+            }
+          }
+        ]
+        contactMaterial "rubber"
+        boundingObject USE wheel_1
+        physics Physics {
+        }
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 174.24681540011767
+        anchor -0.07 0 0.037
+      }
+      device [
+        PositionSensor {
+          name "PositionSensor_2"
+        }
+        RotationalMotor {
+          name "motor_2"
+        }
+      ]
+      endPoint Solid {
+        translation -0.07 9.82533108014563e-07 0.03699195981165074
+        rotation 0.06065038326922791 0.996314726878485 0.06065060605093441 1.5744920720571722
+        children [
+          DEF wheel_2 Shape {
+            appearance PBRAppearance {
+              baseColor 0 0 0
+              roughness 1
+              metalness 0
+            }
+            geometry Cylinder {
+              height 0.01
+              radius 0.035
+            }
+          }
+        ]
+        name "solid(1)"
+        contactMaterial "rubber"
+        boundingObject USE wheel_2
+        physics Physics {
+        }
+      }
+    }
+    BallJoint {
+      jointParameters BallJointParameters {
+        position -8.145252730687245
+        anchor 0 0.06 0.012
+      }
+      jointParameters2 JointParameters {
+        position -11.027096720648924
+        axis 1 0 0
+      }
+      jointParameters3 JointParameters {
+        position -46.62239980569589
+        axis 0 1 0
+      }
+      endPoint Solid {
+        translation -2.328354374033853e-05 0.06005120300592516 0.012004320146964731
+        rotation 0.3094901176850109 -0.9154075651865963 0.2573807620131424 1.812985582084009
+        children [
+          DEF CasterBall_1 Shape {
+            appearance PBRAppearance {
+              baseColor 0.333333 0.333333 0.498039
+              roughness 1
+              metalness 0
+            }
+            geometry Sphere {
+              radius 0.01
+            }
+          }
+        ]
+        name "solid(2)"
+        boundingObject USE CasterBall_1
+        physics Physics {
+        }
+      }
+    }
+    BallJoint {
+      jointParameters BallJointParameters {
+        position 11.190551780782569
+        anchor 0 -0.06 0.012
+      }
+      jointParameters2 JointParameters {
+        position -2.065190201772811
+        axis 1 0 0
+      }
+      jointParameters3 JointParameters {
+        position 45.49231684007855
+        axis 0 1 0
+      }
+      endPoint Solid {
+        translation 2.0468454969692178e-05 -0.06005270716880564 0.011995349164790533
+        rotation 0.7475047993158703 0.5141469632004312 0.42058230494341364 2.552259254536499
+        children [
+          DEF CasterBall_2 Shape {
+            appearance PBRAppearance {
+              baseColor 0.333333 0.333333 0.498039
+              roughness 1
+              metalness 0
+            }
+            geometry Sphere {
+              radius 0.01
+            }
+          }
+        ]
+        name "solid(3)"
+        boundingObject USE CasterBall_2
+        physics Physics {
+        }
+      }
+    }
+  ]
+  name "ROBOT_1(1)"
   contactMaterial "plastic"
   boundingObject USE Body
   physics Physics {
@@ -431,7 +756,7 @@ DEF BOX_2 Solid {
   }
 }
 DEF CP_0 Transform {
-  translation -0.72 -1.75 0.05
+  translation -0.77 -1.81 0.05
   children [
     DEF CP_0_Shape Shape {
       appearance DEF PBRAappearance_CP_0 PBRAppearance {

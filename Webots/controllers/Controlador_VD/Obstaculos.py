@@ -48,6 +48,9 @@ def Espacio_Trabajo(agente):
     d_sensors = [[agente.Pared_x_ds0,agente.Pared_y_ds0],
                     [agente.Pared_x_ds4,agente.Pared_y_ds4],
                     [agente.Pared_x_ds2,agente.Pared_y_ds2]]#,
+                    
+                    
+                    
                     #[agente.Pared_x_ds5,agente.Pared_y_ds5],
                     #[agente.Pared_x_ds5,agente.Pared_y_ds5]
                     #]

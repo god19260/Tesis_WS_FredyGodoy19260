@@ -42,7 +42,7 @@ cant_cajas = 3
 cant_checkpoints = 1
 
 modo = 1 # 0 Obtener datos, 1 colocar paredes, 2 pruebas
-mapa = 5 # 0 no cambia mapa, 1 pruebas de algoritmos, 2 validación
+mapa = 2 # 0 no cambia mapa, 1 pruebas de algoritmos, 2 validación
 # -'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'- Obtener objetos del mundo -'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-
 # Paredes
 for dsnumber in range(cant_paredes):

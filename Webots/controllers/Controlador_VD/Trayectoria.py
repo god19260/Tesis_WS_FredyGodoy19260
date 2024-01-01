@@ -31,7 +31,7 @@ def dijkstra(mapa,ox,oy,dx,dy):
     final = (final[1],final[0])
 
     # Definir los movimientos permitidos (arriba, abajo, izquierda, derecha) y (diagonales)
-    movimientos = [(-1, 0), (1, 0), (0, -1), (0, 1)]    
+    movimientos = [(-1, 0), (1, 0), (0, -1), (0, 1)]
                 #,(1,1), (-1,1), (-1,-1), (1,-1)]
 
     # Función para obtener los vecinos válidos de una posición en el mapa

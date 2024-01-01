@@ -190,9 +190,11 @@ def Obstaculos(agente):
     
     
     plt.plot(agente.T_Exploracion_x, agente.T_Exploracion_y, '-o', color='red')
+    
     plt.plot(agente.Pared_x_ds0,agente.Pared_y_ds0,'o', color='black')
     plt.plot(agente.Pared_x_ds1,agente.Pared_y_ds1,'o', color='black')
     plt.plot(agente.Pared_x_ds2,agente.Pared_y_ds2,'o', color='black')
+    #plt.plot(agente.Pared_x_ds3,agente.Pared_y_ds3,'o', color='black')
     plt.plot(agente.Pared_x_ds4,agente.Pared_y_ds4,'o', color='black')
     plt.plot(agente.Pared_x_ds5,agente.Pared_y_ds5,'o', color='black')
 
@@ -242,7 +244,7 @@ def Procesamiento_Espacio_Trabajo(agente):
     
     plt.title('mapa 2D')
     plt.plot(agente.WS_x,agente.WS_y,'.',color='blue')
-    plt.plot((agente.factorWS*agente.x_vehiculo),(agente.factorWS*agente.y_vehiculo),'o',color = 'red')
+    #plt.plot((agente.factorWS*agente.x_vehiculo),(agente.factorWS*agente.y_vehiculo),'o',color = 'red')
     plt.xlabel('x')
     plt.ylabel('y')     
     # */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
@@ -260,11 +262,15 @@ def Procesamiento_Espacio_Trabajo(agente):
     
     
     
-    plt.plot(agente.Pared_x_ds2,agente.Pared_y_ds2,'o', color='black')
-    plt.plot(agente.Pared_x_ds4,agente.Pared_y_ds4,'o', color='black')
+    
+    
     plt.plot(agente.Pared_x_ds0,agente.Pared_y_ds0,'o', color='black')
     plt.plot(agente.Pared_x_ds1,agente.Pared_y_ds1,'o', color='black')
+    plt.plot(agente.Pared_x_ds2,agente.Pared_y_ds2,'o', color='black')
+    plt.plot(agente.Pared_x_ds3,agente.Pared_y_ds3,'o', color='black')
+    plt.plot(agente.Pared_x_ds4,agente.Pared_y_ds4,'o', color='black')
     plt.plot(agente.Pared_x_ds5,agente.Pared_y_ds5,'o', color='black')
+    
     plt.plot((agente.x_vehiculo),(agente.y_vehiculo),'o',color = 'red')
     
     plt.xlabel('X')
@@ -305,7 +311,7 @@ def Espacio_Trabajo(agente):
                 # Dibujar obstáculo
                 rect = plt.Rectangle((columna, fila), 1, 1, facecolor='black')
                 ax1.add_patch(rect)
-    plt.plot(int(agente.factorWS*(agente.x_vehiculo)),int(agente.factorWS*(agente.y_vehiculo)),'o',color = 'red')
+    #plt.plot(int(agente.factorWS*(agente.x_vehiculo)),int(agente.factorWS*(agente.y_vehiculo)),'o',color = 'red')
     # Configurar los ejes
     ax1.set_xlabel('X')
     ax1.set_ylabel('Y')
