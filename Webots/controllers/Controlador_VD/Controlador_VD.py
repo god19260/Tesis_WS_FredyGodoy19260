@@ -182,7 +182,7 @@ Odometria.Odometria_Init(Agente_1)
 
 Explorar.Rutina_Inicio(Agente_1)
 
-tiempos = [10] # minutos4n
+tiempos = [8] # minutos4n
 u = 0
 while Agente_1.step(Agente_1.timestep) != -1:
     Agente_1.DatosSensores()
@@ -193,7 +193,30 @@ while Agente_1.step(Agente_1.timestep) != -1:
 
     if Agente_1.getTime() >= tiempos[u]*60:
         #------ Enviar datos a supervisor ----
-        data = "Robot: Hola"
+        #data = "Robot: Hola"
+        T_Exploracion_x_str = ' '.join(map(str, Agente_1.Pared_x_ds0))
+        T_Exploracion_y_str = ' '.join(map(str, Agente_1.Pared_y_ds0))  
+        
+        T_Exploracion_x_str =T_Exploracion_x_str+' '+ ' '.join(map(str, Agente_1.Pared_x_ds1))
+        T_Exploracion_y_str =T_Exploracion_y_str+' '+ ' '.join(map(str, Agente_1.Pared_y_ds1))  
+        
+        T_Exploracion_x_str =T_Exploracion_x_str+' '+ ' '.join(map(str, Agente_1.Pared_x_ds2))
+        T_Exploracion_y_str =T_Exploracion_y_str+' '+ ' '.join(map(str, Agente_1.Pared_y_ds2))
+
+        T_Exploracion_x_str =T_Exploracion_x_str+' '+ ' '.join(map(str, Agente_1.Pared_x_ds3))
+        T_Exploracion_y_str =T_Exploracion_y_str+' '+ ' '.join(map(str, Agente_1.Pared_y_ds3))
+
+        T_Exploracion_x_str =T_Exploracion_x_str+' '+ ' '.join(map(str, Agente_1.Pared_x_ds4))
+        T_Exploracion_y_str =T_Exploracion_y_str+' '+ ' '.join(map(str, Agente_1.Pared_y_ds4))
+
+        T_Exploracion_x_str =T_Exploracion_x_str+' '+ ' '.join(map(str, Agente_1.Pared_x_ds5))
+        T_Exploracion_y_str =T_Exploracion_y_str+' '+ ' '.join(map(str, Agente_1.Pared_y_ds5))
+
+        desfase_x =  str(Agente_1.T_Exploracion_GPS_x[0])
+        desfase_y =  str(Agente_1.T_Exploracion_GPS_y[0])
+
+        print("cantidad de puntos (controlador de vehiculo): ", len(Agente_1.Pared_x_ds0),"  ",len(Agente_1.Pared_x_ds0)*2)
+        data =   desfase_x+ ' ' +desfase_y+ ' ' + T_Exploracion_x_str + ' '+ T_Exploracion_y_str
         emitter.send(data.encode())
 
         datos_obtenidos = False

@@ -4,6 +4,7 @@
 #  from controller import Robot, Motor, DistanceSensor
 from controller import Supervisor, Receiver, Emitter
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 
@@ -42,7 +43,7 @@ cant_cajas = 3
 cant_checkpoints = 1
 
 modo = 1 # 0 Obtener datos, 1 colocar paredes, 2 pruebas
-mapa = 2 # 0 no cambia mapa, 1 pruebas de algoritmos, 2 validación
+mapa = 1 # 0 no cambia mapa, 1 pruebas de algoritmos, 2 validación
 # -'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'- Obtener objetos del mundo -'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-
 # Paredes
 for dsnumber in range(cant_paredes):
@@ -360,16 +361,56 @@ elif modo == 1:
     # -'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-
 
     # -'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-
+datos_recibidos = []
+puntos_mapa = []  # contiene los puntos recolectados por cada vehiculo, x e y juntos. lista tipo string
+
+puntos_mapa_x = [] # contiene las coordenadas x del mapa recolectado por todos los vehiculos. lista
+                   # tipo punto flotante
+puntos_mapa_y = [] # contiene las coordenadas y del mapa recolectado por todos los vehiculos. Lista
+                   # tipo punto flotante
 
 
 while robot.step(timestep) != -1:
 
     if receiver.getQueueLength() > 0:
-        data = receiver.getString()
-        print(data)
+        data = receiver.getString().split()  # lectura de datos enviado por los vehiculos
+        
+        
+        desfase_x = data.pop(0) 
+        desfase_y = data.pop(0)
+        
+        desfase_x = float(desfase_x)
+        desfase_y = float(desfase_y)
+           
+
+        puntos_mapa = [float(x) for x in data]
+
+        cant_puntos_mapa = len(puntos_mapa) // 2
+
+        puntos_mapa_x.extend([(desfase_x + x) for x in puntos_mapa[:cant_puntos_mapa]])
+        puntos_mapa_y.extend([(desfase_y + y) for y in puntos_mapa[cant_puntos_mapa:]])
+
+        print("Cantidad de puntos x (supervisor de mundo): ", len(puntos_mapa_x))
+
         receiver.nextPacket()
         #------ Enviar datos a robot ----
         data = str(Checkpoints[0].getPosition())
         emitter.send(data.encode())
    
+
+        # graficar mapa de datos recibidos
+        
+        plt.plot((puntos_mapa_x),(puntos_mapa_y),'o',color = 'red')
+        plt.axhline(0, color='black',linewidth=0.5)
+        plt.axvline(0, color='black',linewidth=0.5)
+
+        
+        plt.xlabel('X')
+        plt.ylabel('Y')
+        plt.title('Mapa obtenido por todos los vehiculos')
+        plt.xlim(0,5)
+        plt.ylim(0,5)
+        plt.grid(True)
+        
+        plt.show()
 
