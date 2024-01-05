@@ -9,7 +9,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0944
-  position 1.4302946643412075e-05 1.430298708752402e-05 11.968851850037414
+  position 2.185144076092437e-05 2.1851502551740966e-05 7.994354163886537
   follow "rectangle arena"
 }
 TexturedBackgroundLight {
@@ -330,7 +330,7 @@ Robot {
   selfCollision TRUE
 }
 Robot {
-  translation 1.16133 -2.12289 0.0978949
+  translation 0.243758 -0.631478 0.0978949
   rotation 0 0 1 3.14
   children [
     Receiver {
@@ -636,7 +636,7 @@ Robot {
   selfCollision TRUE
 }
 Robot {
-  translation -0.48266 1.66989 0.197895
+  translation -1.03497 0.180653 0.0978949
   rotation 0 0 1 3.14
   children [
     Receiver {
@@ -1062,7 +1062,7 @@ DEF BOX_2 Solid {
   }
 }
 DEF CP_0 Transform {
-  translation -1.01 0.68 0.05
+  translation 0 -0.25 0.05
   children [
     DEF CP_0_Shape Shape {
       appearance DEF PBRAappearance_CP_0 PBRAppearance {
@@ -1073,7 +1073,7 @@ DEF CP_0 Transform {
       }
       geometry Cylinder {
         height 0.1
-        radius 0.4
+        radius 0.5
       }
     }
   ]

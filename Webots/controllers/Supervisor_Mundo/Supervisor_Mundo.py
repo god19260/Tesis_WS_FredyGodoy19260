@@ -375,7 +375,7 @@ while robot.step(timestep) != -1:
     if receiver.getQueueLength() > 0:
         
         data = receiver.getString().split()  # lectura de datos enviado por los vehiculos
-        """
+        
         
         desfase_x = data.pop(0) 
         desfase_y = data.pop(0)
@@ -391,16 +391,19 @@ while robot.step(timestep) != -1:
         puntos_mapa_x.extend([(desfase_x + x) for x in puntos_mapa[:cant_puntos_mapa]])
         puntos_mapa_y.extend([(desfase_y + y) for y in puntos_mapa[cant_puntos_mapa:]])
 
-        print("Cantidad de puntos x (supervisor de mundo): ", len(puntos_mapa_x))
-        """
+        
         receiver.nextPacket()
         #------ Enviar datos a robot ----
-        data = str(Checkpoints[0].getPosition())
+        pos_checkpoint =Checkpoints[0].getPosition() 
+        x = ' '.join(map(str, puntos_mapa_x))
+        y = ' '.join(map(str, puntos_mapa_y))
+      
+        data = str(pos_checkpoint[0])+ ' ' +str(pos_checkpoint[1]) +' '+x+' '+y
         emitter.send(data.encode())
    
-
-        # graficar mapa de datos recibidos
         """
+        # graficar mapa de datos recibidos
+        
         plt.plot((puntos_mapa_x),(puntos_mapa_y),'o',color = 'red')
         plt.axhline(0, color='black',linewidth=0.5)
         plt.axvline(0, color='black',linewidth=0.5)

@@ -2,7 +2,7 @@
 from controller import Robot, Emitter, Receiver
 import numpy as np
 import math
-
+import matplotlib.pyplot as plt
 
 
 # Funciones Desarrolladas en este trabajo
@@ -81,6 +81,11 @@ class Slave(Robot):
     ruta_optima = []
     objetivo_x = 0
     objetivo_y = 0
+
+    puntos_mapa = []
+    puntos_mapa_x = []
+    puntos_mapa_y = []
+    cant_puntos_mapa = 0
     #---------------------------------------------------------------
 
 
@@ -184,7 +189,7 @@ Odometria.Odometria_Init(Agente_1)
 
 Explorar.Rutina_Inicio(Agente_1)
 
-tiempos = [8] # minutos4n
+tiempos = [3] # minutos4n
 u = 0
 while Agente_1.step(Agente_1.timestep) != -1:
     Agente_1.DatosSensores()
@@ -196,7 +201,7 @@ while Agente_1.step(Agente_1.timestep) != -1:
     if Agente_1.getTime() >= tiempos[u]*60:
         #------ Enviar datos a supervisor ----
         data = "Robot: Hola"
-        """
+        
         T_Exploracion_x_str = ' '.join(map(str, Agente_1.Pared_x_ds0))
         T_Exploracion_y_str = ' '.join(map(str, Agente_1.Pared_y_ds0))  
         
@@ -220,35 +225,43 @@ while Agente_1.step(Agente_1.timestep) != -1:
 
         print("cantidad de puntos (controlador de vehiculo): ", len(Agente_1.Pared_x_ds0),"  ",len(Agente_1.Pared_x_ds0)*2)
         data =   desfase_x+ ' ' +desfase_y+ ' ' + T_Exploracion_x_str + ' '+ T_Exploracion_y_str
-        """
+        
         emitter.send(data.encode())
         
         datos_obtenidos = False
         while datos_obtenidos == False:
             # ----- Recibir datos de supervisor -----
-            if receiver.getQueueLength() > 0:
-                data = receiver.getString()
-                print(data)
-                receiver.nextPacket()
-                numeros = eval(data)
-                print("tipo de dato de data en controlador: ", type(data))
-                try:
-                    # Asignar los valores a variables individuales
-                    primer_numero = float(numeros[0])
-                    segundo_numero = float(numeros[1])
+            while receiver.getQueueLength() > 0:
+                data = receiver.getString().split()  # lectura de datos enviado por el supervisor del mundo webots
+                
+                primer_numero = float(data.pop(0))
+                segundo_numero = float(data.pop(0))
+                #print(data)
+
+                Agente_1.puntos_mapa = [float(x) for x in data]
+
+                Agente_1.cant_puntos_mapa = len(Agente_1.puntos_mapa) // 2
+                
+                Agente_1.puntos_mapa_x.extend([(x-float(desfase_x)) for x in Agente_1.puntos_mapa[:Agente_1.cant_puntos_mapa]])
+                Agente_1.puntos_mapa_y.extend([(y-float(desfase_y)) for y in Agente_1.puntos_mapa[Agente_1.cant_puntos_mapa:]])
+                print('cantidad de puntos de mapa completo: ', len(Agente_1.puntos_mapa_x))
+                receiver.nextPacket()                
+               
+                if len(Agente_1.puntos_mapa_x) > 100000:
                     datos_obtenidos = True
-                except:
-                    None
+                
             
             if Agente_1.step(Agente_1.timestep) == -1:
                 break
         
+      
         # Se considera este espacio el fin de la exploración
         # y se genera la trayectoria al punto de inicio
-        Obstaculos.Espacio_Trabajo(Agente_1)
+        Obstaculos.Espacio_Trabajo(Agente_1,1) # 0 para individual, 1 mapa completo
+
+
         Agente_1.objetivo_x = (primer_numero+Agente_1.size_x/2.0)*Agente_1.factorWS-Agente_1.T_Exploracion_GPS_x[0]
         Agente_1.objetivo_y = (segundo_numero+Agente_1.size_y/2.0)*Agente_1.factorWS-Agente_1.T_Exploracion_GPS_y[0]
-
         Trayectoria.Ruta_Optima(Agente_1, Agente_1.objetivo_x, Agente_1.objetivo_y)
 
         Graficas.graph_select(Agente_1)

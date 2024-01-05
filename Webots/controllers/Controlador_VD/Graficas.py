@@ -43,7 +43,9 @@ def graph_select(agente):
         if keyboard.is_pressed("5"):
             Ruta_Optima(agente)
 
-        
+        if keyboard.is_pressed("6"):
+            Mapa_Completo(agente)
+
 
         
         if agente.step(agente.timestep) == -1:
@@ -435,4 +437,23 @@ def Ruta_Optima(agente):
     
     
     # Mostrar la gráfica
+    plt.show()
+
+def Mapa_Completo(agente):
+    x = agente.x_vehiculo
+    y = agente.y_vehiculo 
+    
+    plt.plot((agente.puntos_mapa_x),(agente.puntos_mapa_y),'o',color = 'black')
+    plt.plot((x),(y),'o',color = 'green')
+    plt.axhline(0, color='black',linewidth=0.5)
+    plt.axvline(0, color='black',linewidth=0.5)
+
+    
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    plt.title('Mapa obtenido por todos los vehiculos (controlador de vehiculo)')
+    plt.xlim(0,5)
+    plt.ylim(0,5)
+    plt.grid(True)
+    
     plt.show()
