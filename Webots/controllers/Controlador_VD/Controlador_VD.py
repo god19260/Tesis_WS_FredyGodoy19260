@@ -19,8 +19,8 @@ class Slave(Robot):
     timestep = 3
     
     # Especificaciones del mundo
-    size_x = 5 #m
-    size_y = 5 #m
+    size_x = 5.0 #m
+    size_y = 5.0 #m
 
     #------------------ Características del robot ------------------
     wheelRadius = 0.035 #radio en m 
@@ -79,6 +79,8 @@ class Slave(Robot):
 
     #------------------------- Trayectoria -------------------------
     ruta_optima = []
+    objetivo_x = 0
+    objetivo_y = 0
     #---------------------------------------------------------------
 
 
@@ -193,7 +195,8 @@ while Agente_1.step(Agente_1.timestep) != -1:
 
     if Agente_1.getTime() >= tiempos[u]*60:
         #------ Enviar datos a supervisor ----
-        #data = "Robot: Hola"
+        data = "Robot: Hola"
+        """
         T_Exploracion_x_str = ' '.join(map(str, Agente_1.Pared_x_ds0))
         T_Exploracion_y_str = ' '.join(map(str, Agente_1.Pared_y_ds0))  
         
@@ -217,8 +220,9 @@ while Agente_1.step(Agente_1.timestep) != -1:
 
         print("cantidad de puntos (controlador de vehiculo): ", len(Agente_1.Pared_x_ds0),"  ",len(Agente_1.Pared_x_ds0)*2)
         data =   desfase_x+ ' ' +desfase_y+ ' ' + T_Exploracion_x_str + ' '+ T_Exploracion_y_str
+        """
         emitter.send(data.encode())
-
+        
         datos_obtenidos = False
         while datos_obtenidos == False:
             # ----- Recibir datos de supervisor -----
@@ -227,10 +231,11 @@ while Agente_1.step(Agente_1.timestep) != -1:
                 print(data)
                 receiver.nextPacket()
                 numeros = eval(data)
+                print("tipo de dato de data en controlador: ", type(data))
                 try:
                     # Asignar los valores a variables individuales
-                    primer_numero = numeros[0]
-                    segundo_numero = numeros[1]
+                    primer_numero = float(numeros[0])
+                    segundo_numero = float(numeros[1])
                     datos_obtenidos = True
                 except:
                     None
@@ -241,7 +246,10 @@ while Agente_1.step(Agente_1.timestep) != -1:
         # Se considera este espacio el fin de la exploración
         # y se genera la trayectoria al punto de inicio
         Obstaculos.Espacio_Trabajo(Agente_1)
-        Trayectoria.Ruta_Optima(Agente_1,primer_numero+Agente_1.size_x/2,segundo_numero+Agente_1.size_y/2)
+        Agente_1.objetivo_x = (primer_numero+Agente_1.size_x/2.0)*Agente_1.factorWS-Agente_1.T_Exploracion_GPS_x[0]
+        Agente_1.objetivo_y = (segundo_numero+Agente_1.size_y/2.0)*Agente_1.factorWS-Agente_1.T_Exploracion_GPS_y[0]
+
+        Trayectoria.Ruta_Optima(Agente_1, Agente_1.objetivo_x, Agente_1.objetivo_y)
 
         Graficas.graph_select(Agente_1)
 

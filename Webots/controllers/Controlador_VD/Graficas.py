@@ -390,6 +390,9 @@ def Ruta_Optima(agente):
         
         plt.plot(agente.x_rutaOptima, agente.y_rutaOptima, '-o', color='green')
         plt.plot(agente.x_rutaOptima[0], agente.y_rutaOptima[0], '-o', color='blue')
+        plt.plot(agente.objetivo_x, agente.objetivo_y, '-o', color='red')
+        
+
         #plt.plot(agente.x_rutaOptima[0],agente.y_rutaOptima[0],'o',color = 'red')
         #plt.plot(int(agente.factorWS*(agente.x_vehiculo))+abs(agente.min_val_x),int(agente.factorWS*(agente.y_vehiculo))+abs(agente.min_val_y),'o',color = 'blue')
     except:
