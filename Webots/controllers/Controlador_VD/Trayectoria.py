@@ -7,13 +7,13 @@ def Ruta_Optima(agente,dx,dy):
     origin_x = int(-agente.min_val_x)#int(-agente.min_val_x +agente.factorWS*agente.T_Exploracion_x[1])
     origin_y = int(-agente.min_val_y)#int(-agente.min_val_y +agente.factorWS*agente.T_Exploracion_y[1])
     
-    destino_x = int(dx)
-    destino_y = int(dy)
+    destino_x = int(dx) #origin_x
+    destino_y = int(dy)#origin_y
     print("Destino: ", destino_x, ' - ', destino_y)
 
     x = int(-agente.min_val_x + agente.factorWS*agente.x_vehiculo)
     y = int(-agente.min_val_y + agente.factorWS*agente.y_vehiculo)
-    #agente.ruta_optima =dijkstra(agente.mapa_WS,x,y,origin_x,origin_y)
+    #agente.ruta_optima =dijkstra(agente.mapa_WS,x,y,origin_x,or5nigin_y)
     agente.ruta_optima =dijkstra(agente.mapa_WS,x,y,destino_x,destino_y)
     
 

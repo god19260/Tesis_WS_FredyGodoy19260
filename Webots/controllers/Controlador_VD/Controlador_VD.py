@@ -189,7 +189,7 @@ Odometria.Odometria_Init(Agente_1)
 
 Explorar.Rutina_Inicio(Agente_1)
 
-tiempos = [3] # minutos4n
+tiempos = [2] # minutos4n
 u = 0
 while Agente_1.step(Agente_1.timestep) != -1:
     Agente_1.DatosSensores()
