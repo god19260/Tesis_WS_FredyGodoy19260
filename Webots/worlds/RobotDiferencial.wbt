@@ -8,8 +8,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0944
-  position 2.0780517851587245e-05 2.0780576614917696e-05 15.08562938986005
+  orientation 0.5773502691896258 -0.5773502691896258 -0.5773502691896258 4.188785307179587
+  position -9.168749849434343e-06 -9.168775780229518e-06 13.823527089582011
   follow "rectangle arena"
 }
 TexturedBackgroundLight {
@@ -1017,7 +1017,7 @@ DEF PLACA_1 Solid {
   ]
 }
 DEF PLACA_1 Solid {
-  translation 1.41 -0.22 0.001
+  translation 1.28 0.74 0.001
   children [
     DEF PLACA_1_Shape Shape {
       appearance PBRAppearance {
@@ -1033,7 +1033,7 @@ DEF PLACA_1 Solid {
   name "solid(4)"
 }
 DEF PLACA_1 Solid {
-  translation -0.75 -1.88 0.001
+  translation -1.37 0.61 0.001
   children [
     DEF PLACA_1_Shape Shape {
       appearance PBRAppearance {

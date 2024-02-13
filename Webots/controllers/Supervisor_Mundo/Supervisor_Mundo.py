@@ -42,8 +42,18 @@ cant_paredes = 10
 cant_cajas = 3
 cant_checkpoints = 1
 
-modo = 1 # 0 Obtener datos, 1 colocar paredes, 2 pruebas
-mapa = 1 # 0 no cambia mapa, 1 pruebas de algoritmos, 2 validación
+
+
+modo = 1 # 0 Obtener datos, 1 colocar paredes
+
+mapa = 1 # mapa = 0 --> no cambia mapa 
+         # mapa = 1 --> Mapa 1
+         # mapa = 2 --> Mapa 2
+         # mapa = 3 --> Mapa 3
+         # mapa = 4 --> Mapa 4
+         # mapa = 5 --> Mapa 5
+
+
 # -'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'- Obtener objetos del mundo -'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-
 # Paredes
 for dsnumber in range(cant_paredes):
@@ -64,38 +74,6 @@ for checkpoint_number in range(cant_checkpoints):
     Checkpoints_Orientation_Field.append(Checkpoints[checkpoint_number].getField('rotation'))
     
 
-#Checkpoint_Shape = robot.getFromDef('CP_0_Shape')
-#Checkpoints_appearance.append(Checkpoint_Shape.getField("appearance").getSFNode())
-
-#new_color = [1.0, 0.0, 0.0, 1.0]  # Red color
-#Checkpoints_appearance[0].setSFColor("baseColor",new_color)
-
-#-*-
-
-print(" Prueba para obtener los nodos de cambio de color.")
-"""
-Nodo = robot.getFromDef('PLACA_1.PLACA_1_Shape')
-appearance = Nodo.getField('PBRAppearance')
-color = appearance.getSFColor()
-print(color)
-
-
-for i in range(child_node.getCount()):
-    nodos=child_node.getMFNode(i)
-    if nodos.getTypeName() == 'Shape':
-        print('si entro: i> ',i)
-        color_field= nodos.getField('diffuseColor')
-        #color_field.setSFColor([0.0, 1.0, 0.0])
-    print( nodos.getTypeName() )
-"""
-#appearance = child_node.getField('diffuseColor')
-
-#appearance = child_node.getField('baseColor')
-#baseColor = appearance.getField('baseColor')
-
-#appearance.setSFColor([1,0,0])
-#-*-    
-    
 # -'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-'-
 
 
